@@ -26,6 +26,9 @@ class RoleSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
+        $role = Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        $role->givePermissionTo(['create job', 'edit job', 'delete job', 'view job', 'view report']);
+
         $role = Role::create(['name' => 'kepala kompetensi', 'guard_name' => 'api']);
         $role->givePermissionTo(['create job', 'edit job', 'delete job', 'view job', 'view report']);
 
