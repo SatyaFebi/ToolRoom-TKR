@@ -15,8 +15,13 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'superadmin'
+                'name' => 'superadmin',
+                'email' => 'superadmin@gmail.com',
+                'password' => bcrypt('123qweasd'),
+                'role_id' => 1
             ]
         ];
+
+        User::insert($users);
     }
 }
