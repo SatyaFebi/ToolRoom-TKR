@@ -2,7 +2,7 @@
     <div style="justify-content: space-between;">
         <h1 class="text-xl">Admin Dashboard</h1>
         <form @submit.prevent="logout">
-            <button class="border rounded-lg py-1 px-4 bg-red-600 text-white font-medium">Logout</button>
+            <button class="border rounded-lg py-1 px-4 bg-red-600 text-white font-medium cursor-pointer">Logout</button>
         </form>
     </div>
 </template>

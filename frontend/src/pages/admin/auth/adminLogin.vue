@@ -21,14 +21,14 @@
           <input
             type="checkbox"
             v-model="rememberMe"
-            class="mr-2"
+            class="mr-2 cursor-pointer"
           >
           Remember Me
         </label>
 
         <button
           type="submit"
-          class="border rounded-lg py-2 px-3 bg-green-600 text-white hover:bg-green-800 duration-300 hover:text-slate-300"
+          class="border rounded-lg py-2 px-3 bg-green-600 text-white hover:bg-green-800 duration-300 hover:text-slate-300 cursor-pointer"
         >
           Submit
         </button>
