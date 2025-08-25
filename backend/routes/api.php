@@ -12,13 +12,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Route::middleware([])->group(function () {
+Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index']);
 
-// });
+Route::post('/register', [AuthController::class, 'register']);
 
 //admin routes
 Route::prefix('admin')->group(function () {
+    Route::get('/getUserData', [AuthController::class, 'getUserData']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/updateUser/{id}', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

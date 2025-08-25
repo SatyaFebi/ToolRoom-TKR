@@ -7,10 +7,48 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function getUserData()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => User::all()
+        ]);
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|unique:users,email',
+                'password' => 'required|string|min:8',
+                'role_id' => 'required|exists:roles,id'
+            ]);
+    
+            $validated['password'] = Hash::make($validated['password']);
+
+            $user = User::create($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registrasi berhasil, silakan login!',
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Terdapat kesalahan: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal registrasi, mohon cek kembali data yang anda masukkan!',
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
     public function login(Request $request)
     {
         $credential = $request->validate([
@@ -42,6 +80,58 @@ class AuthController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Terdapat kesalahan: ' . $e->getMessage());
+
+             return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil',
+            ], 400);
+        }
+        
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = User::find($id);
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|unique:users,email,' . $user->id,
+                'password' => 'sometimes|string|min:8',
+                'role_id' => 'required|exists:roles,id'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+
+            $user->role_id = $request->role_id;
+
+            $user->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil diupdate!',
+                'data' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Terdapat kesalahan pada saat update: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal update data, mohon cek kembali data yang anda masukkan!',
+                'error' => $e->getMessage(),
+            ], 400);
         }
         
     }
