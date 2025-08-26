@@ -65,7 +65,7 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Gagal login, mohon coba kembali'
-                ], 401);
+                ], 400);
             } 
             $user->tokens()->delete(); 
     

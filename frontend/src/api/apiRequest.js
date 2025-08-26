@@ -18,9 +18,10 @@ api.interceptors.request.use(
         let expiry = parseInt(localStorage.getItem('expired_authToken')) || 0;
         let currentTime = Math.floor(Date.now() / 1000); // Waktu sekarang dalam detik
 
-        if (token && currentTime >= expiry) {
+        if (token && expiry && currentTime >= parseInt(expiry)) {
             localStorage.removeItem('authToken')
-            return Promise.reject({ response: { status: 401 }})
+            localStorage.removeItem('expired_authToken')
+            return Promise.reject({  response: { status: 401 } })
         }
 
         if (token) {
@@ -34,13 +35,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response, 
     async (error) => {
-        const originalRequest = error.config;
+        // const originalRequest = error.config;
 
-        if (error.response && error.response.status === 401) {
-            console.warn('Unauthorized! Redirecting to login...')
-            await handleLogout();
-            return Promise.reject(error)
-        }
+
+        // HANDLE 401 GLOBAL
+        // if (error.response && error.response.status === 401) {
+        //     console.warn('Unauthorized! Redirecting to login...')
+        //     await handleLogout();
+        //     return Promise.reject(error)
+        // }
 
         return Promise.reject(error)
     }
@@ -53,12 +56,16 @@ const handleLogout = async () => {
     delete api.defaults.headers.common['Authorization'];
 
     router.push('/admin/login')
-    sweetSuccess('Logout berhasil', 'Silakan login kembali', null)
+    Swal.fire({
+        icon: "warning",
+        title: "Sesi berakhir",
+        text: "Silakan login kembali"
+    })
 }
 
 const apiLoadings = ref(false)
 const apiRequest = async (loadingRef = null, method, url, data = null, isFormData = false, showNotification = true) => {
-    if (loadingRef) loadingRef = true
+    if (loadingRef) loadingRef.value = true
     apiLoadings.value = true
 
     const config = { method, url };
@@ -123,7 +130,7 @@ const apiRequest = async (loadingRef = null, method, url, data = null, isFormDat
             }
         }
 
-        return response.data
+        return response
     } catch (error) {
         console.error(error)
 
