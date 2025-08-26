@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::connection('tkr_service_management')->create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('service_name');
-            $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->text('address')->nullable();
+            $table->integer('no_telp')->unique();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::connection('tkr_service_management')->dropIfExists('pelanggan');
     }
 };
