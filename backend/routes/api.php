@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Inventory\ItemCategoryController;
@@ -8,22 +7,19 @@ use App\Http\Controllers\Inventory\ItemController;
 use App\Http\Controllers\Inventory\ItemTypeController;
 use App\Http\Controllers\Inventory\StockMovementController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-// Route::middleware([])->group(function () {
-
-// });
-
-//admin routes
+// ================= ADMIN ROUTES =================
 Route::prefix('admin')->group(function () {
+    // Public (no middleware)
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Protected (JWT)
+    Route::middleware('auth:api')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+    });
 });
 
-//inventory routes
-Route::prefix('inventory')->group(function () {
+// ================= INVENTORY ROUTES =================
+Route::prefix('inventory')->middleware('auth:api')->group(function () {
     Route::apiResource('item-types', ItemTypeController::class);
     Route::apiResource('item-categories', ItemCategoryController::class);
     Route::apiResource('items', ItemController::class);
