@@ -2,7 +2,7 @@
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
       <h2 class="text-2xl font-bold text-center mb-6">Admin Login</h2>
-      <form @submit.prevent="login" class="flex flex-col">
+      <form @submit.prevent="handleLogin" class="flex flex-col">
         <input
           type="email"
           placeholder="Email"
@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { apiRequest } from '@/api/apiRequest'
+import useAuth from '@/composables/useAuth'
 import { ref } from 'vue'
 import router from '@/router'
 
@@ -57,49 +57,32 @@ const errorMessage = ref('')
 const successMessage = ref('')
 const isLoading = ref(false)
 
+const { login } = useAuth()
+
 // Cek kalau sebelumnya user pernah centang Remember Me
 if (localStorage.getItem('rememberEmail')) {
   email.value = localStorage.getItem('rememberEmail')
 }
 
-const login = async () => {
+const handleLogin = async () => {
+  isLoading.value = true
   errorMessage.value = ''
   successMessage.value = ''
-  isLoading.value = true
-
   try {
-    const response = await apiRequest(isLoading, 'post', 'admin/login', {
-      email: email.value,
-      password: password.value,
-      remember: rememberMe.value // Kirim ke backend (opsional)
-    })
-
-    console.log(response)
-    if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token)
-
-      const expiry = Math.floor(Date.now() / 1000) + 432000 // 5 hari dalam detik
-      localStorage.setItem('expired_authToken', expiry)
-
-      // Kalau centang Remember Me → simpan email
-      if (rememberMe.value) {
-        localStorage.setItem('rememberEmail', email.value)
-      } else {
-        localStorage.removeItem('rememberEmail')
-      }
-    } else {     
-      errorMessage.value = 'Login gagal. Token tidak ditemukan.'
-      console.error('Token tidak ditemukan pada response login')
-      return
+    await login(email.value, password.value, rememberMe.value)
+    if (rememberMe.value) {
+      localStorage.setItem('rememberEmail', email.value)
+    } else {
+      localStorage.removeItem('rememberEmail')
     }
 
+    successMessage.value = 'Login sukses! Mengalihkan...'
     router.push('/admin/dashboard')
-    successMessage.value = 'Login berhasil'
-  } catch (error) {
-    errorMessage.value = 'Login gagal. Periksa email dan password.'
-    console.error(error)
+  } catch (err) {
+    errorMessage.value = err.response?.data?.message || 'Login gagal. Silakan coba lagi.'
   } finally {
     isLoading.value = false
   }
 }
+
 </script>

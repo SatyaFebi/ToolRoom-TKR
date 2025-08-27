@@ -19,7 +19,7 @@
     "axios": "^1.11.0",
     "pinia": "^3.0.3",
     "primevue": "^4.3.7",
-    "sweetalert2": "^11.22.2",
+    "sweetalert2": "^11.22.5",
     "tailwindcss": "^4.1.11",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"

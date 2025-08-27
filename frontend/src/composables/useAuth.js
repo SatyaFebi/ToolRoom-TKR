@@ -1,5 +1,6 @@
 import { useAuthStore } from '../stores/auth'
 import { computed } from 'vue'
+import Swal from 'sweetalert2'
 
 export default function useAuth() {
   const auth = useAuthStore()
@@ -8,11 +9,41 @@ export default function useAuth() {
   const isLoggedIn = computed(() => !!auth.token)
 
   const login = async (email, password) => {
-    await auth.login(email, password)
+    try {
+      await auth.login(email, password)
+      Swal.fire({
+        icon: 'success',
+        title: 'Login sukses!',
+        showConfirmButton: false,
+        timer: 2000
+      })
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Login failed',
+        text: err.response?.data?.message || 'Terjadi kesalahan'
+      })
+      throw err
+    }
   }
-
+  
   const logout = async () => {
-    await auth.logout()
+    try {
+      await auth.logout()
+      Swal.fire({
+        icon: 'success',
+        title: 'Logout sukses!',
+        showConfirmButton: false,
+        timer: 2000
+      })
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Logout failed',
+        text: err.response?.data?.message || 'Terjadi kesalahan'
+      })
+      throw err
+    }
   }
 
   const fetchUser = async () => {
