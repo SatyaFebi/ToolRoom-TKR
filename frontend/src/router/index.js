@@ -20,16 +20,16 @@ const routes = [
         name: 'Home',
         component: adminDashboard
       },
-      {
-        path: 'inventory/item-types',
-        name: 'ItemTypes',
-        component: () => import('@/pages/admin/inventory/ItemTypes.vue')
-      },
-      {
-        path: 'inventory/item-categories',
-        name: 'ItemCategories',
-        component: () => import('@/pages/admin/inventory/ItemCategories.vue')
-      },
+      // {
+      //   path: 'inventory/item-types',
+      //   name: 'ItemTypes',
+      //   component: () => import('@/pages/admin/inventory/ItemTypes.vue')
+      // },
+      // {
+      //   path: 'inventory/item-categories',
+      //   name: 'ItemCategories',
+      //   component: () => import('@/pages/admin/inventory/ItemCategories.vue')
+      // },
       // tambah route admin lain di sini
     ]
   },
