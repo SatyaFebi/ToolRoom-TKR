@@ -46,8 +46,12 @@ export default function useAuth() {
     }
   }
 
-  const fetchUser = async () => {
-    await auth.fetchUser()
+  const getMe = async () => {
+    await auth.getMe()
+  }
+
+  const getUserData = async () => {
+    await auth.getUserData()
   }
 
   return {
@@ -55,6 +59,7 @@ export default function useAuth() {
     isLoggedIn,
     login,
     logout,
-    fetchUser
+    getMe,
+    getUserData
   }
 }

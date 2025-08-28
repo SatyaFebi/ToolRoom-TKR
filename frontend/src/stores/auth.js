@@ -6,14 +6,15 @@ axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    token: localStorage.getItem('token') || null
+    token: localStorage.getItem('authToken') || null,
+    data: []
   }),
   actions: {
     async login(email, password) {
       const { data } = await axios.post('admin/login', { email, password })
       this.token = data.token
       this.user = data.user
-      localStorage.setItem('token', data.token)
+      localStorage.setItem('authToken', data.token)
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
       
     },
@@ -25,14 +26,27 @@ export const useAuthStore = defineStore('auth', {
       }
       this.token = null
       this.user = null
-      localStorage.removeItem('token')
+      localStorage.removeItem('authToken')
       delete axios.defaults.headers.common['Authorization']
     },
-    async fetchUser() {
+    async getMe() {
       if (!this.token) return
       axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
       const { data } = await axios.get('me')
       this.user = data
+    },
+    async getUserData() {
+      try {
+        if (this.token) {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+        }
+        const { data } = await axios.get('admin/getUserData')
+        this.data = data?.data ?? data
+        return this.data
+      } catch (err) {
+        console.error('Gagal fetch user data: ', err)
+        throw err
+      }
     }
   }
 })

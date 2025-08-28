@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -109,5 +110,18 @@ class AuthController extends Controller
                 'message' => 'Token tidak valid atau sudah kedaluwarsa',
             ], 401);
         }
+    }
+
+    /**
+     * Fetch semua user
+     */
+    public function getUserData()
+    {
+        $user = User::all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ]);
     }
 }
