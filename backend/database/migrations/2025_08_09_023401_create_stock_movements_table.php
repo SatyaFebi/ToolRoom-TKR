@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stock_movements', function (Blueprint $table) {
+        Schema::connection('tkr_inventory_management')->create('stock_movements', function (Blueprint $table) {
             $table->id();
 
             // Relasi ke tabel items
@@ -46,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stock_movements');
+        Schema::connection('tkr_inventory_management')->dropIfExists('stock_movements');
     }
 };

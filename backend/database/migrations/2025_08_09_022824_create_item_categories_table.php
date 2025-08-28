@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_categories', function (Blueprint $table) {
+        Schema::connection('tkr_inventory_management')->create('item_categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_type_id')
                   ->constrained('item_types')
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_categories');
+        Schema::connection('tkr_inventory_management')->dropIfExists('item_categories');
     }
 };

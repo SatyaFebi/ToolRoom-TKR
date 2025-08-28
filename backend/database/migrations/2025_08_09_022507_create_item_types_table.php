@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_types', function (Blueprint $table) {
+        Schema::connection('tkr_inventory_management')->create('item_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // nama tipe barang, misal Tools, Consumables
             $table->text('description')->nullable(); // penjelasan tipe
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_types');
+        Schema::connection('tkr_inventory_management')->dropIfExists('item_types');
     }
 };
