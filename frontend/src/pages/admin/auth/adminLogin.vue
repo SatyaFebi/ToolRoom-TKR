@@ -1,93 +1,93 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-      <h2 class="text-2xl font-bold text-center mb-6">Admin Login</h2>
-      <form @submit.prevent="login" class="flex flex-col">
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
+      <h1 class="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-1">Email</label>
         <input
-          type="email"
-          placeholder="Email"
           v-model="email"
-          class="border rounded-lg py-2 px-3 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
+          type="email"
+          placeholder="admin@example.com"
+          class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+        />
+      </div>
+
+      <div class="mb-4 relative">
+        <label class="block text-gray-700 mb-1">Password</label>
         <input
-          type="password"
-          placeholder="Password"
+          :type="showPassword ? 'text' : 'password'"
           v-model="password"
-          class="border rounded-lg py-2 px-3 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-
-        <!-- Checkbox Remember Me -->
-        <label class="flex items-center mb-4">
-          <input
-            type="checkbox"
-            v-model="rememberMe"
-            class="mr-2"
-          >
-          Remember Me
-        </label>
-
+          placeholder="••••••••"
+          class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+        />
         <button
-          type="submit"
-          class="border rounded-lg py-2 px-3 bg-green-600 text-white hover:bg-green-800 duration-300 hover:text-slate-300"
+          type="button"
+          @click="showPassword = !showPassword"
+          class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
         >
-          Submit
+          {{ showPassword ? '🙈' : '👁️' }}
         </button>
+      </div>
 
-        <!-- Pesan sukses / error -->
-        <p v-if="successMessage" class="text-green-600 mt-3 text-sm">{{ successMessage }}</p>
-        <p v-if="errorMessage" class="text-red-600 mt-3 text-sm">{{ errorMessage }}</p>
-      </form>
+      <div class="mb-4 flex items-center">
+        <input type="checkbox" id="remember" v-model="rememberMe" class="mr-2" />
+        <label for="remember" class="text-gray-700">Remember Me</label>
+      </div>
+
+      <button
+        @click="submit"
+        class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
+      >
+        Login
+      </button>
+
+      <p v-if="error" class="mt-4 text-red-500 text-sm text-center">{{ error }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { apiRequest } from '@/api/apiRequest'
-import { ref } from 'vue'
-import router from '@/router'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import useAuth from '@/composables/useAuth'
+
+const router = useRouter()
+const { login } = useAuth()
 
 const email = ref('')
 const password = ref('')
-const rememberMe = ref(false) // Tambahan untuk remember me
-const errorMessage = ref('')
-const successMessage = ref('')
-const isLoading = ref(false)
+const rememberMe = ref(false)
+const showPassword = ref(false)
+const error = ref('')
 
-// Cek kalau sebelumnya user pernah centang Remember Me
-if (localStorage.getItem('rememberEmail')) {
-  email.value = localStorage.getItem('rememberEmail')
-}
+onMounted(() => {
+  const savedEmail = localStorage.getItem('remember_email')
+  const savedPassword = localStorage.getItem('remember_password')
+  if (savedEmail && savedPassword) {
+    email.value = savedEmail
+    password.value = atob(savedPassword)
+    rememberMe.value = true
+  }
+})
 
-const login = async () => {
-  errorMessage.value = ''
-  successMessage.value = ''
-  isLoading.value = true
-
+const submit = async () => {
+  error.value = ''
   try {
-    const response = await apiRequest(isLoading, 'post', 'admin/login', {
-      email: email.value,
-      password: password.value,
-      remember: rememberMe.value // Kirim ke backend (opsional)
-    })
+    await login(email.value, password.value)
 
-    if (response.token) {
-      localStorage.setItem('authToken', response.token)
-
-      // Kalau centang Remember Me → simpan email
-      if (rememberMe.value) {
-        localStorage.setItem('rememberEmail', email.value)
-      } else {
-        localStorage.removeItem('rememberEmail')
-      }
-
-      router.push('/admin/dashboard')
+    if (rememberMe.value) {
+      localStorage.setItem('remember_email', email.value)
+      localStorage.setItem('remember_password', btoa(password.value))
+    } else {
+      localStorage.removeItem('remember_email')
+      localStorage.removeItem('remember_password')
     }
-    successMessage.value = 'Login berhasil'
-  } catch (error) {
-    errorMessage.value = 'Login gagal. Periksa email dan password.'
-    console.error(error)
-  } finally {
-    isLoading.value = false
+
+    router.push({ name: 'Home' })
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Login gagal. Cek email dan password.'
   }
 }
 </script>
+

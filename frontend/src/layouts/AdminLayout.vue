@@ -1,0 +1,18 @@
+<template>
+  <div class="flex min-h-screen bg-gray-100">
+    <Sidebar />
+    <div class="flex-1 flex flex-col">
+      <Header />
+      <main class="flex-1 p-6 overflow-auto">
+        <router-view />
+      </main>
+      <Footer />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import Footer from '@/components/Footer.vue'
+import Sidebar from '@/components/Sidebar.vue'
+import Header from '@/components/Header.vue'
+</script>
