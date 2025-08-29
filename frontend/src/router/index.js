@@ -3,6 +3,7 @@ import adminLogin from '@/pages/admin/auth/adminLogin.vue'
 import adminDashboard from '@/pages/admin/dashboard/adminDashboard.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import NotFound from '@/pages/NotFound.vue'
+import adminUpdate from '@/pages/admin/auth/adminUpdate.vue'
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
         name: 'Home',
         component: adminDashboard
       },
+      {
+        path: 'update',
+        name: 'Update Profil',
+        component: adminUpdate
+      }
       // {
       //   path: 'inventory/item-types',
       //   name: 'ItemTypes',

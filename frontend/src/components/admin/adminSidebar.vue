@@ -12,16 +12,25 @@
       <span class="font-bold text-lg">Dickity</span>
     </div>
 
-    <div class="p-4 space-y-4">
-        <a href="#" class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100">
-            Service
+    <div class="p-4 ">
+      <div v-for="menu, i in sidebarMenu" :key="i">
+        <a :href="menu.link" class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100 mb-0">
+            {{ menu.title }}
         </a>
+      </div>
       <!-- dst... -->
     </div>
   </div>
 </template>
 
 <script setup>
+// import { ref } from 'vue'
+
+const sidebarMenu = [
+  { title: 'Service', link: '/admin/dashboard' },
+  { title: 'Inventory', link: '/admin/dashboard' }
+]
+
 defineProps({
   isOpen: Boolean
 })

@@ -1,52 +1,52 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
-
-axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL
+import api from '@/plugins/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    token: localStorage.getItem('authToken') || null,
-    data: []
+    token: null,
+    data: null
   }),
   actions: {
+    setToken(token) {
+      this.token = token
+      if (token) {
+        localStorage.setItem('authToken', token)
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      } else {
+        localStorage.removeItem('authToken')
+        delete api.defaults.headers.common['Authorization']
+      }
+    },
     async login(email, password) {
-      const { data } = await axios.post('admin/login', { email, password })
-      this.token = data.token
+      const { data } = await api.post('admin/login', { email, password })
+      this.setToken(data.token)
       this.user = data.user
-      localStorage.setItem('authToken', data.token)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
-      
+      return data
     },
     async logout() {
       try {
-        await axios.post('admin/logout')
-      } catch (err) {
-        console.warn('Logout API failed', err)
+        await api.post('admin/logout')
+      } catch (e) {
+        // 
       }
-      this.token = null
       this.user = null
-      localStorage.removeItem('authToken')
-      delete axios.defaults.headers.common['Authorization']
+      this.setToken(null)
+    },
+    async update(data) {
+      const res = await api.post('admin/updateProfile', data)
+      this.user = res.data.user
+      return res.data
     },
     async getMe() {
-      if (!this.token) return
-      axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-      const { data } = await axios.get('me')
-      this.user = data
+      const res = await api.get('/me')
+      this.user = res.data.user ?? res.data
+      return this.user
     },
     async getUserData() {
-      try {
-        if (this.token) {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-        }
-        const { data } = await axios.get('admin/getUserData')
+        const { data } = await api.get('admin/getUserData')
         this.data = data?.data ?? data
         return this.data
-      } catch (err) {
-        console.error('Gagal fetch user data: ', err)
-        throw err
-      }
     }
   }
 })

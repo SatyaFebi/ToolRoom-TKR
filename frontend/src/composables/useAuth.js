@@ -11,6 +11,7 @@ export default function useAuth() {
   const login = async (email, password) => {
     try {
       await auth.login(email, password)
+      // await auth.getMe()
       Swal.fire({
         icon: 'success',
         title: 'Login sukses!',
@@ -26,28 +27,23 @@ export default function useAuth() {
       throw err
     }
   }
-  
-  const logout = async () => {
+
+  const updateProfile = async (data) => {
     try {
-      await auth.logout()
+      await auth.update(data)
       Swal.fire({
         icon: 'success',
-        title: 'Logout sukses!',
-        showConfirmButton: false,
-        timer: 2000
+        title: 'Berhasil',
+        text: 'Profil berhasil diperbarui!'
       })
     } catch (err) {
       Swal.fire({
         icon: 'error',
-        title: 'Logout failed',
-        text: err.response?.data?.message || 'Terjadi kesalahan'
+        title: 'Gagal mengupdate data.',
+        text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi'
       })
       throw err
     }
-  }
-
-  const getMe = async () => {
-    await auth.getMe()
   }
 
   const getUserData = async () => {
@@ -58,8 +54,9 @@ export default function useAuth() {
     user,
     isLoggedIn,
     login,
-    logout,
-    getMe,
+    updateProfile,
+    logout: auth.logout,
+    getMe: auth.getMe,
     getUserData
   }
 }

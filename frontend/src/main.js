@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import './style.css'
+import api from '@/plugins/api'
+import { useAuthStore } from '@/stores/auth'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
@@ -50,4 +52,13 @@ app.use(createPinia())
       },
       ripple: true
    })
-    .mount('#app')
+// restore token from localStorage dan set ke api + store
+const token = localStorage.getItem('authToken')
+if (token) {
+  api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  const auth = useAuthStore() // Pinia sudah terpasang, aman untuk memanggil store
+  auth.setToken(token)
+  // opsional: sinkronkan user dari server
+  auth.getMe().catch(() => { /* ignore jika gagal */ })
+}
+app.mount('#app')

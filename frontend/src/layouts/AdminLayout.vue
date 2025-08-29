@@ -25,8 +25,8 @@
 
 <script setup>
 import { ref } from "vue"
-import NavbarAdmin from '@/components/admin/NavbarAdmin.vue'
-import SidebarAdmin from '@/components/admin/SidebarAdmin.vue'
+import NavbarAdmin from '@/components/admin/adminNavbar.vue'
+import SidebarAdmin from '@/components/admin/adminSidebar.vue'
 
 const sidebarOpen = ref(false)
 </script>
