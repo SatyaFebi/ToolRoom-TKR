@@ -7,9 +7,11 @@
     ]"
   >
     <!-- Sidebar content -->
-    <div class="flex items-center gap-6 p-4 border-b border-gray-200">
-      <img src="#" alt="logo" class="w-8 h-8" />
-      <span class="font-bold text-lg">Dickity</span>
+    <div class="flex items-center p-4 border-b border-gray-200">
+      <a href="dashboard" class="flex items-center gap-6">
+        <img src="#" alt="logo" class="w-8 h-8" />
+        <span class="font-bold text-lg">Dickity</span>  
+      </a>
     </div>
 
     <div class="p-4 ">
