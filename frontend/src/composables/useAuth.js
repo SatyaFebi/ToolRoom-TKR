@@ -1,5 +1,6 @@
 import { useAuthStore } from '../stores/auth'
 import { computed } from 'vue'
+import Swal from 'sweetalert2'
 
 export default function useAuth() {
   const auth = useAuthStore()
@@ -8,22 +9,54 @@ export default function useAuth() {
   const isLoggedIn = computed(() => !!auth.token)
 
   const login = async (email, password) => {
-    await auth.login(email, password)
+    try {
+      await auth.login(email, password)
+      // await auth.getMe()
+      Swal.fire({
+        icon: 'success',
+        title: 'Login sukses!',
+        showConfirmButton: false,
+        timer: 2000
+      })
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Login failed',
+        text: err.response?.data?.message || 'Terjadi kesalahan'
+      })
+      throw err
+    }
   }
 
-  const logout = async () => {
-    await auth.logout()
+  const updateProfile = async (data) => {
+    try {
+      await auth.update(data)
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Profil berhasil diperbarui!'
+      })
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal mengupdate data.',
+        text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi'
+      })
+      throw err
+    }
   }
 
-  const fetchUser = async () => {
-    await auth.fetchUser()
+  const getUserData = async () => {
+    await auth.getUserData()
   }
 
   return {
     user,
     isLoggedIn,
     login,
-    logout,
-    fetchUser
+    updateProfile,
+    logout: auth.logout,
+    getMe: auth.getMe,
+    getUserData
   }
 }
