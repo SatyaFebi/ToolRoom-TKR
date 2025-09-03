@@ -53,10 +53,10 @@
         <div class="flex justify-between gap-3 pt-4">
           <button
             type="button"
-            @click="resetForm"
+            @click="router.back()"
             class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
           >
-            Reset
+            Cancel
           </button>
           <button
             type="submit"
@@ -105,10 +105,6 @@ const handleSubmit = async () => {
     })
     password.value = '' // Reset biar ga ke cache
     router.push('dashboard')
-}
-
-const resetForm = () => {
-  password.value = ""
 }
 
 onMounted(async () => {

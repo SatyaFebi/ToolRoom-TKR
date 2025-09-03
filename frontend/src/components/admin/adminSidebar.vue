@@ -8,19 +8,23 @@
   >
     <!-- Sidebar content -->
     <div class="flex items-center p-4 border-b border-gray-200">
-      <a href="/dashboard/admin" class="flex items-center gap-6">
+      <router-link to="/dashboard/admin" class="flex items-center gap-6">
         <img src="#" alt="logo" class="w-8 h-8" />
         <span class="font-bold text-lg">Dickity</span>  
-      </a>
+      </router-link>
     </div>
 
     <div class="p-4 ">
       <div v-for="menu, i in sidebarData.uiLink" :key="i" class="mb-2">
         <template v-if="menu.type === 'link'">
-          <a :href="menu.link" class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100">
+          <router-link 
+            :to="menu.link" 
+            class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100"
+            exact-active-class="font-semibold text-blue-700 bg-blue-50 rounded"
+          >
             <font-awesome-icon :icon="menu.icon" /> 
             {{ menu.title }}
-          </a>
+          </router-link>
         </template>
 
         <!-- Sub-menu -->
@@ -44,11 +48,12 @@
             <transition name="slide-fade">
               <div v-if="expandedIndex === i" class="ml-6 mt-1 relative">
               <transition-group>
-                <a 
-                v-for="(child, j) in menu.children"
-                :key="j"
-                :href="child.link"
-                class="block p-2 pl-4 rounded relative hover:bg-gray-100"
+                <router-link 
+                  v-for="(child, j) in menu.children"
+                  :key="j"
+                  :to="child.link"
+                  class="block p-2 pl-4 rounded relative hover:bg-gray-100"
+                  active-class="text-blue-700 font-semibold bg-blue-50 rounded"
                 >
                   <!-- Garis vertikal -->
                   <span 
@@ -58,7 +63,7 @@
                   <!-- Garis horizontal -->
                   <span class="absolute left-0 top-1/2 w-3 h-px bg-gray-300"></span>
                   {{ child.title }}
-                </a>
+                </router-link>
               </transition-group>
               </div>
             </transition>

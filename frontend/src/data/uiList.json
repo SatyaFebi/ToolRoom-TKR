@@ -37,7 +37,15 @@
             "title": "Services",
             "type": "sub",
             "icon": "gears",
-            "active": false
+            "active": false,
+            "children": [
+                {
+                    "title": "Service List",
+                    "link": "/dashboard/admin/service/list",
+                    "type": "link",
+                    "active": false
+                }
+            ]
         }
     ]
 

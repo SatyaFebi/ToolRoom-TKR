@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
 // Auth
-import adminLogin from '@/pages/auth/loginPage.vue'
+import adminLogin from '@/pages/auth/LoginPage.vue'
 
 // Layouts
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -9,7 +9,7 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 // Pages
 import adminDashboard from '@/pages/dashboard/admin/adminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
-import adminUpdate from '@/pages/auth/adminUpdate.vue'
+import adminUpdate from '@/pages/auth/AdminUpdate.vue'
 
 const routes = [
   {
@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/dashboard/admin',
     component: AdminLayout,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, role: 'admin' },
     children: [
       {
         path: '',
@@ -35,10 +35,31 @@ const routes = [
         component: adminUpdate
       },
       {
-        path: 'inventory/item-types',
-        name: 'ItemTypes',
-        component: () => import('@/pages/dashboard/admin/inventory/ItemTypes.vue')
+        path: 'inventory',
+        children: [
+          {
+            path: 'items',
+            name: 'Items',
+            component: () => import('@/pages/dashboard/admin/inventory/ItemsPage.vue')
+          },
+          {
+            path: 'item-types',
+            name: 'ItemTypes',
+            component: () => import('@/pages/dashboard/admin/inventory/ItemTypes.vue')
+          },
+
+        ]
       },
+      {
+        path: 'service',
+        children: [
+          {
+            path: 'list',
+            name: 'ServiceList',
+            component: () => import('@/pages/dashboard/admin/service/ServiceList.vue')
+          }
+        ]
+      }
     ]
   },
   {
