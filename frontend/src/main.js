@@ -7,11 +7,17 @@ import { useAuthStore } from '@/stores/auth'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faChevronRight, faMinus, faPlus, faUser, faHome, faGears, faBoxArchive } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faChevronRight, faMinus, faPlus, faUser, faHome, faGears, faBoxArchive)
 
 const app = createApp(App)
 
 app.use(createPinia())
     .use(router)
+    .component('font-awesome-icon', FontAwesomeIcon)
     .use(PrimeVue, {
       theme: {
          preset: Aura,

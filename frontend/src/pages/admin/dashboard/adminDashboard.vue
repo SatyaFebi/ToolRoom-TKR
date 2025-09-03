@@ -1,7 +1,7 @@
 <template>
   <main class="p-6 flex-1 bg-gray-100">
     <!-- Header dalam dashboard -->
-    <header class="flex justify-between items-center mb-6">
+    <!-- <header class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
       <div class="flex items-center gap-3">
         <span class="text-gray-700">Halo, Satya 👋</span>
@@ -11,7 +11,7 @@
           class="w-10 h-10 rounded-full"
         />
       </div>
-    </header>
+    </header> -->
 
     <!-- Statistik Cards -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -30,16 +30,21 @@
     </section>
 
     <!-- Quick Actions -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <button
         class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700"
       >
         ➕ Tambah Servis
       </button>
       <button
-        class="bg-green-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-green-700"
+        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700"
       >
-        ➕ Tambah Sparepart
+        👀 Lihat Daftar Pekerjaan
+      </button>
+      <button
+        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700"
+      >
+        📁 Lihat Laporan
       </button>
     </section>
   </main>

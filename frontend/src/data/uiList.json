@@ -1,0 +1,44 @@
+{
+    "uiLink": [
+        {
+            "title": "Dashboard",
+            "link": "/admin/dashboard",
+            "type": "link",
+            "icon": "house",
+            "active": false
+        },
+        {
+            "title": "Inventory",
+            "type": "sub",
+            "icon": "box-archive",
+            "active": false,
+            "children": [
+                {
+                    "title": "Items",
+                    "link": "/admin/inventory/items",
+                    "type": "link",
+                    "active": false
+                },
+                {
+                    "title": "Item Types",
+                    "link": "/admin/inventory/item-types",
+                    "type": "link",
+                    "active": false
+                },
+                {
+                    "title": "Item Logs",
+                    "link": "/admin/inventory/item-logs",
+                    "type": "link",
+                    "active": false
+                }
+            ]
+        },
+        {
+            "title": "Services",
+            "type": "sub",
+            "icon": "gears",
+            "active": false
+        }
+    ]
+
+}

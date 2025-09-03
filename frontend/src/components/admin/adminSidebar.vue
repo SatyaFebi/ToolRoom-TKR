@@ -8,32 +8,116 @@
   >
     <!-- Sidebar content -->
     <div class="flex items-center p-4 border-b border-gray-200">
-      <a href="dashboard" class="flex items-center gap-6">
+      <a href="/admin/dashboard" class="flex items-center gap-6">
         <img src="#" alt="logo" class="w-8 h-8" />
         <span class="font-bold text-lg">Dickity</span>  
       </a>
     </div>
 
     <div class="p-4 ">
-      <div v-for="menu, i in sidebarMenu" :key="i">
-        <a :href="menu.link" class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100 mb-0">
+      <div v-for="menu, i in sidebarData.uiLink" :key="i" class="mb-2">
+        <template v-if="menu.type === 'link'">
+          <a :href="menu.link" class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100">
+            <font-awesome-icon :icon="menu.icon" /> 
             {{ menu.title }}
-        </a>
+          </a>
+        </template>
+
+        <!-- Sub-menu -->
+        <template v-else-if="menu.type === 'sub'">
+          <div>
+            <div 
+              class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
+              @click="toggleExpand(i)"
+            >
+              <font-awesome-icon :icon="menu.icon" />
+              {{ menu.title }}
+
+              <!-- Chevron -->
+              <font-awesome-icon
+                :icon="['fas', 'chevron-right']"
+                class="ml-auto transition-transform duration-300 "
+                :class="{ 'rotate-90': expandedIndex === i }"
+              />
+            </div>
+
+            <transition name="slide-fade">
+              <div v-if="expandedIndex === i" class="ml-6 mt-1 relative">
+              <transition-group>
+                <a 
+                v-for="(child, j) in menu.children"
+                :key="j"
+                :href="child.link"
+                class="block p-2 pl-4 rounded relative hover:bg-gray-100"
+                >
+                  <!-- Garis vertikal -->
+                  <span 
+                  class="absolute top-0 bottom-0 left-0 w-px bg-gray-300"
+                  :class="j === menu.children.length - 1 ? 'h-1/2' : 'h-full'"></span>
+                  
+                  <!-- Garis horizontal -->
+                  <span class="absolute left-0 top-1/2 w-3 h-px bg-gray-300"></span>
+                  {{ child.title }}
+                </a>
+              </transition-group>
+              </div>
+            </transition>
+          </div>
+        </template>
       </div>
-      <!-- dst... -->
     </div>
   </div>
 </template>
 
 <script setup>
-// import { ref } from 'vue'
+import { ref } from 'vue'
+import sidebarData from '@/data/uiList.json'
 
-const sidebarMenu = [
-  { title: 'Service', link: '/admin/dashboard' },
-  { title: 'Inventory', link: '/admin/dashboard' }
-]
+const expandedIndex = ref(null)
+
+const toggleExpand = (i) => {
+  expandedIndex.value = expandedIndex.value === i ? null : i
+}
 
 defineProps({
   isOpen: Boolean
 })
+
+
 </script>
+<style scoped>
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.slide-fade-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.list-enter-active, .list-leave-active {
+  transition: all 0.2s ease;
+}
+
+.list-enter-from, .list-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+</style>
