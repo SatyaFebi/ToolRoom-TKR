@@ -8,7 +8,7 @@
   >
     <!-- Sidebar content -->
     <div class="flex items-center p-4 border-b border-gray-200">
-      <a href="/admin/dashboard" class="flex items-center gap-6">
+      <a href="/dashboard/admin" class="flex items-center gap-6">
         <img src="#" alt="logo" class="w-8 h-8" />
         <span class="font-bold text-lg">Dickity</span>  
       </a>

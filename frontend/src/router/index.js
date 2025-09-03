@@ -1,42 +1,44 @@
 import { createWebHistory, createRouter } from 'vue-router'
-import adminLogin from '@/pages/admin/auth/adminLogin.vue'
-import adminDashboard from '@/pages/admin/dashboard/adminDashboard.vue'
+
+// Auth
+import adminLogin from '@/pages/auth/loginPage.vue'
+
+// Layouts
 import AdminLayout from '@/layouts/AdminLayout.vue'
+
+// Pages
+import adminDashboard from '@/pages/dashboard/admin/adminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
-import adminUpdate from '@/pages/admin/auth/adminUpdate.vue'
+import adminUpdate from '@/pages/auth/adminUpdate.vue'
 
 const routes = [
   {
-    path: '/admin/login',
+    path: '/login',
     name: 'Login',
     component: adminLogin
   },
+
+  // Dashboard Root
   {
-    path: '/admin',
+    path: '/dashboard/admin',
     component: AdminLayout,
     meta: { requiresAuth: true },
     children: [
       {
-        path: 'dashboard',
+        path: '',
         name: 'Home',
         component: adminDashboard
       },
       {
         path: 'update',
-        name: 'Update Profil',
+        name: 'AdminUpdate',
         component: adminUpdate
-      }
-      // {
-      //   path: 'inventory/item-types',
-      //   name: 'ItemTypes',
-      //   component: () => import('@/pages/admin/inventory/ItemTypes.vue')
-      // },
-      // {
-      //   path: 'inventory/item-categories',
-      //   name: 'ItemCategories',
-      //   component: () => import('@/pages/admin/inventory/ItemCategories.vue')
-      // },
-      // tambah route admin lain di sini
+      },
+      {
+        path: 'inventory/item-types',
+        name: 'ItemTypes',
+        component: () => import('@/pages/dashboard/admin/inventory/ItemTypes.vue')
+      },
     ]
   },
   {

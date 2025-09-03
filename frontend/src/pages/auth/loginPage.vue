@@ -77,7 +77,7 @@ const handleLogin = async () => {
     }
 
     successMessage.value = 'Login sukses! Mengalihkan...'
-    router.push('/admin/dashboard')
+    router.push('/dashboard/admin')
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Login gagal. Silakan coba lagi.'
   } finally {

@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::connection('tkr_service_management')->create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->nullable();
-            $table->text('address')->nullable();
-            $table->integer('no_telp')->unique();
+            $table->string('no_telp')->unique();
             $table->timestamps();
         });
     }

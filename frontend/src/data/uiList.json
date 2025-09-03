@@ -2,7 +2,7 @@
     "uiLink": [
         {
             "title": "Dashboard",
-            "link": "/admin/dashboard",
+            "link": "/dashboard/admin",
             "type": "link",
             "icon": "house",
             "active": false
@@ -15,19 +15,19 @@
             "children": [
                 {
                     "title": "Items",
-                    "link": "/admin/inventory/items",
+                    "link": "/dashboard/admin/inventory/items",
                     "type": "link",
                     "active": false
                 },
                 {
                     "title": "Item Types",
-                    "link": "/admin/inventory/item-types",
+                    "link": "/dashboard/admin/inventory/item-types",
                     "type": "link",
                     "active": false
                 },
                 {
                     "title": "Item Logs",
-                    "link": "/admin/inventory/item-logs",
+                    "link": "/dashboard/admin/inventory/item-logs",
                     "type": "link",
                     "active": false
                 }

@@ -66,6 +66,7 @@ const handleSubmit = async (data) => {
     isOpen.value = false
     Swal.fire({ icon: 'success', title: 'Success', text: 'Item type created!' })
   } catch (err) {
+    console.error(err)
     Swal.fire({ icon: 'error', title: 'Error', text: store.error || 'Failed to create' })
   }
 }
