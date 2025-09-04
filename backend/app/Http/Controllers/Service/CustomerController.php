@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service\Customers;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -24,8 +25,15 @@ class CustomerController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string',
-                'no_telp' => 'required|unique:customers,no_telp'
+                'no_telp' => 'required'
             ]);
+
+            if (Customers::where('no_telp', $request->no_telp)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nomor telepon sudah ada di database!'
+                ], 422);
+            }
 
             Customers::create($validated);
 
@@ -37,7 +45,8 @@ class CustomerController extends Controller
             Log::error('Gagal menambahkan customer!' . $e);
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menambahkan data customer!' . $e
+                'message' => 'Gagal menambahkan data customer! ' . $e,
+                'connection' => (new Customers())->getConnectionName()
             ], 400);
         }
     }

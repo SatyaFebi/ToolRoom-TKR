@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service\Vehicles;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class VehiclesController extends Controller
 {
@@ -13,10 +14,18 @@ class VehiclesController extends Controller
     {
         try {
             $validated = $request->validate([
+            'customer_id' => [
+            'required',
+            Rule::exists('tkr_service_management.customers', 'id'), // connection khusus
+        ],
                 'merek' => 'required|string',
                 'model' => 'string|nullable',
                 'tahun' => 'integer|nullable',
-                'no_polisi' => 'string|unique:vehicles,no_polisi|nullable'
+                'no_polisi' => [
+                  'string', 
+                  'nullable',
+                  Rule::unique('tkr_service_management.vehicles', 'no_polisi')
+                ] 
             ]);
 
             Vehicles::create($validated);

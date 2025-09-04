@@ -6,7 +6,10 @@ use App\Http\Controllers\Inventory\ItemCategoryController;
 use App\Http\Controllers\Inventory\ItemController;
 use App\Http\Controllers\Inventory\ItemTypeController;
 use App\Http\Controllers\Inventory\StockMovementController;
-
+use App\Http\Controllers\Service\ServiceOrderController;
+use App\Http\Controllers\Service\VehiclesController;
+use App\Http\Controllers\Service\CustomerController;
+use App\Models\Service\ServiceOrder;
 
 // ================= PUBLIC ROUTES =================
 Route::get('/me', [AuthController::class, 'me']);
@@ -32,4 +35,13 @@ Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(fun
     Route::apiResource('item-categories', ItemCategoryController::class);
     Route::apiResource('items', ItemController::class);
     Route::apiResource('stock-movements', StockMovementController::class);
+});
+
+// ================= SERVICE ROUTES =================
+Route::prefix('service')->middleware(['auth:api', 'throttle:60,1'])->group(function (){
+    Route::get('getService', [ServiceOrder::class, 'get']);
+
+    Route::post('addCustomer', [CustomerController::class, 'add']);
+    Route::post('addService', [ServiceOrderController::class, 'add']);
+    Route::post('addVehicle', [VehiclesController::class, 'add']);
 });
