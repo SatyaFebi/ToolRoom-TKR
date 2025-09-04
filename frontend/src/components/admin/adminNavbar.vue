@@ -27,8 +27,8 @@
           @click="isProfileOpen = !isProfileOpen"
           class="flex items-center gap-2 focus:outline-none cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
         >
-          <img src="/assets/img/clown.jpeg" class="w-8 h-8 rounded-full border" />
-          <span class="hidden md:inline font-semibold">Satya</span>
+          <img src="/assets/img/clown.jpeg" class="w-8 h-8 rounded-full border" alt="profile"/>
+          <span class="hidden md:inline font-semibold">{{ userName }}</span>
         </button>
 
         <!-- Dropdown -->
@@ -76,12 +76,14 @@
 import { ref, onMounted } from "vue"
 import useAuth from '@/composables/useAuth'
 import router from '@/router'
+import { jwtDecode } from "jwt-decode"
 
 const isProfileOpen = ref(false)
 const successMessage = ref('')
 const errorMessage = ref('')
 const isLoading = ref(false)
 const { logout } = useAuth()
+const userName = ref('')
 
 const handleLogout = async () => {
     successMessage.value = ''
@@ -90,7 +92,7 @@ const handleLogout = async () => {
     try {
         await logout()
         successMessage.value = 'Logout sukses! Mengalihkan...'
-        router.push('/admin/login')
+        router.push('/login')
     } catch (err) {
         errorMessage.value = err.response?.data?.message || 'Logout gagal. Silakan coba lagi.'
     } finally {
@@ -106,6 +108,16 @@ const handleClickOutside = (e) => {
 }
 
 onMounted(() => {
+   const token = localStorage.getItem('authToken')
+   if (token) {
+      try {
+         const decoded = jwtDecode(token)
+         userName.value = decoded.name || decoded.sub
+      } catch (err) {
+         console.error('Invalid token', err)
+      }
+   }
+
   window.addEventListener("click", handleClickOutside)
 })
 </script>

@@ -3,12 +3,15 @@
 namespace App\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Service\Vehicles;
 
 class ServiceOrder extends Model
 {
     protected $connection = 'tkr_service_management';
 
     protected $table = 'service_orders';
+
+    protected $appends = ['no_polisi'];
 
     protected $fillable = [
         'vehicle_id',
@@ -22,6 +25,11 @@ class ServiceOrder extends Model
 
     public function vehicle()
     {
-        return $this->belongsTo(Vehicles::class);
+        return $this->belongsTo(Vehicles::class, 'vehicle_id', 'id');
+    }
+
+    public function getNoPolisiAttribute()
+    {
+      return $this->vehicle ? $this->vehicle->no_polisi : null;
     }
 }

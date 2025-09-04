@@ -11,7 +11,9 @@ class ServiceOrderController extends Controller
 {
     public function get()
     {
-        $service = ServiceOrder::all();
+        $service = ServiceOrder::with('vehicle')->get();
+
+        dd($service->toArray());
 
         return response()->json([
             'success' => true,

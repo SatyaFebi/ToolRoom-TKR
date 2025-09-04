@@ -69,7 +69,7 @@ const handleLogout = async () => {
     try {
         await logout()
         successMessage.value = 'Logout sukses! Mengalihkan...'
-        router.push('/admin/login')
+        router.push('/login')
     } catch (err) {
         errorMessage.value = err.response?.data?.message || 'Logout gagal. Silakan coba lagi.'
     } finally {

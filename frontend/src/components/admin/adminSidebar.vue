@@ -8,18 +8,18 @@
   >
     <!-- Sidebar content -->
     <div class="flex items-center p-4 border-b border-gray-200">
-      <router-link to="/dashboard/admin" class="flex items-center gap-6">
-        <img src="#" alt="logo" class="w-8 h-8" />
-        <span class="font-bold text-lg">Dickity</span>  
+      <router-link to="/dashboard/admin" class="flex items-center gap-5">
+        <img src="/assets/img/cat_pfp2.jpeg" alt="logo" class="w-8 h-8 rounded-2xl" />
+        <span class="font-semibold text-xl">Autonix</span>  
       </router-link>
     </div>
 
-    <div class="p-4 ">
+    <div class="p-4">
       <div v-for="menu, i in sidebarData.uiLink" :key="i" class="mb-2">
         <template v-if="menu.type === 'link'">
           <router-link 
             :to="menu.link" 
-            class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100"
+            class="flex items-center gap-3 p-2 rounded hover:bg-gray-100"
             exact-active-class="font-semibold text-blue-700 bg-blue-50 rounded"
           >
             <font-awesome-icon :icon="menu.icon" /> 
@@ -31,7 +31,7 @@
         <template v-else-if="menu.type === 'sub'">
           <div>
             <div 
-              class="flex items-center font-semibold gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer"
               @click="toggleExpand(i)"
             >
               <font-awesome-icon :icon="menu.icon" />
@@ -75,10 +75,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import sidebarData from '@/data/uiList.json'
 
+
 const expandedIndex = ref(null)
+const route = useRoute()
 
 const toggleExpand = (i) => {
   expandedIndex.value = expandedIndex.value === i ? null : i
@@ -88,7 +91,16 @@ defineProps({
   isOpen: Boolean
 })
 
-
+onMounted(() => {
+   sidebarData.uiLink.forEach((menu, i) => {
+      if (menu.type === 'sub') {
+         const isActiveChild = menu.children.some(child => route.path.startsWith(child.link))
+         if (isActiveChild) {
+            expandedIndex.value = i
+         }
+      }
+   })
+})
 </script>
 <style scoped>
 
