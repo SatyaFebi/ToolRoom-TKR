@@ -1,33 +1,45 @@
 <template>
    <div class="p-6">
-      <DataTable :value="users" paginator :rows="10" :rowsPerPageOptions="[10, 15, 20, 50]" tableStyle="min-width: 50rem" responsiveLayout="scroll">
-         <Column field="name" header="Name" style="width: 25%"></Column>
-         <Column field="email" header="Email" style="width: 25%"></Column>
+      <DataTable 
+         :value="users" 
+         paginator 
+         :rows="10" 
+         :rowsPerPageOptions="[10, 15, 20, 50]" 
+         responsiveLayout="stack"
+         breakpoint="960px"
+         class="shadow-md rounded-lg overflow-hidden border border-gray-200 min-w-[600px]"
+      >
+         <Column field="name" header="Name" ></Column>
+         <Column field="email" header="Email" ></Column>
 
-         <Column field="role" header="Role" style="width: 25%" class="capitalize">
+         <Column field="role" header="Role" class="capitalize">
             <template #body="slotProps">
-               {{ getRoleName(slotProps.data.role_id) }}
+               <span class="px-2 py-1 rounded bg-gray-100 text-gray-700 text-sm">
+                  {{ getRoleName(slotProps.data.role_id) }}
+               </span>
             </template>
          </Column>
 
-         <Column header="Action" style="width: 20%;">
+         <Column header="Action">
             <template #body="slotProps">
-               <button 
-                  class="bg-blue-500 text-white px-4 py-1 rounded mr-2 hover:bg-blue-600"
-                  @click="getUserWhenEdit(slotProps.data)"
-               >
-                  Edit
-               </button>
-               <button 
-                  class="bg-red-500 text-white px-4 py-1 rounded mr-2 hover:bg-red-600"
-                  @click="deleteUsers(slotProps.data)"
-               >
-                  Hapus
-               </button>
+               <div class="flex gap-2 flex-wrap">
+                  <button 
+                     class="flex  gap-1 px-3 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
+                     @click="getUserWhenEdit(slotProps.data)"
+                  >
+                     <span>Edit</span>
+                  </button>
+                  <button 
+                     class="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+                     @click="deleteUsers(slotProps.data)"
+                  >
+                     <span>Hapus</span>
+                  </button>
+               </div>
             </template>
          </Column>
-
       </DataTable>
+
       <Dialog v-model:visible="showEditModal" modal header="Edit User" :style="{ width: '30rem' }">
          <div class="flex flex-col gap-4">
             <div>
@@ -161,3 +173,52 @@ onMounted(() => {
    fetchRole()
 })
 </script>
+
+<style scoped>
+/* Mengubah breakpoint agar style aktif hanya di bawah 640px */
+@media screen and (max-width: 639px) {
+  /* Sembunyikan header tabel asli */
+  .p-datatable .p-datatable-thead {
+    display: none;
+  }
+
+  /* Ubah tampilan body, baris, dan sel tabel */
+  .p-datatable .p-datatable-tbody,
+  .p-datatable .p-datatable-tbody tr {
+    display: block;
+  }
+  
+  .p-datatable .p-datatable-tbody tr {
+    border-top: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .p-datatable .p-datatable-tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    border: none;
+    width: 100% !important;
+    padding: 0.75rem 1rem;
+  }
+  
+  .p-datatable .p-datatable-tbody tr td:first-child {
+      border-top: none;
+  }
+
+  .p-datatable .p-datatable-tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-align: left;
+    margin-right: 1rem;
+  }
+  
+  .p-datatable .p-datatable-tbody td[data-label="Action"] > div {
+    justify-content: flex-end;
+  }
+}
+</style>
