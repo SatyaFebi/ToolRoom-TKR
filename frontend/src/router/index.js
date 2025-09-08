@@ -7,7 +7,7 @@ import adminLogin from '@/pages/auth/LoginPage.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // Pages
-import adminDashboard from '@/pages/dashboard/admin/adminDashboard.vue'
+import adminDashboard from '@/pages/dashboard/admin/AdminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
 import adminUpdate from '@/pages/auth/AdminUpdate.vue'
 
@@ -59,6 +59,16 @@ const routes = [
             component: () => import('@/pages/dashboard/admin/service/ServiceList.vue')
           }
         ]
+      },
+      {
+         path: 'operasi',
+         children: [
+            {
+               path: 'user-management',
+               name: 'UserManagement',
+               component: () => import('@/pages/dashboard/admin/operasi/UserManagement.vue')
+            }
+         ]
       }
     ]
   },

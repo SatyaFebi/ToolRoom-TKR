@@ -47,6 +47,19 @@ export const useAuthStore = defineStore('auth', {
         const { data } = await api.get('admin/getUserData')
         this.data = data?.data ?? data
         return this.data
+    },
+    async getUserRole() {
+      const { data } = await api.get('/getRole')
+      this.data = data?.data ?? data
+      return this.data
+    },
+    async editUser(id, payload) {
+      const { data } = await api.post(`admin/editUser/${id}`, payload)
+      return data.user ?? data
+    },
+    async deleteUser(id) {
+      const { data } = await api.post(`admin/editUser/${id}`)
+      return data
     }
   }
 })

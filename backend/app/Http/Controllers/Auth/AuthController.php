@@ -115,6 +115,47 @@ class AuthController extends Controller
     }
 
     /**
+     * Hapus User
+     */
+    public function editUser(Request $request, $id)
+    {
+      $validated = $request->validate([
+         'name' => 'required|string',
+         'email' => 'required|email',
+         'role_id' => [
+            'required',
+            Rule::exists('tkr_inventory_management.roles', 'id')
+         ],
+         'password' => 'nullable|min:8'
+      ]);
+
+      $user = User::findOrFail($id);
+
+      if (!empty($validated['password'])) {
+         $validated['password'] = bcrypt($validated['password']);
+      } else {
+         unset($validated['password']);
+      }
+
+      $user->update($validated);
+
+      return response()->json([
+         'success' => true,
+         'message' => 'User berhasil diupdate',
+         'user' =>  $user->only(['id','name','email','role_id'])
+      ], 200);
+    }
+
+    /**
+     * Hapus User
+     */
+    public function deleteUser($id)
+    {
+      $user = User::findOrFail($id);
+      $user->delete();
+    }
+
+    /**
      * Login user dan return JWT token
      */
     public function login(Request $request)

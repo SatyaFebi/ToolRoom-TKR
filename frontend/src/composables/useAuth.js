@@ -46,8 +46,38 @@ export default function useAuth() {
     }
   }
 
+  const editUser = async (id, payload) => {
+   try {
+      return await auth.editUser(id, payload)
+   } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal mengedit data.',
+        text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi'
+      })
+      throw err
+   }
+  }
+
+  const deleteUser = async (id) => {
+   try {
+      return await auth.deleteUser(id)
+   } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal mengedit data.',
+        text: err.response?.data?.message || 'Tidak dapat menghapus user, mohon coba lagi'
+      })
+      throw err
+   }
+  }
+
   const getUserData = async () => {
-    await auth.getUserData()
+    return await auth.getUserData()
+  }
+
+  const getUserRole = async () => {
+   return await auth.getUserRole()
   }
 
   return {
@@ -55,8 +85,11 @@ export default function useAuth() {
     isLoggedIn,
     login,
     updateProfile,
+    editUser,
+    deleteUser,
     logout: auth.logout,
     getMe: auth.getMe,
-    getUserData
+    getUserData,
+    getUserRole
   }
 }

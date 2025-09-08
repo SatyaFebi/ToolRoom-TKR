@@ -46,6 +46,20 @@
                     "active": false
                 }
             ]
+        },
+        {
+         "title": "Operasi",
+         "type": "sub",
+         "icon": "user",
+         "active": false,
+         "children": [
+            {
+               "title": "User Management",
+               "link": "/dashboard/admin/operasi/user-management",
+               "type": "link",
+               "active": false
+            }
+         ]
         }
     ]
 
