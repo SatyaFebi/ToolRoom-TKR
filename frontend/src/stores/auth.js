@@ -18,6 +18,10 @@ export const useAuthStore = defineStore('auth', {
         delete api.defaults.headers.common['Authorization']
       }
     },
+    async register(payload) {
+      const { data } = await api.post('admin/register', payload)
+      return data.user ?? data
+    },
     async login(email, password) {
       const { data } = await api.post('admin/login', { email, password })
       this.setToken(data.token)
@@ -58,7 +62,7 @@ export const useAuthStore = defineStore('auth', {
       return data.user ?? data
     },
     async deleteUser(id) {
-      const { data } = await api.post(`admin/editUser/${id}`)
+      const { data } = await api.post(`admin/deleteUser/${id}`)
       return data
     }
   }

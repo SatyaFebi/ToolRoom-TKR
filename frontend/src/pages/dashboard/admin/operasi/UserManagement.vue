@@ -1,5 +1,14 @@
 <template>
    <div class="p-6">
+      <div class="flex justify-end mb-4">
+         <button 
+            class="bg-green-600 py-2 px-5 rounded-lg text-white font-semibold hover:bg-green-700 transition"
+            @click="showRegisterModal = true"
+         >
+            Tambah User
+         </button>
+      </div>
+
       <DataTable 
          :value="users" 
          paginator 
@@ -40,7 +49,58 @@
          </Column>
       </DataTable>
 
-      <Dialog v-model:visible="showEditModal" modal header="Edit User" :style="{ width: '30rem' }">
+      <!-- Register Modal -->
+      <Transition name="fade-scale">
+         <Dialog 
+            v-model:visible="showRegisterModal" 
+            modal 
+            header="Tambah User Baru" 
+            :style="{ width: '30rem' }"
+         >
+            <div class="flex flex-col gap-4">
+               <div>
+                  <label class="block mb-1">Name</label>
+                  <input v-model="form.name" class="w-full border p-2 rounded" />
+               </div>
+               <div>
+                  <label class="block mb-1">Email</label>
+                  <input v-model="form.email" class="w-full border p-2 rounded" />
+               </div>
+               <div>
+                  <label class="block mb-1">Role</label>
+                  <select v-model="form.role_id" class="w-full border p-2 rounded">
+                     <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+                  </select>
+               </div>
+               <div>
+                  <label class="block mb-1">Password</label>
+                  <input v-model="form.password" type="password" autocomplete="new-password" class="w-full border p-2 rounded" />
+               </div>
+            </div>
+            <template #footer>
+               <button 
+                  @click="showRegisterModal = false" 
+                  class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
+               >
+                  Batal
+               </button>
+               <button 
+                  @click="doRegister" 
+                  class="px-5 py-2 bg-green-600 text-white rounded cursor-pointer hover:bg-green-700 transition"
+               >
+                  Simpan
+               </button>
+            </template>
+         </Dialog>
+      </Transition>
+
+      <!-- Edit Modal -->
+      <Dialog 
+         v-model:visible="showEditModal" 
+         modal 
+         header="Edit User" 
+         :style="{ width: '30rem' }"
+      >
          <div class="flex flex-col gap-4">
             <div>
                <label class="block mb-1">Name</label>
@@ -50,24 +110,39 @@
                <label class="block mb-1">Email</label>
                <input v-model="editForm.email" class="w-full border p-2 rounded" />
             </div>
-            
             <div>
                <label class="block mb-1">Role</label>
                <select v-model="editForm.role_id" class="w-full border p-2 rounded">
-               <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+                  <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
                </select>
             </div>
             <div>
-               <label class="block mb-1">Password <span class="text-red-600">*</span><span class="text-sm">kosongkan jika tidak ingin diisi</span></label>
-               <input v-model="editForm.password" type="password" class="w-full border p-2 rounded" placeholder="Kosongkan jika tidak ingin diisi" />
+               <label class="block mb-1">Password <span class="text-red-600">*</span>
+                  <span class="text-sm">kosongkan jika tidak ingin diisi</span>
+               </label>
+               <input 
+                  v-model="editForm.password" 
+                  type="password" 
+                  class="w-full border p-2 rounded" 
+                  placeholder="Kosongkan jika tidak ingin diisi" 
+               />
             </div>
          </div>
          <template #footer>
-            <button @click="showEditModal = false" class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer">Batal</button>
-            <button @click="editUsers" class="px-5 py-2 bg-blue-600 text-white rounded cursor-pointer">Simpan</button>
+            <button 
+               @click="showEditModal = false" 
+               class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
+            >
+               Batal
+            </button>
+            <button 
+               @click="editUsers" 
+               class="px-5 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 transition"
+            >
+               Simpan
+            </button>
          </template>
       </Dialog>
-
    </div>
 </template>
 
@@ -81,46 +156,48 @@ import Dialog from 'primevue/dialog';
 
 const users = ref([])
 const roles = ref([])
-const error = ref(null)
 
-const showEditModal = ref(false)
+const form = ref({ name: '', email: '', role_id: null, password: '' })
 const editForm = ref({ id: null, name: '', email: '', role_id: null, password: '' })
 
-const { getUserData, getUserRole, editUser, deleteUser } = useAuth()
+const showEditModal = ref(false)
+const showRegisterModal = ref(false)
+
+const { getUserData, getUserRole, editUser, deleteUser, register } = useAuth()
+
+const doRegister = async () => {
+   try {
+      await register(form.value)
+      Swal.fire('Sukses', 'User berhasil ditambahkan!', 'success')
+      showRegisterModal.value = false
+      form.value = { name: '', email: '', role_id: null, password: '' } // reset
+      fetchUser()
+   } catch (e) {
+      console.error(e)
+      Swal.fire('Error', 'Gagal menambahkan user!', 'error')
+   }
+}
 
 const getRoleName = (roleId) => {
    const role = roles.value.find(r => r.id === roleId)
    return role ? role.name : 'Tidak diketahui'
 }
 
-const fetchUser = ( async () => {
-   users.value = []
-   error.value = null
+const fetchUser = async () => {
    try {
-      const data = await getUserData()
-      users.value = data
+      users.value = await getUserData()
    } catch (e) {
-      Swal.fire({
-         icon: 'error',
-         title: 'Error',
-         text: `Gagal mendapatkan data user:  ${e}`
-      })
+      Swal.fire('Error', `Gagal mendapatkan data user: ${e}`, 'error')
    }
-})
+}
 
-const fetchRole = ( async () => {
-   roles.value = []
+const fetchRole = async () => {
    try {
-      const data = await getUserRole()
-      roles.value = data
+      roles.value = await getUserRole()
    } catch (e) {
-      Swal.fire({
-         icon: 'error',
-         title: 'Error',
-         text: `Gagal mendapatkan data role:  ${e}`
-      })
+      Swal.fire('Error', `Gagal mendapatkan data role: ${e}`, 'error')
    }
-})
+}
 
 const getUserWhenEdit = (user) => {
    editForm.value = { ...user }
@@ -130,23 +207,14 @@ const getUserWhenEdit = (user) => {
 const editUsers = async () => {
    try {
       const payload = { ...editForm.value }
-      if (!payload.password) {
-         delete payload.password
-      }
-
+      if (!payload.password) delete payload.password
       await editUser(editForm.value.id, payload)
       Swal.fire('Sukses', 'User berhasil diedit!', 'success')
       showEditModal.value = false
       fetchUser()
    } catch (err) {
       console.error(err)
-      Swal.fire({
-         icon: 'error',
-         title: 'Gagal mengedit data',
-         text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi',
-         zIndex: 2500  // lebih tinggi dari PrimeVue Dialog
-      })
-
+      Swal.fire('Error', 'Gagal mengedit data!', 'error')
    }
 }
 
@@ -157,9 +225,7 @@ const deleteUsers = (user) => {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Ya, hapus!',
-      confirmButtonColor: '#3085d6',
-      cancelButtonText: 'Batal',
-      cancelButtonColor: '#d33'
+      cancelButtonText: 'Batal'
    }).then(async (result) => {
       if (result.isConfirmed) {
          try {
@@ -167,68 +233,30 @@ const deleteUsers = (user) => {
             Swal.fire('Dihapus!', 'User berhasil dihapus', 'success')
             fetchUser()
          } catch (err) {
-            console.error(err)
             Swal.fire('Error', 'Gagal menghapus user!', 'error')
+            throw err
          }
       }
    })
 }
 
 onMounted(() => {
-   fetchUser(),
+   fetchUser()
    fetchRole()
 })
 </script>
 
 <style scoped>
-/* Mengubah breakpoint agar style aktif hanya di bawah 640px */
-@media screen and (max-width: 639px) {
-  /* Sembunyikan header tabel asli */
-  .p-datatable .p-datatable-thead {
-    display: none;
-  }
-
-  /* Ubah tampilan body, baris, dan sel tabel */
-  .p-datatable .p-datatable-tbody,
-  .p-datatable .p-datatable-tbody tr {
-    display: block;
-  }
-  
-  .p-datatable .p-datatable-tbody tr {
-    border-top: 1px solid #dee2e6;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .p-datatable .p-datatable-tbody td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    border: none;
-    width: 100% !important;
-    padding: 0.75rem 1rem;
-  }
-  
-  .p-datatable .p-datatable-tbody tr td:first-child {
-      border-top: none;
-  }
-
-  .p-datatable .p-datatable-tbody td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    text-align: left;
-    margin-right: 1rem;
-  }
-  
-  .p-datatable .p-datatable-tbody td[data-label="Action"] > div {
-    justify-content: flex-end;
-  }
-
-  .swal2-container {
-      z-index: 3000 !important;
-   }
+/* Animasi modal masuk/keluar */
+.fade-scale-enter-active, .fade-scale-leave-active {
+  transition: all 0.3s ease;
+}
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
 }
 </style>
