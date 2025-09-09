@@ -121,12 +121,24 @@ class AuthController extends Controller
     {
       $validated = $request->validate([
          'name' => 'required|string',
-         'email' => 'required|email',
+         'email' => [
+            'required',
+            'email',
+            Rule::unique('tkr_inventory_management.users', 'email')->ignore($id)
+         ],
          'role_id' => [
             'required',
             Rule::exists('tkr_inventory_management.roles', 'id')
          ],
          'password' => 'nullable|min:8'
+      ], [
+         'email.required' => 'Email wajib diisi.',
+         'email.email' => 'Format email tidak valid.',
+         'email.unique' => 'Email sudah ada di database.',
+         'name.required' => 'Nama wajib diisi.',
+         'role_id.required' => 'Role wajib dipilih.',
+         'role_id.exists' => 'Role tidak valid.',
+         'password.min' => 'Password minimal 8 karakter.'
       ]);
 
       $user = User::findOrFail($id);

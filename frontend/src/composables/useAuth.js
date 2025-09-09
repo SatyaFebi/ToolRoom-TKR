@@ -16,13 +16,13 @@ export default function useAuth() {
         icon: 'success',
         title: 'Login sukses!',
         showConfirmButton: false,
-        timer: 2000
+        timer: 2000,
       })
     } catch (err) {
       Swal.fire({
         icon: 'error',
         title: 'Login failed',
-        text: err.response?.data?.message || 'Terjadi kesalahan'
+        text: err.response?.data?.message || 'Terjadi kesalahan',
       })
       throw err
     }
@@ -34,42 +34,55 @@ export default function useAuth() {
       Swal.fire({
         icon: 'success',
         title: 'Berhasil',
-        text: 'Profil berhasil diperbarui!'
+        text: 'Profil berhasil diperbarui!',
       })
     } catch (err) {
       Swal.fire({
         icon: 'error',
         title: 'Gagal mengupdate data.',
-        text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi'
+        text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi',
       })
       throw err
     }
   }
 
   const editUser = async (id, payload) => {
-   try {
-      return await auth.editUser(id, payload)
-   } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Gagal mengedit data.',
-        text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi'
-      })
-      throw err
-   }
+  try {
+    return await auth.editUser(id, payload)
+  } catch (err) {
+    let msg = 'Tolong cek data input.'
+    if (err.response?.status === 422 && err.response.data.errors) {
+      const errors = err.response.data.errors
+      // bikin list HTML supaya gampang dibaca
+      msg = '<ul style="text-align:left; padding-left: 1rem;">' +
+            Object.values(errors).flat().map(e => `<li>${e}</li>`).join('') +
+            '</ul>'
+    } else if (err.response?.data?.message) {
+      msg = err.response.data.message
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Validasi gagal',
+      html: msg,
+      showConfirmButton: true
+    })
+    throw err
   }
+}
+
 
   const deleteUser = async (id) => {
-   try {
+    try {
       return await auth.deleteUser(id)
-   } catch (err) {
+    } catch (err) {
       Swal.fire({
         icon: 'error',
         title: 'Gagal mengedit data.',
-        text: err.response?.data?.message || 'Tidak dapat menghapus user, mohon coba lagi'
+        text: err.response?.data?.message || 'Tidak dapat menghapus user, mohon coba lagi',
       })
       throw err
-   }
+    }
   }
 
   const getUserData = async () => {
@@ -77,7 +90,7 @@ export default function useAuth() {
   }
 
   const getUserRole = async () => {
-   return await auth.getUserRole()
+    return await auth.getUserRole()
   }
 
   return {
@@ -90,6 +103,6 @@ export default function useAuth() {
     logout: auth.logout,
     getMe: auth.getMe,
     getUserData,
-    getUserRole
+    getUserRole,
   }
 }

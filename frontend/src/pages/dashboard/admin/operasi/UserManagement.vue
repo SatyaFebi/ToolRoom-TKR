@@ -9,8 +9,8 @@
          breakpoint="960px"
          class="shadow-md rounded-lg overflow-hidden border border-gray-200 min-w-[600px]"
       >
-         <Column field="name" header="Name" ></Column>
-         <Column field="email" header="Email" ></Column>
+         <Column field="name" header="Name"></Column>
+         <Column field="email" header="Email"></Column>
 
          <Column field="role" header="Role" class="capitalize">
             <template #body="slotProps">
@@ -24,7 +24,7 @@
             <template #body="slotProps">
                <div class="flex gap-2 flex-wrap">
                   <button 
-                     class="flex  gap-1 px-3 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
+                     class="flex gap-1 px-5 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
                      @click="getUserWhenEdit(slotProps.data)"
                   >
                      <span>Edit</span>
@@ -63,8 +63,8 @@
             </div>
          </div>
          <template #footer>
-            <button @click="showEditModal = false" class="px-3 py-1 bg-gray-400 text-white rounded mr-2">Batal</button>
-            <button @click="editUsers" class="px-3 py-1 bg-blue-500 text-white rounded cursor-pointer">Simpan</button>
+            <button @click="showEditModal = false" class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer">Batal</button>
+            <button @click="editUsers" class="px-5 py-2 bg-blue-600 text-white rounded cursor-pointer">Simpan</button>
          </template>
       </Dialog>
 
@@ -140,7 +140,13 @@ const editUsers = async () => {
       fetchUser()
    } catch (err) {
       console.error(err)
-      Swal.fire('Error', 'Gagal mengedit user', 'error')
+      Swal.fire({
+         icon: 'error',
+         title: 'Gagal mengedit data',
+         text: err.response?.data?.message || 'Tolong cek kredensial dan coba lagi',
+         zIndex: 2500  // lebih tinggi dari PrimeVue Dialog
+      })
+
    }
 }
 
@@ -220,5 +226,9 @@ onMounted(() => {
   .p-datatable .p-datatable-tbody td[data-label="Action"] > div {
     justify-content: flex-end;
   }
+
+  .swal2-container {
+      z-index: 3000 !important;
+   }
 }
 </style>

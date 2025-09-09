@@ -6,67 +6,60 @@
       'md:translate-x-0 md:w-64'
     ]"
   >
-    <!-- Sidebar content -->
+    <!-- Sidebar header -->
     <div class="flex items-center p-4 border-b border-gray-200">
       <router-link to="/dashboard/admin" class="flex items-center gap-5">
         <img src="/assets/img/cat_pfp2.jpeg" alt="logo" class="w-8 h-8 rounded-2xl" />
-        <span class="font-semibold text-xl">Autonix</span>  
+        <span class="font-semibold text-xl">Autonix</span>
       </router-link>
     </div>
 
+    <!-- Sidebar menu -->
     <div class="p-4">
-      <div v-for="menu, i in sidebarData.uiLink" :key="i" class="mb-2">
+      <div v-for="(menu, i) in sidebarData.uiLink" :key="i" class="mb-2">
+        <!-- Single link -->
         <template v-if="menu.type === 'link'">
-          <router-link 
-            :to="menu.link" 
+          <router-link
+            :to="menu.link"
             class="flex items-center gap-3 p-2 rounded hover:bg-gray-100"
             exact-active-class="font-semibold text-blue-700 bg-blue-50 rounded"
           >
-            <font-awesome-icon :icon="menu.icon" /> 
+            <font-awesome-icon :icon="menu.icon" />
             {{ menu.title }}
           </router-link>
         </template>
 
-        <!-- Sub-menu -->
+        <!-- Sub menu (dorong ke bawah) -->
         <template v-else-if="menu.type === 'sub'">
           <div>
-            <div 
+            <div
               class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer"
               @click="toggleExpand(i)"
             >
               <font-awesome-icon :icon="menu.icon" />
               {{ menu.title }}
 
-              <!-- Chevron -->
               <font-awesome-icon
                 :icon="['fas', 'chevron-right']"
-                class="ml-auto transition-transform duration-300 "
+                class="ml-auto transition-transform duration-300"
                 :class="{ 'rotate-90': expandedIndex === i }"
               />
             </div>
 
-            <transition name="slide-fade">
-              <div v-if="expandedIndex === i" class="ml-6 mt-1 relative">
-              <transition-group>
-                <router-link 
-                  v-for="(child, j) in menu.children"
-                  :key="j"
-                  :to="child.link"
-                  class="block p-2 pl-4 rounded relative hover:bg-gray-100"
-                  active-class="text-blue-700 font-semibold bg-blue-50 rounded"
-                >
-                  <!-- Garis vertikal -->
-                  <span 
-                  class="absolute top-0 bottom-0 left-0 w-px bg-gray-300"
-                  :class="j === menu.children.length - 1 ? 'h-1/2' : 'h-full'"></span>
-                  
-                  <!-- Garis horizontal -->
-                  <span class="absolute left-0 top-1/2 w-3 h-px bg-gray-300"></span>
-                  {{ child.title }}
-                </router-link>
-              </transition-group>
-              </div>
-            </transition>
+            <div
+              class="submenu ml-6 mt-1"
+              :class="{ open: expandedIndex === i }"
+            >
+              <router-link
+                v-for="(child, j) in menu.children"
+                :key="j"
+                :to="child.link"
+                class="block p-2 pl-4 rounded hover:bg-gray-100"
+                active-class="text-blue-700 font-semibold bg-blue-50 rounded"
+              >
+                {{ child.title }}
+              </router-link>
+            </div>
           </div>
         </template>
       </div>
@@ -78,7 +71,6 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import sidebarData from '@/data/uiList.json'
-
 
 const expandedIndex = ref(null)
 const route = useRoute()
@@ -92,49 +84,27 @@ defineProps({
 })
 
 onMounted(() => {
-   sidebarData.uiLink.forEach((menu, i) => {
-      if (menu.type === 'sub') {
-         const isActiveChild = menu.children.some(child => route.path.startsWith(child.link))
-         if (isActiveChild) {
-            expandedIndex.value = i
-         }
+  sidebarData.uiLink.forEach((menu, i) => {
+    if (menu.type === 'sub') {
+      const isActiveChild = menu.children.some((child) =>
+        route.path.startsWith(child.link)
+      )
+      if (isActiveChild) {
+        expandedIndex.value = i
       }
-   })
+    }
+  })
 })
 </script>
+
 <style scoped>
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.3s ease;
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
-.slide-fade-enter-from {
-  opacity: 0;
-  transform: translateY(-5px);
-}
-
-.slide-fade-enter-to {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-fade-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-5px);
-}
-
-.list-enter-active, .list-leave-active {
-  transition: all 0.2s ease;
-}
-
-.list-enter-from, .list-leave-to {
-  opacity: 0;
-  transform: translateX(-10px);
+.submenu.open {
+  max-height: 500px; /* harus lebih tinggi dari isi submenu */
 }
 </style>
