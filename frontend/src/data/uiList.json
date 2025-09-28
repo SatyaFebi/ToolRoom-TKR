@@ -58,6 +58,12 @@
                "link": "/dashboard/admin/operasi/user-management",
                "type": "link",
                "active": false
+            },
+            {
+               "title": "User Table",
+               "link": "/dashboard/admin/operasi/user-table",
+               "type": "link",
+               "active": false
             }
          ]
         }

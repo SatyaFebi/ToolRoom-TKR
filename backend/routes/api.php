@@ -30,7 +30,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:api', 'throttle:60,1'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/getUserData', [AuthController::class, 'getUserData']);
-        Route::post('/updateProfile', [AuthController::class, 'update']);  
+        Route::post('/updateProfile', [AuthController::class, 'update']);
     });
 });
 

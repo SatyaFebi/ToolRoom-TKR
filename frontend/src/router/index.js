@@ -10,6 +10,7 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 import adminDashboard from '@/pages/dashboard/admin/AdminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
 import adminUpdate from '@/pages/auth/AdminUpdate.vue'
+import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
 
 const routes = [
   {
@@ -67,6 +68,11 @@ const routes = [
                path: 'user-management',
                name: 'UserManagement',
                component: () => import('@/pages/dashboard/admin/operasi/UserManagement.vue')
+            },
+            {
+               path: 'user-table',
+               name: 'UserTable',
+               component: () => import('@/pages/dashboard/admin/operasi/UserTable.vue')
             }
          ]
       }

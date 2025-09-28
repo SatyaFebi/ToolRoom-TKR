@@ -10,7 +10,7 @@
     <div class="flex items-center p-4 border-b border-gray-200">
       <router-link to="/dashboard/admin" class="flex items-center gap-5">
         <img src="/assets/img/cat_pfp2.jpeg" alt="logo" class="w-8 h-8 rounded-2xl" />
-        <span class="font-semibold text-xl">Autonix</span>
+        <span class="font-semibold text-xl">PitStop</span>
       </router-link>
     </div>
 

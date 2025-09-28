@@ -22,10 +22,10 @@ class VehiclesController extends Controller
                 'model' => 'string|nullable',
                 'tahun' => 'integer|nullable',
                 'no_polisi' => [
-                  'string', 
+                  'string',
                   'nullable',
                   Rule::unique('tkr_service_management.vehicles', 'no_polisi')
-                ] 
+                ]
             ]);
 
             Vehicles::create($validated);

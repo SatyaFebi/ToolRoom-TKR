@@ -1,7 +1,7 @@
 <template>
    <div class="p-6">
       <div class="flex justify-end mb-4">
-         <button 
+         <button
             class="bg-green-600 py-2 px-5 rounded-lg text-white font-semibold hover:bg-green-700 transition"
             @click="showRegisterModal = true"
          >
@@ -9,11 +9,11 @@
          </button>
       </div>
 
-      <DataTable 
-         :value="users" 
-         paginator 
-         :rows="10" 
-         :rowsPerPageOptions="[10, 15, 20, 50]" 
+      <DataTable
+         :value="users"
+         paginator
+         :rows="10"
+         :rowsPerPageOptions="[10, 15, 20, 50]"
          responsiveLayout="stack"
          breakpoint="960px"
          class="shadow-md rounded-lg overflow-hidden border border-gray-200 min-w-[600px]"
@@ -32,13 +32,13 @@
          <Column header="Action">
             <template #body="slotProps">
                <div class="flex gap-2 flex-wrap">
-                  <button 
+                  <button
                      class="flex gap-1 px-5 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
                      @click="getUserWhenEdit(slotProps.data)"
                   >
                      <span>Edit</span>
                   </button>
-                  <button 
+                  <button
                      class="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
                      @click="deleteUsers(slotProps.data)"
                   >
@@ -51,10 +51,10 @@
 
       <!-- Register Modal -->
       <Transition name="fade-scale">
-         <Dialog 
-            v-model:visible="showRegisterModal" 
-            modal 
-            header="Tambah User Baru" 
+         <Dialog
+            v-model:visible="showRegisterModal"
+            modal
+            header="Tambah User Baru"
             :style="{ width: '30rem' }"
          >
             <div class="flex flex-col gap-4">
@@ -78,14 +78,14 @@
                </div>
             </div>
             <template #footer>
-               <button 
-                  @click="showRegisterModal = false" 
+               <button
+                  @click="showRegisterModal = false"
                   class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
                >
                   Batal
                </button>
-               <button 
-                  @click="doRegister" 
+               <button
+                  @click="doRegister"
                   class="px-5 py-2 bg-green-600 text-white rounded cursor-pointer hover:bg-green-700 transition"
                >
                   Simpan
@@ -95,10 +95,10 @@
       </Transition>
 
       <!-- Edit Modal -->
-      <Dialog 
-         v-model:visible="showEditModal" 
-         modal 
-         header="Edit User" 
+      <Dialog
+         v-model:visible="showEditModal"
+         modal
+         header="Edit User"
          :style="{ width: '30rem' }"
       >
          <div class="flex flex-col gap-4">
@@ -120,23 +120,23 @@
                <label class="block mb-1">Password <span class="text-red-600">*</span>
                   <span class="text-sm">kosongkan jika tidak ingin diisi</span>
                </label>
-               <input 
-                  v-model="editForm.password" 
-                  type="password" 
-                  class="w-full border p-2 rounded" 
-                  placeholder="Kosongkan jika tidak ingin diisi" 
+               <input
+                  v-model="editForm.password"
+                  type="password"
+                  class="w-full border p-2 rounded"
+                  placeholder="Kosongkan jika tidak ingin diisi"
                />
             </div>
          </div>
          <template #footer>
-            <button 
-               @click="showEditModal = false" 
+            <button
+               @click="showEditModal = false"
                class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
             >
                Batal
             </button>
-            <button 
-               @click="editUsers" 
+            <button
+               @click="editUsers"
                class="px-5 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 transition"
             >
                Simpan
