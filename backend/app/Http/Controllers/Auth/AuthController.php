@@ -22,21 +22,25 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|string|unique:users',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8', 
+            'role_id' => 'required|exists:roles,id'
         ], [
          'name.required' => 'Nama wajib diisi',
          'email.required' => 'Email wajib diisi',
          'email.email' => 'Email harus valid',
          'email.unique' => 'Email sudah ada di database!',
          'password.required' => 'Password wajib diisi',
-         'password.min' => 'Password minimal 8 karakter'
+         'password.min' => 'Password minimal 8 karakter',
+         'role_id.required' => 'role wajib diisi',
+         'role_id.exists' => 'role tidak valid'
         ]);
 
         try {
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => bcrypt($validated['password'])
+                'password' => bcrypt($validated['password']),
+                'role_id' => $validated['role_id']
             ]);
 
             $token = JWTAuth::fromUser($user);
@@ -46,11 +50,11 @@ class AuthController extends Controller
                 'message' => 'Registrasi berhasil!',
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() & 60,
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'users' => $user
             ], 201);
         } catch (\Exception $e) {
-            Log::error('Registrasi gagal dengan error: ' . $e);
+            Log::error('Registrasi gagal dengan error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan pada saat registrasi.'
