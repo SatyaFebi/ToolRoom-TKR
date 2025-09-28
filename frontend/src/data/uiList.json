@@ -1,0 +1,72 @@
+{
+    "uiLink": [
+        {
+            "title": "Dashboard",
+            "link": "/dashboard/admin",
+            "type": "link",
+            "icon": "house",
+            "active": false
+        },
+        {
+            "title": "Inventory",
+            "type": "sub",
+            "icon": "box-archive",
+            "active": false,
+            "children": [
+                {
+                    "title": "Items",
+                    "link": "/dashboard/admin/inventory/items",
+                    "type": "link",
+                    "active": false
+                },
+                {
+                    "title": "Item Types",
+                    "link": "/dashboard/admin/inventory/item-types",
+                    "type": "link",
+                    "active": false
+                },
+                {
+                    "title": "Item Logs",
+                    "link": "/dashboard/admin/inventory/item-logs",
+                    "type": "link",
+                    "active": false
+                }
+            ]
+        },
+        {
+            "title": "Services",
+            "type": "sub",
+            "icon": "gears",
+            "active": false,
+            "children": [
+                {
+                    "title": "Service List",
+                    "link": "/dashboard/admin/service/list",
+                    "type": "link",
+                    "active": false
+                }
+            ]
+        },
+        {
+         "title": "Operasi",
+         "type": "sub",
+         "icon": "user",
+         "active": false,
+         "children": [
+            {
+               "title": "User Management",
+               "link": "/dashboard/admin/operasi/user-management",
+               "type": "link",
+               "active": false
+            },
+            {
+               "title": "User Table",
+               "link": "/dashboard/admin/operasi/user-table",
+               "type": "link",
+               "active": false
+            }
+         ]
+        }
+    ]
+
+}

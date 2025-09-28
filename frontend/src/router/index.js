@@ -1,36 +1,106 @@
 import { createWebHistory, createRouter } from 'vue-router'
-import adminLogin from '@/pages/admin/auth/adminLogin.vue'
-import adminDashboard from '@/pages/admin/dashboard/adminDashboard.vue'
+
+// Auth
+import adminLogin from '@/pages/auth/LoginPage.vue'
+
+// Layouts
+import AdminLayout from '@/layouts/AdminLayout.vue'
+
+// Pages
+import adminDashboard from '@/pages/dashboard/admin/AdminDashboard.vue'
+import NotFound from '@/pages/NotFound.vue'
+import adminUpdate from '@/pages/auth/AdminUpdate.vue'
+import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
 
 const routes = [
-    { 
-        path: '/admin/login', 
-        component: adminLogin,
-    },
-    {
-        path: '/admin/dashboard',
-        component: adminDashboard,
-        meta: {
-            requiresAuth: true
-        }
-    }
+  {
+    path: '/login',
+    name: 'Login',
+    component: adminLogin
+  },
+
+  // Dashboard Root
+  {
+    path: '/dashboard/admin',
+    component: AdminLayout,
+    meta: { requiresAuth: true, role: 'admin' },
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: adminDashboard
+      },
+      {
+        path: 'update',
+        name: 'AdminUpdate',
+        component: adminUpdate
+      },
+      {
+        path: 'inventory',
+        children: [
+          {
+            path: 'items',
+            name: 'Items',
+            component: () => import('@/pages/dashboard/admin/inventory/ItemsPage.vue')
+          },
+          {
+            path: 'item-types',
+            name: 'ItemTypes',
+            component: () => import('@/pages/dashboard/admin/inventory/ItemTypes.vue')
+          },
+
+        ]
+      },
+      {
+        path: 'service',
+        children: [
+          {
+            path: 'list',
+            name: 'ServiceList',
+            component: () => import('@/pages/dashboard/admin/service/ServiceList.vue')
+          }
+        ]
+      },
+      {
+         path: 'operasi',
+         children: [
+            {
+               path: 'user-management',
+               name: 'UserManagement',
+               component: () => import('@/pages/dashboard/admin/operasi/UserManagement.vue')
+            },
+            {
+               path: 'user-table',
+               name: 'UserTable',
+               component: () => import('@/pages/dashboard/admin/operasi/UserTable.vue')
+            }
+         ]
+      }
+    ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
+    props: true
+  }
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+  history: createWebHistory(),
+  routes
 })
 
 router.beforeEach((to, from, next) => {
-    const isAuthenticated = localStorage.getItem('authToken')
+  const isAuthenticated = localStorage.getItem('authToken')
 
-    if (to.meta.requiresAuth && !isAuthenticated) {
-        next('/admin/login')
-    } else if (to.path === '/admin/login' && isAuthenticated) {
-        next('/admin/dashboard')
-    } else {
-        next();
-    }
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: 'Login' })
+  } else if (to.name === 'Login' && isAuthenticated) {
+    next({ name: 'Home' })
+  } else {
+    next()
+  }
 })
 
-export default router;
+export default router
