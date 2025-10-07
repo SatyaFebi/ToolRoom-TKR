@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed top-0 left-0 right-0 bg-white shadow z-30 flex items-center justify-between p-4 px-15"
+    class="fixed top-0 left-0 right-0 bg-[#12385f] shadow z-30 flex items-center justify-between px-16 py-4"
   >
     <!-- Mobile toggle -->
     <button class="md:hidden font-semibold cursor-pointer" @click="$emit('toggleSidebar')">
@@ -25,10 +25,10 @@
       <div class="relative">
         <button
           @click="isProfileOpen = !isProfileOpen"
-          class="flex items-center gap-2 focus:outline-none cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+          class="flex items-center gap-2 focus:outline-none cursor-pointer p-2 rounded-lg"
         >
-          <img src="/assets/img/clown.jpeg" class="w-8 h-8 rounded-full border" alt="profile"/>
-          <span class="hidden md:inline font-semibold">{{ userName }}</span>
+          <img src="/assets/img/clown.jpeg" class="w-9 h-9 rounded-full border" alt="profile"/>
+          <span class="hidden md:inline text-white font-semibold text-sm">{{ userName }}</span>
         </button>
 
         <!-- Dropdown -->

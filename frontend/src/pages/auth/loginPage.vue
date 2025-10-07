@@ -1,51 +1,42 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-      <h2 class="text-2xl font-bold text-center mb-6">Admin Login</h2>
-      <form @submit.prevent="handleLogin" class="flex flex-col">
-        <input
-          type="email"
-          placeholder="Email"
-          v-model="email"
-          class="border rounded-lg py-2 px-3 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-        <input
-          type="password"
-          placeholder="Password"
-          v-model="password"
-          class="border rounded-lg py-2 px-3 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-
-        <!-- Checkbox Remember Me -->
-        <label class="flex items-center mb-4">
-          <input
-            type="checkbox"
-            v-model="rememberMe"
-            class="mr-2 cursor-pointer"
-          >
-          Remember Me
-        </label>
-
-        <button
-          type="submit"
-          class="border flex justify-center align-items-center text-center rounded-lg py-2 px-3 bg-green-600 text-white hover:bg-green-800 duration-300 hover:text-slate-300 cursor-pointer"
-          :disabled="isLoading"
-        >
-          <div v-if="isLoading === true">
-            <svg class="mr-3 size-5 animate-spin " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#ffffff" d="M272 112C272 85.5 293.5 64 320 64C346.5 64 368 85.5 368 112C368 138.5 346.5 160 320 160C293.5 160 272 138.5 272 112zM272 528C272 501.5 293.5 480 320 480C346.5 480 368 501.5 368 528C368 554.5 346.5 576 320 576C293.5 576 272 554.5 272 528zM112 272C138.5 272 160 293.5 160 320C160 346.5 138.5 368 112 368C85.5 368 64 346.5 64 320C64 293.5 85.5 272 112 272zM480 320C480 293.5 501.5 272 528 272C554.5 272 576 293.5 576 320C576 346.5 554.5 368 528 368C501.5 368 480 346.5 480 320zM139 433.1C157.8 414.3 188.1 414.3 206.9 433.1C225.7 451.9 225.7 482.2 206.9 501C188.1 519.8 157.8 519.8 139 501C120.2 482.2 120.2 451.9 139 433.1zM139 139C157.8 120.2 188.1 120.2 206.9 139C225.7 157.8 225.7 188.1 206.9 206.9C188.1 225.7 157.8 225.7 139 206.9C120.2 188.1 120.2 157.8 139 139zM501 433.1C519.8 451.9 519.8 482.2 501 501C482.2 519.8 451.9 519.8 433.1 501C414.3 482.2 414.3 451.9 433.1 433.1C451.9 414.3 482.2 414.3 501 433.1z"/></svg>
-          </div>
-          <div v-else>Submit</div>
-        </button>
-
-        <!-- Pesan sukses / error -->
-        <p v-if="successMessage" class="text-green-600 mt-3 text-sm">{{ successMessage }}</p>
-        <p v-if="errorMessage" class="text-red-600 mt-3 font-semibold text-sm">{{ errorMessage }}</p>
-      </form>
+  <div class="frame">
+    <img
+      class="max-verstatppen"
+      alt="Max verstatppen"
+      src="/assets/img/bgsamping.jpeg"
+    />
+    <div class="loginbox">
+    <div class="rectangle" />
+    <div class="usernametags">
+      <img src="/assets/img/user.png" alt="user" class="user">
+      <span class="text-wrapper">Email</span>
+    </div> 
+    <div class="passwd">
+      <img src="/assets/img/password.png" alt="user" class="userpasswd">
+      <span>Password</span>
+    </div>
+    <div class="text-wrapper-2">Login</div>
+    <img
+      class="background-removebg"
+      alt="Background removebg"
+      src="/assets/img/logo.png"
+    />
+    <div class="rectangle-email">
+      <input type="email" v-model="email" class="input-email" placeholder="Masukan email">
+    </div>
+    <div class="rectangle-password">
+      <input type="password" id="passwordInput" v-model="password" class="input-email" placeholder="Masukan password" />
+      <img src="/assets/img/mata.png" alt="show password" class="toggle-eye" @click="togglePassword" />
+    </div>
+    <div class="rectangle-login" @click="handleLogin">
+      <div class="text-wrapper-3" >Login</div>
     </div>
   </div>
+    </div>  
 </template>
 
 <script setup>
+
 import useAuth from '@/composables/useAuth'
 import { ref } from 'vue'
 import router from '@/router'
@@ -86,3 +77,261 @@ const handleLogin = async () => {
 }
 
 </script>
+
+<style scoped>
+.loginbox {
+  position: relative;
+  top: 120px;   /* geser ke bawah */
+  left: 230px;  /* geser ke kanan */
+  width: 600px;
+  height: 600px;
+}
+
+.loginbox .rectangle-email {
+  position: absolute;
+  top: 219px;
+  left: 0px; /* relatif terhadap loginbox */
+}
+
+.input-email {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.toggle-eye {
+  position: absolute;
+  top: 300px; /* sesuaikan dengan posisi input */
+  left: 910px; /* sesuaikan agar sejajar dengan input */
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.frame {
+  background-color: #133e87;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+}
+
+.frame .max-verstatppen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40vw;
+  height: 100vh;
+  object-fit: cover;
+
+}
+
+.frame .passwd {
+   position: absolute;
+  top: 270px;
+  left: 635px; 
+  display: flex;              /* aktifkan flexbox */
+  align-items: center;        /* sejajarkan vertikal */
+  gap: 7px;                   /* jarak antara ikon dan teks */
+  font-weight: 560;
+  font-size: 13px;
+  color: #000000;
+  font-family: "Ramabhadra-Regular", Helvetica;
+
+}
+
+
+.frame .rectangle {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(17, 66, 149, 1) 100%
+  );
+  border-radius: 6px;
+  height: 433px;
+  left: 578px;
+  position: absolute;
+  top: 55px;
+  width: 412px;
+}
+
+.frame .usernametags {
+  color: #000000;
+  font-family: "Ramabhadra-Regular", Helvetica;
+  font-size: 10px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* jarak antara ikon dan teks */
+  position: absolute;
+  top: 195px;
+  left: 630px;
+
+}
+
+.user {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+
+}
+.userpasswd {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+
+}
+
+
+.frame .div {
+  color: #000000;
+  font-family: "Ramabhadra-Regular", Helvetica;
+  font-size: 10px;
+  font-weight: 400;
+  left: 650px;
+  letter-spacing: 0.50px;
+  line-height: normal;
+  position: absolute;
+  top: 280px;
+}
+
+.text-wrapper {
+  font-weight: 560;
+  font-size: 13px;       /* bikin lebih tebal */
+  margin-top: 3px;        /* geser sedikit ke bawah */
+  display: inline-block;
+}
+
+
+.passwd {
+  font-weight: 560;
+  font-size: 13px;       /* bikin lebih tebal */
+  margin-top: 3px;        /* geser sedikit ke bawah */
+  display: inline-block;
+}
+
+.frame .text-wrapper-2 {
+  color: #000000;
+  font-family: "Ramabhadra-Regular", Helvetica;
+  font-size: 32px;
+  font-weight: 700;
+  left: 735px;
+  letter-spacing: 1.60px;
+  line-height: normal;
+  position: absolute;
+  top: 94px;
+  width: 155px;
+}
+
+.frame .background-removebg {
+  aspect-ratio: 0.94;
+  height: 53px;
+  left: 684px;
+  object-fit: cover;
+  position: absolute;
+  top: 89px;
+  width: 50px;
+}
+
+.frame .rectangle-email {
+  background-color: #d2d3d5;
+  border-radius: 6px;
+  height: 27px;
+  left: 629px;
+  position: absolute;
+  top: 219px;
+  width: 304px;
+}
+
+.frame .vector {
+  height: 2.39%;
+  left: 53.66%;
+  position: absolute;
+  top: 37.13%;
+    width: 20px;
+  height: 20px;
+  position: absolute;
+  object-fit: contain;
+
+}
+
+.frame .img {
+  height: 2.57%;
+  left: 53.49%;
+  position: absolute;
+  top: 51.65%;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  object-fit: contain;
+
+}
+
+.frame .vector-2 {
+  height: 0;
+  left: 54.25%;
+  position: absolute;
+  top: 52.21%;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  object-fit: contain;
+
+}
+
+.frame .rectangle-password {
+  background-color: #d2d3d5;
+  border-radius: 6px;
+  height: 27px;
+  left: 629px;
+  position: absolute;
+  top: 298px;
+  width: 304px;
+}
+
+.frame .vector-3 {
+  height: 2.94%;
+  left: 76.96%;
+  position: absolute;
+  top: 56.07%;
+    width: 20px;
+  height: 20px;
+  position: absolute;
+  object-fit: contain;
+
+}
+
+.frame .rectangle-login {
+  background: linear-gradient(
+    90deg,
+    rgba(17, 66, 149, 1) 34%,
+    rgba(5, 21, 47, 1) 100%
+  );
+  border-radius: 9px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 22px;
+  left: 841px;
+  position: absolute;
+  top: 357px;
+  width: 78px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.frame .text-wrapper-3 {
+    position: relative;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+
+}
+</style>
