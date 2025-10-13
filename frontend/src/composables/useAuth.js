@@ -39,10 +39,11 @@ export default function useAuth() {
         timer: 2000,
       })
     } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Terjadi kesalahan'
       Swal.fire({
         icon: 'error',
         title: 'Login failed',
-        text: err.response?.data?.message || 'Terjadi kesalahan',
+        text: errorMessage,
       })
       throw err
     }

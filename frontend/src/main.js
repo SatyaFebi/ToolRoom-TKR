@@ -9,9 +9,12 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faChevronRight, faMinus, faPlus, faUser, faHome, faGears, faBoxArchive } from '@fortawesome/free-solid-svg-icons'
+import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 
-library.add(faChevronRight, faMinus, faPlus, faUser, faHome, faGears, faBoxArchive)
+Object.values(solidIcons).forEach(icon => {
+  if (icon.iconName) library.add(icon)
+})
+
 
 const app = createApp(App)
 

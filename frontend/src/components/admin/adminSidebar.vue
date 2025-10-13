@@ -1,39 +1,49 @@
 <template>
   <div
-    :class="[
+    :class="[ 
       'fixed top-0 left-0 h-full bg-white shadow-lg z-40 transition-transform duration-300',
       isOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64',
       'md:translate-x-0 md:w-64'
     ]"
   >
     <!-- Sidebar header -->
-    <div class="flex items-center p-4 border-b border-gray-200">
-      <router-link to="/dashboard/admin" class="flex items-center gap-5">
-        <img src="/assets/img/cat_pfp2.jpeg" alt="logo" class="w-8 h-8 rounded-2xl" />
-        <span class="font-semibold text-xl">PitStop</span>
+
+      <div class="flex items-center gap-2 pt-2 pl-2 mb-2">
+        <router-link to="/dashboard/admin" class="flex items-center">
+          <img src="/assets/img/logo.png" alt="logo" class="w-20 h-20 rounded-4xl object-cover" />
+          <span class="font-semibold text-4xl -ml-2">PitStop</span>
+        </router-link>
+  </div>
+
+    <!-- <div class="flex items-center px-9 py-6">
+      <router-link to="/dashboard/admin" class="flex items-center gap-2">
+        <img src="/assets/img/logo.jpeg" alt="logo" class="w-8 h-8 rounded-4xl object-cover" />
+        <span class="font-semibold text-2xl">PitStop</span>
       </router-link>
-    </div>
+    </div> -->
 
     <!-- Sidebar menu -->
-    <div class="p-4">
+    <div class="pt-0 px-4 pb-2">
       <div v-for="(menu, i) in sidebarData.uiLink" :key="i" class="mb-2">
-        <!-- Single link -->
+        
+        <!-- Single link (Dashboard, dll.) -->
         <template v-if="menu.type === 'link'">
           <router-link
             :to="menu.link"
-            class="flex items-center gap-3 p-2 rounded hover:bg-gray-100"
-            exact-active-class="font-semibold text-blue-700 bg-blue-50 rounded"
+            class="flex items-center gap-3 p-2 rounded hover:bg-blue-700"
+            exact-active-class="font-semibold text-blue-400" 
           >
             <font-awesome-icon :icon="menu.icon" />
             {{ menu.title }}
           </router-link>
         </template>
 
-        <!-- Sub menu (dorong ke bawah) -->
+        <!-- Sub menu (Inventory, Services, Operasi) -->
         <template v-else-if="menu.type === 'sub'">
           <div>
+            <!-- Parent -->
             <div
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer"
+              class="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-blue-700"
               @click="toggleExpand(i)"
             >
               <font-awesome-icon :icon="menu.icon" />
@@ -46,6 +56,7 @@
               />
             </div>
 
+            <!-- Children -->
             <div
               class="submenu ml-6 mt-1"
               :class="{ open: expandedIndex === i }"
@@ -54,18 +65,20 @@
                 v-for="(child, j) in menu.children"
                 :key="j"
                 :to="child.link"
-                class="block p-2 pl-4 rounded hover:bg-gray-100"
-                active-class="text-blue-700 font-semibold bg-blue-50 rounded"
+                class="block p-2 pl-4 rounded hover:bg-blue-700"
+                active-class="text-blue-400 font-semibold"
               >
                 {{ child.title }}
               </router-link>
             </div>
           </div>
         </template>
+
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'

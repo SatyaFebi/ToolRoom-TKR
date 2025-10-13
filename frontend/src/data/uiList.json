@@ -14,20 +14,14 @@
             "active": false,
             "children": [
                 {
-                    "title": "Items",
-                    "link": "/dashboard/admin/inventory/items",
+                    "title": "Data Barang",
+                    "link": "/dashboard/admin/inventory/data-barang",
                     "type": "link",
                     "active": false
                 },
                 {
-                    "title": "Item Types",
-                    "link": "/dashboard/admin/inventory/item-types",
-                    "type": "link",
-                    "active": false
-                },
-                {
-                    "title": "Item Logs",
-                    "link": "/dashboard/admin/inventory/item-logs",
+                    "title": "Kategori Barang",
+                    "link": "/dashboard/admin/inventory/kategori-barang",
                     "type": "link",
                     "active": false
                 }

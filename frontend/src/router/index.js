@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
 // Auth
-import adminLogin from '@/pages/auth/LoginPage.vue'
+import adminLogin from '@/pages/auth/loginPage.vue'
 
 // Layouts
 import AdminLayout from '@/layouts/AdminLayout.vue'
@@ -10,7 +10,9 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 import adminDashboard from '@/pages/dashboard/admin/AdminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
 import adminUpdate from '@/pages/auth/AdminUpdate.vue'
-import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
+// import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
+import DataBarang from '@/pages/inventory/DataBarang.vue'
+import KategoriBarang from '@/pages/inventory/KategoriBarang.vue'
 
 const routes = [
   {
@@ -47,6 +49,16 @@ const routes = [
             path: 'item-types',
             name: 'ItemTypes',
             component: () => import('@/pages/dashboard/admin/inventory/ItemTypes.vue')
+          },
+          {
+            path: 'data-barang',
+            name: 'DataBarang',
+            component: DataBarang
+          },
+          {
+            path: 'kategori-barang',
+            name: 'KategoriBarang',
+            component: KategoriBarang
           },
 
         ]

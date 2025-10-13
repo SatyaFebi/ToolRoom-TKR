@@ -22,17 +22,18 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|string|unique:users',
-            'password' => 'required|string|min:8', 
+            'password' => 'required|string|min:8',
             'role_id' => 'required|exists:roles,id'
         ], [
-         'name.required' => 'Nama wajib diisi',
-         'email.required' => 'Email wajib diisi',
-         'email.email' => 'Email harus valid',
-         'email.unique' => 'Email sudah ada di database!',
-         'password.required' => 'Password wajib diisi',
-         'password.min' => 'Password minimal 8 karakter',
-         'role_id.required' => 'role wajib diisi',
-         'role_id.exists' => 'role tidak valid'
+
+            'name.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Email harus valid',
+            'email.unique' => 'Email sudah ada di database!',
+            'password.required' => 'Password wajib diisi',
+            'password.min' => 'Password minimal 8 karakter',
+            'role_id.required' => 'Role wajib diisi',
+            'role_id.exists' => 'Role tidak valid'
         ]);
 
         try {
@@ -114,7 +115,6 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Token tidak valid atau sudah kedaluwarsa',
             ], 401);
-
         } catch (\Exception $e) {
             Log::error('Kesalaha saat update profile: ' . $e->getMessage());
 
@@ -130,43 +130,43 @@ class AuthController extends Controller
      */
     public function editUser(Request $request, $id)
     {
-      $validated = $request->validate([
-         'name' => 'required|string',
-         'email' => [
-            'required',
-            'email',
-            Rule::unique('tkr_inventory_management.users', 'email')->ignore($id)
-         ],
-         'role_id' => [
-            'required',
-            Rule::exists('tkr_inventory_management.roles', 'id')
-         ],
-         'password' => 'nullable|min:8'
-      ], [
-         'email.required' => 'Email wajib diisi.',
-         'email.email' => 'Format email tidak valid.',
-         'email.unique' => 'Email sudah ada di database.',
-         'name.required' => 'Nama wajib diisi.',
-         'role_id.required' => 'Role wajib dipilih.',
-         'role_id.exists' => 'Role tidak valid.',
-         'password.min' => 'Password minimal 8 karakter.'
-      ]);
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('tkr_inventory_management.users', 'email')->ignore($id)
+            ],
+            'role_id' => [
+                'required',
+                Rule::exists('tkr_inventory_management.roles', 'id')
+            ],
+            'password' => 'nullable|min:8'
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah ada di database.',
+            'name.required' => 'Nama wajib diisi.',
+            'role_id.required' => 'Role wajib dipilih.',
+            'role_id.exists' => 'Role tidak valid.',
+            'password.min' => 'Password minimal 8 karakter.'
+        ]);
 
-      $user = User::findOrFail($id);
+        $user = User::findOrFail($id);
 
-      if (!empty($validated['password'])) {
-         $validated['password'] = bcrypt($validated['password']);
-      } else {
-         unset($validated['password']);
-      }
+        if (!empty($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
-      $user->update($validated);
+        $user->update($validated);
 
-      return response()->json([
-         'success' => true,
-         'message' => 'User berhasil diupdate',
-         'user' =>  $user->only(['id','name','email','role_id'])
-      ], 200);
+        return response()->json([
+            'success' => true,
+            'message' => 'User berhasil diupdate',
+            'user' =>  $user->only(['id', 'name', 'email', 'role_id'])
+        ], 200);
     }
 
     /**
@@ -174,8 +174,8 @@ class AuthController extends Controller
      */
     public function deleteUser($id)
     {
-      $user = User::findOrFail($id);
-      $user->delete();
+        $user = User::findOrFail($id);
+        $user->delete();
     }
 
     /**
@@ -183,12 +183,16 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|string|min:8',
-        ]);
-
         try {
+            $credentials = $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required|string|min:8',
+            ], [
+                'email.required' => 'Email wajib diisi',
+                'email.email' => 'Email harus valid',
+                'password.required' => 'Password wajib diisi',
+                'password.min' => 'Password minimal 8 karakter',
+            ]);
             if (!$token = JWTAuth::attempt($credentials)) {
                 Log::warning('Login gagal untuk email: ' . $credentials['email']);
 
@@ -208,13 +212,12 @@ class AuthController extends Controller
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'user'       => $user,
             ], 200);
-
         } catch (JWTException $e) {
             Log::error('Kesalahan saat membuat token: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat membuat token',
+                'message' => 'Login gagal. Cek kredensial kembali',
             ], 500);
         }
     }
@@ -240,7 +243,6 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Logout berhasil',
             ], 200);
-
         } catch (JWTException $e) {
             Log::error('Kesalahan saat logout: ' . $e->getMessage());
 

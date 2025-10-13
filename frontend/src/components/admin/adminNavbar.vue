@@ -1,19 +1,23 @@
 <template>
-  <div
-    class="fixed top-0 left-0 right-0 bg-white shadow z-30 flex items-center justify-between p-4 px-15"
+   <div
+    class="fixed top-0 left-0 right-0 bg-[#12385f] shadow z-30 flex items-center justify-end md:justify-between px-8 md:px-12 py-4"
   >
-    <!-- Mobile toggle -->
-    <button class="md:hidden font-semibold cursor-pointer" @click="$emit('toggleSidebar')">
+    <!-- Tombol toggle sidebar (mobile) -->
+    <button class="md:hidden text-white text-xl mr-auto" @click="$emit('toggleSidebar')">
       ☰
     </button>
 
-    <!-- Title -->
-    <div class="font-bold"></div>
+    <!-- Teks selamat datang (posisi dekat sidebar) -->
+    <div
+      class="absolute left-[280px] text-white font-medium text-xl text-sm hidden md:block"
+    >
+      Selamat datang, {{ userName }}
+    </div>
 
-    <!-- Right menu -->
-    <div class="flex items-center gap-6">
-      <!-- Notifications -->
-      <div class="relative">
+    <!-- Bagian kanan (notifikasi + profil) -->
+    <div class="flex items-center gap-6 ml-auto">
+      <!-- Notifikasi -->
+      <div class="relative cursor-pointer">
         <span
           class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full"
           >99+</span
@@ -21,14 +25,14 @@
         🔔
       </div>
 
-      <!-- Profile dropdown -->
+      <!-- Profil -->
       <div class="relative">
         <button
           @click="isProfileOpen = !isProfileOpen"
-          class="flex items-center gap-2 focus:outline-none cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+          class="flex items-center gap-2 focus:outline-none cursor-pointer p-2 rounded-lg"
         >
-          <img src="/assets/img/clown.jpeg" class="w-8 h-8 rounded-full border" alt="profile"/>
-          <span class="hidden md:inline font-semibold">{{ userName }}</span>
+          <img src="/assets/img/clown.jpeg" class="w-9 h-9 rounded-full border" alt="profile"/>
+          <span class="hidden md:inline text-white font-semibold text-sm">{{ userName }}</span>
         </button>
 
         <!-- Dropdown -->

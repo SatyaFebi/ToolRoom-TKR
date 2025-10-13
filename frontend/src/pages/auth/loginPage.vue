@@ -1,46 +1,122 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-      <h2 class="text-2xl font-bold text-center mb-6">Admin Login</h2>
-      <form @submit.prevent="handleLogin" class="flex flex-col">
-        <input
-          type="email"
-          placeholder="Email"
-          v-model="email"
-          class="border rounded-lg py-2 px-3 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-        <input
-          type="password"
-          placeholder="Password"
-          v-model="password"
-          class="border rounded-lg py-2 px-3 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
+  <div class="min-h-screen flex items-center justify-center bg-[#12385f]">
+    <div class="w-full max-w-5xl mx-4 bg-white rounded-2xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2 md:mx-5">
 
-        <!-- Checkbox Remember Me -->
-        <label class="flex items-center mb-4">
-          <input
-            type="checkbox"
-            v-model="rememberMe"
-            class="mr-2 cursor-pointer"
-          >
-          Remember Me
-        </label>
+      <!-- Left: Background image (visible on md+ screens) -->
+      <div class="hidden md:block relative">
+        <div
+          class="absolute inset-0 bg-cover bg-center"
+          :style="`background-image: url('/assets/img/bgsamping.jpeg')`"
+          aria-hidden="true"
+        ></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent to-/90"></div>
+      </div>
 
-        <button
-          type="submit"
-          class="border flex justify-center align-items-center text-center rounded-lg py-2 px-3 bg-green-600 text-white hover:bg-green-800 duration-300 hover:text-slate-300 cursor-pointer"
-          :disabled="isLoading"
-        >
-          <div v-if="isLoading === true">
-            <svg class="mr-3 size-5 animate-spin " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#ffffff" d="M272 112C272 85.5 293.5 64 320 64C346.5 64 368 85.5 368 112C368 138.5 346.5 160 320 160C293.5 160 272 138.5 272 112zM272 528C272 501.5 293.5 480 320 480C346.5 480 368 501.5 368 528C368 554.5 346.5 576 320 576C293.5 576 272 554.5 272 528zM112 272C138.5 272 160 293.5 160 320C160 346.5 138.5 368 112 368C85.5 368 64 346.5 64 320C64 293.5 85.5 272 112 272zM480 320C480 293.5 501.5 272 528 272C554.5 272 576 293.5 576 320C576 346.5 554.5 368 528 368C501.5 368 480 346.5 480 320zM139 433.1C157.8 414.3 188.1 414.3 206.9 433.1C225.7 451.9 225.7 482.2 206.9 501C188.1 519.8 157.8 519.8 139 501C120.2 482.2 120.2 451.9 139 433.1zM139 139C157.8 120.2 188.1 120.2 206.9 139C225.7 157.8 225.7 188.1 206.9 206.9C188.1 225.7 157.8 225.7 139 206.9C120.2 188.1 120.2 157.8 139 139zM501 433.1C519.8 451.9 519.8 482.2 501 501C482.2 519.8 451.9 519.8 433.1 501C414.3 482.2 414.3 451.9 433.1 433.1C451.9 414.3 482.2 414.3 501 433.1z"/></svg>
+      <!-- Right: Login form -->
+      <div class="flex items-center justify-center p-8">
+        <div class="w-full md:w-[412px]">
+          <!-- Logo & Header -->
+          <div class="flex items-center gap-2 mb-0.5 mt-2">
+            <img src="/assets/img/logo.png" alt="logo" class="w-14" />
+            <h2 class="text-2xl md:text-3xl font-semibold text-[#12385f] mb-2 text-center md:text-left">
+              Selamat Datang
+            </h2>
           </div>
-          <div v-else>Submit</div>
-        </button>
+          <p class="text-md text-gray-500 mb-6 pl-0 text-left md:text-left">
+            Silakan masuk menggunakan akun Anda
+          </p>
 
-        <!-- Pesan sukses / error -->
-        <p v-if="successMessage" class="text-green-600 mt-3 text-sm">{{ successMessage }}</p>
-        <p v-if="errorMessage" class="text-red-600 mt-3 font-semibold text-sm">{{ errorMessage }}</p>
-      </form>
+          <!-- Error / Success messages -->
+          <!-- <div v-if="errorMessage" class="mb-4 text-red-600 text-sm">{{ errorMessage }}</div>
+          <div v-if="successMessage" class="mb-4 text-green-600 text-sm">{{ successMessage }}</div> -->
+
+          <!-- Email field -->
+          <label class="block mb-2 text-md text-gray-700">Email</label>
+          <div class="flex items-center gap-3 mb-4 relative">
+            <font-awesome-icon :icon="['fas', 'user']" class="text-gray-500 w-5 h-5" />
+            <input
+              type="email"
+              v-model="email"
+              placeholder="Masukan email"
+              class="flex-1 py-3 px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#12385f]"
+            />
+          </div>
+
+          <!-- Password field -->
+          <label class="block mb-2 text-md text-gray-700">Password</label>
+          <div class="flex items-center gap-3 mb-5 relative">
+            <!-- Icon kunci -->
+            <font-awesome-icon :icon="['fas', 'lock']" class="text-gray-500 w-5 h-5" />
+
+            <!-- Input -->
+            <input
+              :type="isPasswordVisible ? 'text' : 'password'"
+              v-model="password"
+              id="passwordInput"
+              placeholder="Masukan password"
+              class="flex-1 py-3 px-4 border rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-[#12385f]"
+            />
+
+            <!-- Toggle eye -->
+            <button
+              type="button"
+              @click="togglePassword"
+              class="absolute right-3 top-2/4 -translate-y-1/2 text-gray-600 hover:text-[#12385f] transition"
+            >
+              <font-awesome-icon
+                :icon="isPasswordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']"
+                class="w-5 h-5"
+              />
+            </button>
+          </div>
+
+          <!-- Remember me -->
+          <div class="flex items-center justify-between mb-8 text-sm">
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" v-model="rememberMe" class="form-checkbox h-4 w-4 rounded" />
+              <span>Ingat saya</span>
+            </label>
+          </div>
+
+          <!-- Login button -->
+          <button
+            @click="handleLogin"
+            :disabled="isLoading"
+            class="w-full py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:bg-[#1e4b7a] disabled:text-white/70"
+            :class="{
+              'bg-[#12385f] text-white hover:bg-[#164677]': !isLoading,
+              'bg-[#1e4b7a] text-white/80': isLoading
+            }"
+          >
+            <template v-if="!isLoading">
+              <span>Login</span>
+            </template>
+            <template v-else>
+              <svg
+                class="animate-spin h-5 w-5 text-white/80"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+              <span>Loading...</span>
+            </template>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -52,10 +128,11 @@ import router from '@/router'
 
 const email = ref('')
 const password = ref('')
-const rememberMe = ref(false) // Tambahan untuk remember me
+const rememberMe = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 const isLoading = ref(false)
+const isPasswordVisible = ref(false)
 
 const { login } = useAuth()
 
@@ -75,7 +152,6 @@ const handleLogin = async () => {
     } else {
       localStorage.removeItem('rememberEmail')
     }
-
     successMessage.value = 'Login sukses! Mengalihkan...'
     router.push('/dashboard/admin')
   } catch (err) {
@@ -85,4 +161,10 @@ const handleLogin = async () => {
   }
 }
 
+const togglePassword = () => {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
 </script>
+
+<style scoped>
+</style>
