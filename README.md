@@ -80,14 +80,28 @@ Akses ke modul inventaris & laporan dibatasi hanya untuk admin, guru, dan kepala
 
 ## 💡 Catatan / Tips Pengembangan
 
-Pastikan cors / proxy sudah dikonfigurasi agar frontend bisa memanggil API tanpa error CORS
+- Pastikan cors / proxy sudah dikonfigurasi agar frontend bisa memanggil API tanpa error CORS
 
-Gunakan axios / fetch di Vue untuk komunikasi dengan backend
+- Gunakan axios / fetch di Vue untuk komunikasi dengan backend
 
-Validasi input di sisi backend & frontend
+- Validasi input di sisi backend & frontend
 
-Untuk laporan besar, optimalkan query & pagination
+- Untuk laporan besar, optimalkan query & pagination
 
-Tambahkan unit test / feature test di Laravel
+- Tambahkan unit test / feature test di Laravel
 
-(Opsional) gunakan Vuex / Pinia / state management agar manajemen state lebih rapi
+- (Opsional) gunakan Vuex / Pinia / state management agar manajemen state lebih rapi
+
+## 📦 Deploy & Produksi
+
+- Sesuaikan .env
+
+- Build frontend: npm run build
+
+- Siapkan server PHP + webserver (Nginx / Apache) untuk Laravel
+
+- Pastikan direktori storage & bootstrap/cache punya izin write
+
+- Gunakan scheduler / queue jika ada tugas background
+
+- Gunakan SSL / HTTPS
