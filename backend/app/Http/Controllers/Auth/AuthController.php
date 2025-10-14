@@ -278,7 +278,14 @@ class AuthController extends Controller
     public function me()
     {
         try {
-            $user = JWTAuth::parseToken()->authenticate();
+            $start = microtime(true);
+            $payload = JWTAuth::parseToken()->getPayload();
+            $user = [
+                'id' => $payload->get('sub'),
+                'name' => $payload->get('name') ?? null,
+                'email' => $payload->get('email') ?? null
+            ];
+            Log::info('Waktu autentikasi : ' . (microtime(true) - $start) . ' detik');
 
             if (!$user) {
                 return response()->json([

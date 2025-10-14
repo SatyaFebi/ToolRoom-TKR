@@ -9,7 +9,7 @@
 
     <!-- Teks selamat datang (posisi dekat sidebar) -->
     <div
-      class="absolute left-[280px] text-white font-medium text-xl text-sm hidden md:block"
+      class="absolute left-[280px] text-white font-medium text-xl hidden md:block"
     >
       Selamat datang, {{ userName }}
     </div>

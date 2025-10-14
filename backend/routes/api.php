@@ -11,9 +11,13 @@ use App\Http\Controllers\Service\ServiceOrderController;
 use App\Http\Controllers\Service\VehiclesController;
 use App\Http\Controllers\Service\CustomerController;
 use App\Models\Service\ServiceOrder;
+use Illuminate\Support\Facades\Request;
 
 // ================= PUBLIC ROUTES =================
-Route::get('/me', [AuthController::class, 'me']);
+// Route::get('/me', [AuthController::class, 'me']);
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return response()->json($request->user());
+});
 Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::get('/getRole', [RoleController::class, 'index']);
 
