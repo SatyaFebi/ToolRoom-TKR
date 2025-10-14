@@ -55,7 +55,39 @@ Frontend-nya menggunakan **Vue.js**, backend-nya menggunakan **Laravel (PHP)**.
    cd backend  
    composer install  
    cp .env.example .env  
-   # edit .env sesuai environment (DB, mail, dsb)  
+   # edit .env sesuai environment (DB, dsb)  
    php artisan key:generate  
    php artisan migrate --seed  
    php artisan serve  
+3. Setup frontend
+   ```bash
+   cd ../frontend  
+   npm install   
+   cp .env.example .env  
+   # ubah base API URL jika perlu  
+   npm run dev
+4. Akses aplikasi
+   Frontend: http://localhost:3000 (atau port lain)
+   Backend API: http://localhost:8000/api (atau port Laravel)
+
+## 🔐 Autentikasi & Otorisasi
+
+### Menggunakan JWT atau Sanctum (tergantung implementasi)
+
+Role umum: Admin, Guru, Kepala Kompetensi, Murid
+
+Akses ke modul inventaris & laporan dibatasi hanya untuk admin, guru, dan kepala kompetensi
+
+## 💡 Catatan / Tips Pengembangan
+
+Pastikan cors / proxy sudah dikonfigurasi agar frontend bisa memanggil API tanpa error CORS
+
+Gunakan axios / fetch di Vue untuk komunikasi dengan backend
+
+Validasi input di sisi backend & frontend
+
+Untuk laporan besar, optimalkan query & pagination
+
+Tambahkan unit test / feature test di Laravel
+
+(Opsional) gunakan Vuex / Pinia / state management agar manajemen state lebih rapi
