@@ -304,11 +304,7 @@ class AuthController extends Controller
                 'message' => 'Token expired, silakan refresh token'
             ], 401);
         } catch (JWTException $e) {
-            Log::error($e);
-            return response()->json([
-                'success' => false,
-                'message' => 'Token tidak valid',
-            ], 403);
+            throw $e;
         }
     }
 

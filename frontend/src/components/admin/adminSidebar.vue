@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="[ 
+    :class="[
       'fixed top-0 left-0 h-full bg-white shadow-lg z-40 transition-transform duration-300',
       isOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64',
       'md:translate-x-0 md:w-64'
@@ -15,23 +15,16 @@
         </router-link>
   </div>
 
-    <!-- <div class="flex items-center px-9 py-6">
-      <router-link to="/dashboard/admin" class="flex items-center gap-2">
-        <img src="/assets/img/logo.jpeg" alt="logo" class="w-8 h-8 rounded-4xl object-cover" />
-        <span class="font-semibold text-2xl">PitStop</span>
-      </router-link>
-    </div> -->
-
     <!-- Sidebar menu -->
     <div class="pt-0 px-4 pb-2">
-      <div v-for="(menu, i) in sidebarData.uiLink" :key="i" class="mb-2">
-        
+      <div v-for="(menu, i) in sidebarData.uiLink" :key="i" class="">
+
         <!-- Single link (Dashboard, dll.) -->
         <template v-if="menu.type === 'link'">
           <router-link
             :to="menu.link"
-            class="flex items-center gap-3 p-2 rounded hover:bg-blue-700"
-            exact-active-class="font-semibold text-blue-400" 
+            class="flex items-center gap-3 p-2 rounded hover:bg-blue-700 hover:text-white"
+            exact-active-class="font-semibold text-blue-600 bg-blue-100"
           >
             <font-awesome-icon :icon="menu.icon" />
             {{ menu.title }}
@@ -43,7 +36,7 @@
           <div>
             <!-- Parent -->
             <div
-              class="flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-blue-700"
+              class="flex items-center gap-3 py-3 px-2 rounded cursor-pointer hover:bg-blue-700 hover:text-white"
               @click="toggleExpand(i)"
             >
               <font-awesome-icon :icon="menu.icon" />
@@ -58,15 +51,15 @@
 
             <!-- Children -->
             <div
-              class="submenu ml-6 mt-1"
+              class="submenu ml-6"
               :class="{ open: expandedIndex === i }"
             >
               <router-link
                 v-for="(child, j) in menu.children"
                 :key="j"
                 :to="child.link"
-                class="block p-2 pl-4 rounded hover:bg-blue-700"
-                active-class="text-blue-400 font-semibold"
+                class="block p-2 pl-4 rounded hover:bg-blue-700 hover:text-white"
+                active-class="text-blue-600 font-semibold bg-blue-100"
               >
                 {{ child.title }}
               </router-link>

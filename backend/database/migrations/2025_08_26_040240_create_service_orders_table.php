@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
             $table->text('keluhan_pelanggan');
             $table->decimal('taksiran_biaya', 12, 2)->nullable();
+            $table->string('estimasi')->nullable();
             $table->date('tanggal_masuk');
             $table->date('tanggal_selesai')->nullable();
             $table->enum('status', ['menunggu', 'dikerjakan', 'selesai', 'dibatalkan'])->default('menunggu');
