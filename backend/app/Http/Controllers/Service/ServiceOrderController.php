@@ -28,6 +28,7 @@ class ServiceOrderController extends Controller
                 'vehicle_id' => 'required|integer',
                 'keluhan_pelanggan' => 'required|string',
                 'taksiran_biaya' => 'nullable|numeric',
+                'estimasi' => 'nullable|string',
                 'tanggal_masuk' => 'required|date',
                 'tanggal_selesai' => 'nullable|date',
                 'status' => 'required|in:menunggu,dikerjakan,selesai,dibatalkan',

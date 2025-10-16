@@ -17,6 +17,7 @@ class ServiceOrder extends Model
         'vehicle_id',
         'keluhan_pelanggan',
         'taksiran_biaya',
+        'estimasi',
         'tanggal_masuk',
         'tanggal_selesai',
         'status',
