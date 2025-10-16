@@ -310,12 +310,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Swal from 'sweetalert2'
+import useServiceList from '@/composables/useServiceList'
 
 const isTambahServisOpen = ref(false)
 const currentStep = ref(0)
 const steps = ['Pelanggan', 'Kendaraan', 'Servis']
+const { addCustomer, getCustomer } = useServiceList()
 
 const searchCustomer = ref('')
 const showCustomerList = ref(false)
@@ -332,9 +334,7 @@ const servis = ref({
 })
 
 const customers = ref([
-  { id: 1, name: 'Budi', no_telp: '08123456789' },
-  { id: 2, name: 'Sinta', no_telp: '08991234567' },
-  { id: 3, name: 'Ahmad', no_telp: '08567891234' },
+  // { id: null, name: '', no_telp: '' },
 ])
 
 const filteredCustomer = computed(() => {
@@ -375,19 +375,31 @@ const removeSelectedCustomer = () => {
   searchCustomer.value = ''
 }
 
-const addNewCustomer = () => {
-  const newC = { id: Date.now(), ...newCustomer.value }
-
-  if (newCustomer.value.name && newCustomer.value.no_telp) {
-    showNewCustomerForm.value = false
-    newCustomer.value = { name: '', no_telp: '' }
-    customers.value.push(newC)
-    selectedCustomer.value = newC
-    Swal.fire('Berhasil', 'Pelanggan baru berhasil ditambahkan!', 'success')
-  } else {
-    showNewCustomerForm.value = true
-    Swal.fire('Gagal', 'Silakan lengkapi data dahulu!', 'error')
+const getCustomerData = async () => {
+  customers.value = []
+  try {
+    const res = await getCustomer()
+    customers.value = Array.isArray(res.data) ? res.data : Array.isArray(res) ? res.data : []
+  } catch (e) {
+    Swal.fire('Gagal', 'Gagal mencari data pelanggan. Silakan hubungi admin', 'error')
+    throw e
   }
+}
+
+const addNewCustomer = async () => {
+  try {
+    if (newCustomer.value.name && newCustomer.value.no_telp) {
+      showNewCustomerForm.value = false
+      await addCustomer(newCustomer.value.name, newCustomer.value.no_telp)
+    } else {
+      showNewCustomerForm.value = true
+      Swal.fire('Gagal', 'Silakan lengkapi data dahulu!', 'error')
+    }
+
+  } catch (error) {
+    console.error('Gagal menambah pelanggan baru :', error)
+  }
+
 }
 
 const toggleTambahServis = () => (isTambahServisOpen.value = true)
@@ -407,7 +419,7 @@ const closeTambahServis = () => {
     tahun: '',
     no_polisi: ''
   }
-  
+
   servis.value = {
     keluhan_pelanggan: '',
     estimasi: '',
@@ -420,6 +432,10 @@ const goToNextStep = () => currentStep.value++
 const submitServis = () => {
   Swal.fire('Berhasil', 'Servis disubmit', 'success')
 }
+
+onMounted(() => {
+  getCustomerData()
+})
 </script>
 
 <style scoped>

@@ -10,6 +10,15 @@ use Illuminate\Validation\Rule;
 
 class VehiclesController extends Controller
 {
+    public function get() {
+        $data = Vehicles::all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
     public function add(Request $request)
     {
         try {

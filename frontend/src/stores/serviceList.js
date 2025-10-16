@@ -30,5 +30,13 @@ export const useServiceListStore = defineStore('serviceList', {
         this.loading = false
       }
     },
+    async addCustomer(name, no_telp) {
+      const { data } = await api.post('/service/addCustomer', { name, no_telp })
+      return data
+    },
+    async getData() {
+      const { data } = await api.get('/service/getCustomer')
+      return data
+    }
   },
 })

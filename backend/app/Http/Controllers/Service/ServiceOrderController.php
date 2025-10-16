@@ -13,8 +13,6 @@ class ServiceOrderController extends Controller
     {
         $service = ServiceOrder::with('vehicle')->get();
 
-        dd($service->toArray());
-
         return response()->json([
             'success' => true,
             'data' => $service
