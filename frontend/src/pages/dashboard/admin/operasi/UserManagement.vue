@@ -1,153 +1,154 @@
 <template>
-   <div class="p-6">
-      <div class="flex justify-end mb-4">
-         <button
-            class="bg-green-600 py-2 px-5 rounded-lg text-white font-semibold hover:bg-green-700 transition"
-            @click="showRegisterModal = true"
-         >
-            Tambah User
-         </button>
-      </div>
-
-      <DataTable
-         :value="users"
-         paginator
-         :rows="10"
-         :rowsPerPageOptions="[10, 15, 20, 50]"
-         responsiveLayout="stack"
-         breakpoint="960px"
-         class="shadow-md rounded-lg overflow-hidden border border-gray-200 min-w-[600px]"
+  <div class="p-6">
+    <div class="flex justify-end mb-4">
+      <button
+        class="bg-green-600 py-2 px-5 rounded-lg text-white font-semibold hover:bg-green-700 transition"
+        @click="showRegisterModal = true"
       >
-         <Column field="name" header="Name"></Column>
-         <Column field="email" header="Email"></Column>
+        Tambah User
+      </button>
+    </div>
 
-         <Column field="role" header="Role" class="capitalize">
-            <template #body="slotProps">
-               <span class="px-2 py-1 rounded bg-gray-100 text-gray-700 text-sm">
-                  {{ getRoleName(slotProps.data.role_id) }}
-               </span>
-            </template>
-         </Column>
+    <DataTable
+      :value="users"
+      paginator
+      :rows="10"
+      :rowsPerPageOptions="[10, 15, 20, 50]"
+      responsiveLayout="stack"
+      breakpoint="960px"
+      class="shadow-md rounded-lg overflow-hidden border border-gray-200 min-w-[600px]"
+    >
+      <Column field="name" header="Name"></Column>
+      <Column field="email" header="Email"></Column>
 
-         <Column header="Action">
-            <template #body="slotProps">
-               <div class="flex gap-2 flex-wrap">
-                  <button
-                     class="flex gap-1 px-5 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
-                     @click="getUserWhenEdit(slotProps.data)"
-                  >
-                     <span>Edit</span>
-                  </button>
-                  <button
-                     class="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-                     @click="deleteUsers(slotProps.data)"
-                  >
-                     <span>Hapus</span>
-                  </button>
-               </div>
-            </template>
-         </Column>
-      </DataTable>
+      <Column field="role" header="Role" class="capitalize">
+        <template #body="slotProps">
+          <span class="px-2 py-1 rounded bg-gray-100 text-gray-700 text-sm">
+            {{ getRoleName(slotProps.data.role_id) }}
+          </span>
+        </template>
+      </Column>
 
-      <!-- Register Modal -->
-      <Transition name="fade-scale">
-         <Dialog
-            v-model:visible="showRegisterModal"
-            modal
-            header="Tambah User Baru"
-            :style="{ width: '30rem' }"
-         >
-            <div class="flex flex-col gap-4">
-               <div>
-                  <label class="block mb-1">Name</label>
-                  <input v-model="form.name" class="w-full border p-2 rounded" />
-               </div>
-               <div>
-                  <label class="block mb-1">Email</label>
-                  <input v-model="form.email" class="w-full border p-2 rounded" />
-               </div>
-               <div>
-                  <label class="block mb-1">Role</label>
-                  <select v-model="form.role_id" class="w-full border p-2 rounded">
-                     <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-                  </select>
-               </div>
-               <div>
-                  <label class="block mb-1">Password</label>
-                  <input v-model="form.password" type="password" autocomplete="new-password" class="w-full border p-2 rounded" />
-               </div>
-            </div>
-            <template #footer>
-               <button
-                  @click="showRegisterModal = false"
-                  class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
-               >
-                  Batal
-               </button>
-               <button
-                  @click="doRegister"
-                  class="px-5 py-2 bg-green-600 text-white rounded cursor-pointer hover:bg-green-700 transition"
-               >
-                  Simpan
-               </button>
-            </template>
-         </Dialog>
-      </Transition>
+      <Column header="Action">
+        <template #body="slotProps">
+          <div class="flex gap-2 flex-wrap">
+            <button
+              class="flex gap-1 px-5 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition cursor-pointer"
+              @click="getUserWhenEdit(slotProps.data)"
+            >
+              <span>Edit</span>
+            </button>
+            <button
+              class="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+              @click="deleteUsers(slotProps.data)"
+            >
+              <span>Hapus</span>
+            </button>
+          </div>
+        </template>
+      </Column>
+    </DataTable>
 
-      <!-- Edit Modal -->
+    <!-- Register Modal -->
+    <Transition name="fade-scale">
       <Dialog
-         v-model:visible="showEditModal"
-         modal
-         header="Edit User"
-         :style="{ width: '30rem' }"
+        v-model:visible="showRegisterModal"
+        modal
+        header="Tambah User Baru"
+        :style="{ width: '30rem' }"
       >
-         <div class="flex flex-col gap-4">
-            <div>
-               <label class="block mb-1">Name</label>
-               <input v-model="editForm.name" class="w-full border p-2 rounded" />
-            </div>
-            <div>
-               <label class="block mb-1">Email</label>
-               <input v-model="editForm.email" class="w-full border p-2 rounded" />
-            </div>
-            <div>
-               <label class="block mb-1">Role</label>
-               <select v-model="editForm.role_id" class="w-full border p-2 rounded">
-                  <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-               </select>
-            </div>
-            <div>
-               <label class="block mb-1">Password <span class="text-red-600">*</span>
-                  <span class="text-sm">kosongkan jika tidak ingin diisi</span>
-               </label>
-               <input
-                  v-model="editForm.password"
-                  type="password"
-                  class="w-full border p-2 rounded"
-                  placeholder="Kosongkan jika tidak ingin diisi"
-               />
-            </div>
-         </div>
-         <template #footer>
-            <button
-               @click="showEditModal = false"
-               class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
-            >
-               Batal
-            </button>
-            <button
-               @click="editUsers"
-               class="px-5 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 transition"
-            >
-               Simpan
-            </button>
-         </template>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="block mb-1">Name</label>
+            <input v-model="form.name" class="w-full border p-2 rounded" />
+          </div>
+          <div>
+            <label class="block mb-1">Email</label>
+            <input v-model="form.email" class="w-full border p-2 rounded" />
+          </div>
+          <div>
+            <label class="block mb-1">Role</label>
+            <select v-model="form.role_id" class="w-full border p-2 rounded">
+              <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1">Password</label>
+            <input
+              v-model="form.password"
+              type="password"
+              autocomplete="new-password"
+              class="w-full border p-2 rounded"
+            />
+          </div>
+        </div>
+        <template #footer>
+          <button
+            @click="showRegisterModal = false"
+            class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
+          >
+            Batal
+          </button>
+          <button
+            @click="doRegister"
+            class="px-5 py-2 bg-green-600 text-white rounded cursor-pointer hover:bg-green-700 transition"
+          >
+            Simpan
+          </button>
+        </template>
       </Dialog>
-   </div>
+    </Transition>
+
+    <!-- Edit Modal -->
+    <Dialog v-model:visible="showEditModal" modal header="Edit User" :style="{ width: '30rem' }">
+      <div class="flex flex-col gap-4">
+        <div>
+          <label class="block mb-1">Name</label>
+          <input v-model="editForm.name" class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="block mb-1">Email</label>
+          <input v-model="editForm.email" class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="block mb-1">Role</label>
+          <select v-model="editForm.role_id" class="w-full border p-2 rounded">
+            <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block mb-1"
+            >Password <span class="text-red-600">*</span>
+            <span class="text-sm">kosongkan jika tidak ingin diisi</span>
+          </label>
+          <input
+            v-model="editForm.password"
+            type="password"
+            class="w-full border p-2 rounded"
+            placeholder="Kosongkan jika tidak ingin diisi"
+          />
+        </div>
+      </div>
+      <template #footer>
+        <button
+          @click="showEditModal = false"
+          class="px-5 py-2 bg-gray-400 text-white rounded mr-2 cursor-pointer"
+        >
+          Batal
+        </button>
+        <button
+          @click="editUsers"
+          class="px-5 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 transition"
+        >
+          Simpan
+        </button>
+      </template>
+    </Dialog>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, unref, onMounted } from 'vue'
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import useAuth from '@/composables/useAuth';
@@ -162,6 +163,7 @@ const editForm = ref({ id: null, name: '', email: '', role_id: null, password: '
 
 const showEditModal = ref(false)
 const showRegisterModal = ref(false)
+const isUserCached = ref(false)
 
 const { getUserData, getUserRole, editUser, deleteUser, register } = useAuth()
 
@@ -183,9 +185,23 @@ const getRoleName = (roleId) => {
    return role ? role.name : 'Tidak diketahui'
 }
 
-const fetchUser = async () => {
+const fetchUser = async (force = false) => {
+  const cached = sessionStorage.getItem('users')
+  if (cached && !force) {
+    console.log('Load user from cache')
+    users.value = JSON.parse(cached)
+    isUserCached.value = true
+    return
+  }
+
    try {
-      users.value = await getUserData()
+      const res = await getUserData()
+      console.log('res dari getUserData:', res)
+      console.log('typeof res:', typeof res)
+      const plainRes = JSON.parse(JSON.stringify(unref(res)))
+      users.value = plainRes
+      sessionStorage.setItem('users', JSON.stringify(plainRes))
+      isUserCached.value = true
    } catch (e) {
       Swal.fire('Error', `Gagal mendapatkan data user: ${e}`, 'error')
    }
@@ -248,7 +264,8 @@ onMounted(() => {
 
 <style scoped>
 /* Animasi modal masuk/keluar */
-.fade-scale-enter-active, .fade-scale-leave-active {
+.fade-scale-enter-active,
+.fade-scale-leave-active {
   transition: all 0.3s ease;
 }
 .fade-scale-enter-from {
