@@ -24,6 +24,12 @@
                     "link": "/dashboard/admin/inventory/kategori-barang",
                     "type": "link",
                     "active": false
+                },
+                {
+                    "title": "Peminjaman Barang",
+                    "link": "/dashboard/admin/inventory/peminjaman-barang",
+                    "type": "link",
+                    "active": false
                 }
             ]
         },
