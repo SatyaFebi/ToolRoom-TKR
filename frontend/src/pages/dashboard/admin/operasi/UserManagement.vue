@@ -189,7 +189,6 @@ const getRoleName = (roleId) => {
 const fetchUser = async (force = false) => {
   const cached = sessionStorage.getItem('users')
   if (cached && !force) {
-    console.log('Load user from cache')
     users.value = JSON.parse(cached)
     isUserCached.value = true
     return
@@ -213,7 +212,7 @@ const fetchRole = async (force = false) => {
     isRoleCached.value = true
     return
   }
-  
+
    try {
       const res = await getUserRole()
       const plainRes = JSON.parse(JSON.stringify(unref(res)))

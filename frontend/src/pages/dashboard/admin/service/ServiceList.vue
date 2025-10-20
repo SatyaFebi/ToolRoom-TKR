@@ -1,13 +1,7 @@
 <template>
   <div class="p-6">
     <div class="flex justify-between mb-4">
-      <h2 class="text-xl font-bold">Daftar Service</h2>
-      <button
-        @click="refreshCache"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer"
-      >
-        🔄 Refresh Data
-      </button>
+      <h2 class="text-2xl font-bold">Daftar Service</h2>
     </div>
 
     <p class="text-sm text-gray-500 mb-2" v-if="lastFetched">
@@ -83,7 +77,7 @@ import Column from 'primevue/column'
 import useServiceList from '@/composables/useServiceList'
 import Swal from 'sweetalert2'
 
-const { serviceList, loading, error, fetchServiceList, refreshCache, lastFetched } = useServiceList()
+const { serviceList, loading, error, fetchServiceList, lastFetched } = useServiceList()
 
 
 const formatBiaya = (rowData, field) => {
@@ -111,8 +105,8 @@ const formatTanggal = (rowData, field) => {
    return `${day}-${month}-${year}`
 }
 
-onMounted(() => {
-   fetchServiceList()
+onMounted(async () => {
+   await fetchServiceList()
    if (error.value) {
       Swal.fire({ icon: 'error', title: 'Error', text:error.value })
    }

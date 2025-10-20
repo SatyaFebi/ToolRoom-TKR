@@ -1,16 +1,28 @@
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useServiceListStore } from '@/stores/serviceList'
 import Swal from 'sweetalert2'
 
 export default function useServiceList() {
   const service = useServiceListStore()
 
+  const isFetching = ref(false)
+
   const fetchServiceList = async (force = false) => {
-    const result = await service.fetchServiceList(force)
-    if (service.error) {
-      Swal.fire('Error', service.error, 'error')
+
+    try {
+      const result = await service.fetchServiceList(force)
+
+      if (service.error) {
+        Swal.fire('Error', service.error, 'error')
+      }
+
+      return result
+    } catch (e) {
+      console.error('Fetch service gagal: ', e)
+      Swal.fire('Error', 'Fetch service gagal', 'error')
+    } finally {
+      isFetching.value = false
     }
-    return result
   }
 
   const refreshCache = async () => {
@@ -21,6 +33,7 @@ export default function useServiceList() {
   const addCustomer = async (name, no_telp) => {
     try {
       await service.addCustomer(name, no_telp)
+      await this.fetchServiceList(true)
       Swal.fire('Berhasil!', 'Berhasil menambahkan customer', 'success')
     } catch (e) {
       console.error('Gagal menambah user : ', e)
@@ -32,6 +45,16 @@ export default function useServiceList() {
     return await service.getData()
   }
 
+  watch(
+    () => service.version,
+    async (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        console.log('Data changed, refetching service list...')
+        await fetchServiceList(true)
+      }
+    }
+  )
+
   return {
     serviceList: computed(() => service.serviceList),
     loading: computed(() => service.loading),
@@ -41,6 +64,6 @@ export default function useServiceList() {
     addCustomer,
     getCustomer,
     refreshCache,
-    invalidateCache: service.invalidateCache
+    invalidateCache: service.invalidateCache,
   }
 }
