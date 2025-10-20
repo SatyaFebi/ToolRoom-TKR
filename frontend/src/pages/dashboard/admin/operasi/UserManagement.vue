@@ -39,7 +39,7 @@
               <span>Edit</span>
             </button>
             <button
-              class="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+              class="flex items-center gap-1 px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition cursor-pointer"
               @click="deleteUsers(slotProps.data)"
             >
               <span>Hapus</span>
@@ -164,6 +164,7 @@ const editForm = ref({ id: null, name: '', email: '', role_id: null, password: '
 const showEditModal = ref(false)
 const showRegisterModal = ref(false)
 const isUserCached = ref(false)
+const isRoleCached = ref(false)
 
 const { getUserData, getUserRole, editUser, deleteUser, register } = useAuth()
 
@@ -196,8 +197,6 @@ const fetchUser = async (force = false) => {
 
    try {
       const res = await getUserData()
-      console.log('res dari getUserData:', res)
-      console.log('typeof res:', typeof res)
       const plainRes = JSON.parse(JSON.stringify(unref(res)))
       users.value = plainRes
       sessionStorage.setItem('users', JSON.stringify(plainRes))
@@ -207,9 +206,20 @@ const fetchUser = async (force = false) => {
    }
 }
 
-const fetchRole = async () => {
+const fetchRole = async (force = false) => {
+  const cached = sessionStorage.getItem('roles');
+  if (cached && !force) {
+    roles.value = JSON.parse(cached)
+    isRoleCached.value = true
+    return
+  }
+  
    try {
-      roles.value = await getUserRole()
+      const res = await getUserRole()
+      const plainRes = JSON.parse(JSON.stringify(unref(res)))
+      roles.value = plainRes
+      sessionStorage.setItem('roles', JSON.stringify(plainRes))
+      isRoleCached.value = true
    } catch (e) {
       Swal.fire('Error', `Gagal mendapatkan data role: ${e}`, 'error')
    }
