@@ -1,6 +1,6 @@
 <template>
   <div class="lg:col-span-6 card rounded-2xl bg-white p-9 mt-6">
-    <h3 class="text-lg font-bold text-slate-900">Tambah Barang</h3>
+    <h3 class="text-lg font-bold text-slate-900">Tambah Kategori Barang</h3>
 
     <form
       id="formBarang"
@@ -9,14 +9,14 @@
     >
       <!-- Nama Barang -->
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Nama Barang</label>
+        <label class="block text-sm text-slate-600 mb-1">Kategori Barang</label>
         <input
           v-model="form.nama"
           required
           name="nama"
           type="text"
           class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
-          placeholder="Contoh: Laptop"
+          placeholder="Contoh: Alat berat"
         />
       </div>
 
@@ -54,7 +54,7 @@
       <thead class="bg-[var(--primary)]/10 text-[var(--primary)]">
         <tr>
           <th class="text-center px-4 py-2 border-r-2 border-slate-300">No</th>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">Jenis Barang</th>
+          <th class="text-center px-4 py-2 border-r-2 border-slate-300">Kategori Barang</th>
           <th class="text-center px-4 py-2 border-r-2 border-slate-300">Kode Barang</th>
           <th class="text-center px-4 py-2">Aksi</th>
         </tr>

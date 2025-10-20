@@ -13,6 +13,8 @@ import adminUpdate from '@/pages/auth/AdminUpdate.vue'
 // import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
 import DataBarang from '@/pages/inventory/DataBarang.vue'
 import KategoriBarang from '@/pages/inventory/KategoriBarang.vue'
+import PeminjamanBarang from '@/pages/inventory/PeminjamanBarang.vue'
+import Formpeminjaman from '@/pages/inventory/Formpeminjaman.vue'
 
 const routes = [
   {
@@ -59,6 +61,16 @@ const routes = [
             path: 'kategori-barang',
             name: 'KategoriBarang',
             component: KategoriBarang
+          },
+          {
+            path: 'peminjaman-barang',
+            name: 'PeminjamanBarang',
+            component: PeminjamanBarang
+          },
+          {
+            path: 'form-peminjaman',
+            name: 'Formpeminjaman',
+            component: Formpeminjaman
           },
 
         ]
