@@ -17,9 +17,10 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id');
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->enum('jenis_kendaraan',  ['Mobil', 'Motor']);
             $table->string('merek');
             $table->string('model')->nullable();
-            $table->integer('tahun')->nullable();
+            $table->integer('tahun_produksi')->nullable();
             $table->string('no_polisi')->unique()->nullable();
             $table->timestamps();
         });

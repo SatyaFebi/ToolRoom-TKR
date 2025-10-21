@@ -10,7 +10,8 @@ use Illuminate\Validation\Rule;
 
 class VehiclesController extends Controller
 {
-    public function get() {
+    public function get()
+    {
         $data = Vehicles::all();
 
         return response()->json([
@@ -23,17 +24,18 @@ class VehiclesController extends Controller
     {
         try {
             $validated = $request->validate([
-            'customer_id' => [
-            'required',
-            Rule::exists('tkr_service_management.customers', 'id'), // connection khusus
-        ],
+                'customer_id' => [
+                    'required',
+                    Rule::exists('tkr_service_management.customers', 'id'), // connection khusus
+                ],
+                'jenis_kendaraan' => 'required|in:Mobil,Motor',
                 'merek' => 'required|string',
                 'model' => 'string|nullable',
-                'tahun' => 'integer|nullable',
+                'tahun_produksi' => 'integer|nullable',
                 'no_polisi' => [
-                  'string',
-                  'nullable',
-                  Rule::unique('tkr_service_management.vehicles', 'no_polisi')
+                    'string',
+                    'nullable',
+                    Rule::unique('tkr_service_management.vehicles', 'no_polisi')
                 ]
             ]);
 

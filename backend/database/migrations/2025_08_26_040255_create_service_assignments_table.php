@@ -18,8 +18,12 @@ return new class extends Migration
             $table->unsignedBigInteger('murid_id');
 
             $table->foreign('order_id')->references('id')->on('service_orders')->onDelete('cascade');
+
             $table->enum('peran_murid', ['Mekanik Utama', 'Asisten', 'Pemeriksa'])->nullable();
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai')->nullable();
             $table->text('catatan_guru')->nullable();
+            $table->decimal('penilaian', 5, 2)->nullable();
             $table->timestamps();
         });
     }

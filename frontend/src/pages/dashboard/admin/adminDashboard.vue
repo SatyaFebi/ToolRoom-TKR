@@ -117,7 +117,8 @@
               <button
                 type="button"
                 @click="showNewCustomerForm = !showNewCustomerForm"
-                class="w-full rounded-xl border p-2 mt-6 bg-gray-500 text-white font-semibold hover:bg-gray-600 transition cursor-pointer"
+                :disabled="selectedCustomer"
+                class="w-full rounded-xl border p-2 mt-6 bg-gray-500 text-white font-semibold hover:bg-gray-600 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500"
               >
                 {{ showNewCustomerForm ? 'Tutup Form Tambah Pelanggan' : 'Tambah Pelanggan Baru' }}
               </button>
