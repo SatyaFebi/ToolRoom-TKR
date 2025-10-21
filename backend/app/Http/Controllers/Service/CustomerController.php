@@ -25,7 +25,8 @@ class CustomerController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string',
-                'no_telp' => 'required'
+                'no_telp' => 'required',
+                'alamat' => 'string|nullable'
             ]);
 
             if (Customers::where('no_telp', $request->no_telp)->exists()) {

@@ -117,7 +117,8 @@
               <button
                 type="button"
                 @click="showNewCustomerForm = !showNewCustomerForm"
-                class="w-full rounded-xl border p-2 mt-6 bg-gray-500 text-white font-semibold hover:bg-gray-600 transition cursor-pointer"
+                :disabled="selectedCustomer"
+                class="w-full rounded-xl border p-2 mt-6 bg-gray-500 text-white font-semibold hover:bg-gray-600 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500"
               >
                 {{ showNewCustomerForm ? 'Tutup Form Tambah Pelanggan' : 'Tambah Pelanggan Baru' }}
               </button>
@@ -188,14 +189,13 @@
               </button>
             </div>
             <div v-if="customerVehicles.length === 0 || showNewVehicleForm" class="space-y-3">
-              <h3 class="font-semibold text-gray-700">Tambah Kendaraan Baru</h3>
+              <h3 class="font-semibold text-gray-700 text-lg">Tambah Kendaraan Baru</h3>
               <div>
                 <label class="block text-gray-700 font-semibold mb-1">Merek</label>
                 <input
                   v-model="vehicle.merek"
                   type="text"
                   class="w-full border rounded-lg p-2"
-                  required
                 />
               </div>
               <div>
@@ -204,7 +204,6 @@
                   v-model="vehicle.model"
                   type="text"
                   class="w-full border rounded-lg p-2"
-                  required
                 />
               </div>
               <div class="flex gap-4">
@@ -214,7 +213,6 @@
                     v-model="vehicle.tahun"
                     type="number"
                     class="w-full border rounded-lg p-2"
-                    required
                   />
                 </div>
                 <div class="flex-1">
@@ -223,31 +221,34 @@
                     v-model="vehicle.no_polisi"
                     type="text"
                     class="w-full border rounded-lg p-2"
-                    required
                   />
                 </div>
               </div>
               <button
                 v-if="customerVehicles.length > 0"
                 type="button"
-                class="rounded-lg text-gray-600 underline text-sm cursor-pointer"
+                class="rounded-lg text-gray-600 underline text-sm cursor-pointer hover:text-gray-800"
                 @click="showNewVehicleForm = false"
               >
                 ← Kembali ke pilihan kendaraan
               </button>
             </div>
+            <div v-if="showVehicleError" class="flex items-center">
+              <span>⚠️ </span>
+              <p class="text-red-600 text-sm underline font-semibold">Tolong Lengkapi Data Sebelum Lanjut!</p>
+            </div>
             <div class="flex justify-between mt-4">
               <button
                 type="button"
                 @click="currentStep--"
-                class="text-gray-600 underline cursor-pointer"
+                class="text-gray-600 underline cursor-pointer hover:text-gray-800"
               >
                 ← Kembali
               </button>
               <button
                 type="submit"
                 class="bg-blue-600 text-white rounded-lg py-2 px-4 hover:bg-blue-700 cursor-pointer"
-                :disabled="!selectedVehicle && !vehicle.merek"
+                :disabled="false"
               >
                 Lanjut
               </button>
@@ -261,7 +262,6 @@
               <textarea
                 v-model="servis.keluhan_pelanggan"
                 class="w-full border rounded-lg p-2"
-                required
               ></textarea>
             </div>
             <div class="flex gap-4">
@@ -291,7 +291,7 @@
               <button
                 type="button"
                 @click="currentStep--"
-                class="text-gray-600 underline cursor-pointer"
+                class="text-gray-600 underline cursor-pointer hover:text-gray-800"
               >
                 ← Kembali
               </button>
@@ -312,15 +312,19 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Swal from 'sweetalert2'
+import useServiceList from '@/composables/useServiceList'
 
 const isTambahServisOpen = ref(false)
 const currentStep = ref(0)
 const steps = ['Pelanggan', 'Kendaraan', 'Servis']
+const { addCustomer, getCustomer } = useServiceList()
 
 const searchCustomer = ref('')
 const showCustomerList = ref(false)
 const selectedCustomer = ref(null)
 const showNewCustomerForm = ref(false)
+const showVehicleError = ref(false)
+const isCustomerFetched = ref(false)
 
 const newCustomer = ref({ name: '', no_telp: '' })
 
@@ -331,11 +335,7 @@ const servis = ref({
   tanggal_masuk: new Date().toISOString().substring(0, 10),
 })
 
-const customers = ref([
-  { id: 1, name: 'Budi', no_telp: '08123456789' },
-  { id: 2, name: 'Sinta', no_telp: '08991234567' },
-  { id: 3, name: 'Ahmad', no_telp: '08567891234' },
-])
+const customers = ref([])
 
 const filteredCustomer = computed(() => {
   if (!searchCustomer.value) return []
@@ -375,22 +375,43 @@ const removeSelectedCustomer = () => {
   searchCustomer.value = ''
 }
 
-const addNewCustomer = () => {
-  const newC = { id: Date.now(), ...newCustomer.value }
+const getCustomerData = async (force = false) => {
+  if (isCustomerFetched.value && !force) {
+    console.log("Data pelanggan sudah dicache, skip fetch")
+    return
+  }
 
-  if (newCustomer.value.name && newCustomer.value.no_telp) {
-    showNewCustomerForm.value = false
-    newCustomer.value = { name: '', no_telp: '' }
-    customers.value.push(newC)
-    selectedCustomer.value = newC
-    Swal.fire('Berhasil', 'Pelanggan baru berhasil ditambahkan!', 'success')
-  } else {
-    showNewCustomerForm.value = true
-    Swal.fire('Gagal', 'Silakan lengkapi data dahulu!', 'error')
+  try {
+    const res = await getCustomer()
+    customers.value = Array.isArray(res.data) ? res.data : Array.isArray(res) ? res.data : []
+    isCustomerFetched.value = true
+  } catch (e) {
+    Swal.fire('Gagal', 'Gagal mencari data pelanggan. Silakan hubungi admin', 'error')
+    throw e
   }
 }
 
-const toggleTambahServis = () => (isTambahServisOpen.value = true)
+const addNewCustomer = async () => {
+  try {
+    if (newCustomer.value.name && newCustomer.value.no_telp) {
+      showNewCustomerForm.value = false
+      await addCustomer(newCustomer.value.name, newCustomer.value.no_telp)
+    } else {
+      showNewCustomerForm.value = true
+      Swal.fire('Gagal', 'Silakan lengkapi data dahulu!', 'error')
+    }
+
+  } catch (error) {
+    console.error('Gagal menambah pelanggan baru :', error)
+  }
+
+}
+
+const toggleTambahServis = () => {
+  isTambahServisOpen.value = true
+  getCustomerData()
+}
+
 const closeTambahServis = () => {
   isTambahServisOpen.value = false
   currentStep.value = 0
@@ -407,7 +428,7 @@ const closeTambahServis = () => {
     tahun: '',
     no_polisi: ''
   }
-  
+
   servis.value = {
     keluhan_pelanggan: '',
     estimasi: '',
@@ -415,11 +436,26 @@ const closeTambahServis = () => {
     tanggal_masuk: new Date().toISOString().substring(0, 10),
   }
 }
-const goToNextStep = () => currentStep.value++
+
+const goToNextStep = () => {
+  if (currentStep.value === 1) {
+    const isVehicleValid = selectedVehicle.value || (vehicle.value.merek && vehicle.value.model && vehicle.value.tahun && vehicle.value.no_polisi)
+
+    if (!isVehicleValid) {
+      showVehicleError.value = true
+      return
+    } else {
+      showVehicleError.value = false
+    }
+  }
+
+  currentStep.value++
+}
 
 const submitServis = () => {
   Swal.fire('Berhasil', 'Servis disubmit', 'success')
 }
+
 </script>
 
 <style scoped>

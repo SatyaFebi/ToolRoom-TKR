@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\Request;
 
 // ================= PUBLIC ROUTES =================
 Route::get('/me', [AuthController::class, 'me']);
-// Route::middleware('auth:api')->get('/me', function (Request $request) {
-//     return response()->json($request->user());
-// });
 Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::get('/getRole', [RoleController::class, 'index']);
 
@@ -35,6 +32,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/getUserData', [AuthController::class, 'getUserData']);
         Route::post('/updateProfile', [AuthController::class, 'update']);
+        Route::post('/addCustomer', [CustomerController::class, 'add']);
     });
 });
 
@@ -51,6 +49,8 @@ Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(fun
 // ================= SERVICE ROUTES =================
 Route::prefix('service')->middleware(['auth:api', 'throttle:60,1'])->group(function (){
     Route::get('getService', [ServiceOrder::class, 'get']);
+    Route::get('getVehicles', [VehiclesController::class, 'get']);
+    Route::get('getCustomer', [CustomerController::class, 'getData']);
 
     Route::post('addCustomer', [CustomerController::class, 'add']);
     Route::post('addService', [ServiceOrderController::class, 'add']);

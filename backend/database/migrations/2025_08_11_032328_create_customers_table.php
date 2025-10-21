@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('no_telp')->unique();
+            $table->text('alamat')->nullable();
             $table->timestamps();
         });
     }
