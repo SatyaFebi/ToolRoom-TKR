@@ -21,6 +21,9 @@ class ServiceOrder extends Model
         'tanggal_masuk',
         'tanggal_selesai',
         'status',
+        'pembayaran',
+        'penggantian_part_material',
+        'catatan_service',
         'total_biaya_akhir'
     ];
 

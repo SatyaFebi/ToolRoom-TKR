@@ -22,9 +22,9 @@ return new class extends Migration
             $table->date('tanggal_masuk');
             $table->date('tanggal_selesai')->nullable();
             $table->enum('status', ['menunggu', 'dikerjakan', 'selesai', 'dibatalkan'])->default('menunggu');
-            $table->enum('pembayaran', ['cash', 'credit_card', 'debit_card', 'e-wallet', 'qris', 'transfer']);
-            $table->enum('penggantian_part_material', ['langsung', 'izin']);
-            $table->text('catatan_mekanik')->nullable();
+            $table->enum('pembayaran', ['cash', 'credit_card', 'debit_card', 'e-wallet', 'qris', 'transfer'])->nullable();
+            $table->enum('penggantian_part_material', ['langsung', 'izin'])->nullable();
+            $table->text('catatan_service')->nullable();
             $table->decimal('total_biaya_akhir', 12, 2)->nullable();
             $table->timestamps();
         });

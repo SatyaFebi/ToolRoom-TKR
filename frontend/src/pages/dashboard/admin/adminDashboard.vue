@@ -144,6 +144,15 @@
                       placeholder="08xxxxxxxxx"
                     />
                   </div>
+                  <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Alamat</label>
+                    <input
+                      v-model="newCustomer.alamat"
+                      type="text"
+                      class="border w-full rounded-lg p-2"
+                      placeholder="Tambahkan alamat baru"
+                    />
+                  </div>
                   <button
                     type="button"
                     class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg w-full hover:bg-blue-700 transition cursor-pointer"
@@ -176,7 +185,7 @@
                   :class="selectedVehicle?.id === v.id ? 'bg-blue-100 border-blue-500' : ''"
                   @click="selectedVehicle = v"
                 >
-                  <p class="font-semibold">{{ v.merek }} {{ v.model }} {{ v.tahun }}</p>
+                  <p class="font-semibold">{{ v.merek }} {{ v.model }} {{ v.tahun_produksi }}</p>
                   <p class="text-sm text-gray-600">{{ v.no_polisi }}</p>
                 </div>
               </div>
@@ -190,6 +199,16 @@
             </div>
             <div v-if="customerVehicles.length === 0 || showNewVehicleForm" class="space-y-3">
               <h3 class="font-semibold text-gray-700 text-lg">Tambah Kendaraan Baru</h3>
+              <Select
+                v-model="vehicle.jenis_kendaraan"
+                :options="vehicleTypes"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="Pilih Jawaban"
+                class="block w-full text-gray-700 font-semibold"
+                append-to="self"
+              >
+              </Select>
               <div>
                 <label class="block text-gray-700 font-semibold mb-1">Merek</label>
                 <input
@@ -208,9 +227,9 @@
               </div>
               <div class="flex gap-4">
                 <div class="flex-1">
-                  <label class="block text-gray-700 font-semibold mb-1">Tahun</label>
+                  <label class="block text-gray-700 font-semibold mb-1">Tahun Produksi</label>
                   <input
-                    v-model="vehicle.tahun"
+                    v-model="vehicle.tahun_produksi"
                     type="number"
                     class="w-full border rounded-lg p-2"
                   />
@@ -266,10 +285,6 @@
             </div>
             <div class="flex gap-4">
               <div class="flex-1">
-                <label class="block text-gray-700 font-semibold mb-1">Estimasi</label>
-                <input v-model="servis.estimasi" type="text" class="w-full border rounded-lg p-2" />
-              </div>
-              <div class="flex-1">
                 <label class="block text-gray-700 font-semibold mb-1">Taksiran Biaya</label>
                 <input
                   v-model="servis.taksiran_biaya"
@@ -278,6 +293,10 @@
                   class="w-full border rounded-lg p-2"
                 />
               </div>
+              <div class="flex-1">
+                <label class="block text-gray-700 font-semibold mb-1">Estimasi</label>
+                <input v-model="servis.estimasi" type="text" class="w-full border rounded-lg p-2" />
+              </div>
             </div>
             <div>
               <label class="block text-gray-700 font-semibold mb-1">Tanggal Masuk</label>
@@ -285,6 +304,15 @@
                 v-model="servis.tanggal_masuk"
                 type="date"
                 class="w-full border rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label class="block font-semibold text-gray-700" for="catatan_service">Catatan Service</label>
+              <textarea
+                v-model="servis.catatan_service"
+                type="text"
+                name="catatan_service"
+                class="border w-full rounded-lg mb-1 p-2"
               />
             </div>
             <div class="flex justify-between mt-4">
@@ -313,6 +341,8 @@
 import { ref, computed } from 'vue'
 import Swal from 'sweetalert2'
 import useServiceList from '@/composables/useServiceList'
+import Select from 'primevue/select'
+import api from '@/plugins/api'
 
 const isTambahServisOpen = ref(false)
 const currentStep = ref(0)
@@ -325,16 +355,21 @@ const selectedCustomer = ref(null)
 const showNewCustomerForm = ref(false)
 const showVehicleError = ref(false)
 const isCustomerFetched = ref(false)
+const loadingServices = ref(false)
 
-const newCustomer = ref({ name: '', no_telp: '' })
+const newCustomer = ref({ name: '', no_telp: '', alamat: '' })
 
 const servis = ref({
+  vehicle_id: '',
   keluhan_pelanggan: '',
   estimasi: '',
+  status: 'menunggu',
   taksiran_biaya: '',
   tanggal_masuk: new Date().toISOString().substring(0, 10),
+  catatan_service: '',
 })
 
+// Untuk search customer
 const customers = ref([])
 
 const filteredCustomer = computed(() => {
@@ -356,6 +391,7 @@ const highlightMatch = (text) => {
 const selectCustomer = (c) => {
   selectedCustomer.value = c
   searchCustomer.value = c.name
+  showNewCustomerForm.value = false
   showCustomerList.value = false
 }
 
@@ -364,11 +400,18 @@ const selectedVehicle = ref(null)
 const showNewVehicleForm = ref(false)
 
 const vehicle = ref({
+  customer_id: '',
+  jenis_kendaraan: '',
   merek: '',
   model: '',
-  tahun: '',
+  tahun_produksi: '',
   no_polisi: '',
 })
+
+const vehicleTypes = ref([
+  { name: 'Mobil', value: 'Mobil' },
+  { name: 'Motor', value: 'Motor' }
+])
 
 const removeSelectedCustomer = () => {
   selectedCustomer.value = null
@@ -393,9 +436,9 @@ const getCustomerData = async (force = false) => {
 
 const addNewCustomer = async () => {
   try {
-    if (newCustomer.value.name && newCustomer.value.no_telp) {
+    if (newCustomer.value.name && newCustomer.value.no_telp && newCustomer.value.alamat) {
       showNewCustomerForm.value = false
-      await addCustomer(newCustomer.value.name, newCustomer.value.no_telp)
+      await addCustomer(newCustomer.value.name, newCustomer.value.no_telp, newCustomer.value.alamat)
     } else {
       showNewCustomerForm.value = true
       Swal.fire('Gagal', 'Silakan lengkapi data dahulu!', 'error')
@@ -423,13 +466,16 @@ const closeTambahServis = () => {
   customerVehicles.value = []
 
   vehicle.value = {
+    customer_id: '',
+    jenis_kendaraan: '',
     merek: '',
     model: '',
-    tahun: '',
+    tahun_produksi: '',
     no_polisi: ''
   }
 
   servis.value = {
+    vehicle_id: '',
     keluhan_pelanggan: '',
     estimasi: '',
     taksiran_biaya: '',
@@ -439,7 +485,7 @@ const closeTambahServis = () => {
 
 const goToNextStep = () => {
   if (currentStep.value === 1) {
-    const isVehicleValid = selectedVehicle.value || (vehicle.value.merek && vehicle.value.model && vehicle.value.tahun && vehicle.value.no_polisi)
+    const isVehicleValid = selectedVehicle.value || (vehicle.value.merek && vehicle.value.model && vehicle.value.tahun_produksi && vehicle.value.no_polisi)
 
     if (!isVehicleValid) {
       showVehicleError.value = true
@@ -452,8 +498,34 @@ const goToNextStep = () => {
   currentStep.value++
 }
 
-const submitServis = () => {
-  Swal.fire('Berhasil', 'Servis disubmit', 'success')
+const submitServis = async () => {
+  loadingServices.value = true
+  try {
+    Swal.fire({
+      title: 'Menyimpan...',
+      text: 'Mohon tunggu sebentar',
+      allowOutsideClick: false,
+      // didOpen: () => Swal.showLoading()
+    })
+
+    vehicle.value.customer_id = selectedCustomer.value.id;
+    const vehicleRes = await api.post('service/addVehicle', vehicle.value);
+
+    if (!vehicleRes?.data?.data?.id) {
+      throw new Error('Reponse kendaraan tidak mengembalikan ID yang valid');
+    }
+
+    servis.value.vehicle_id = vehicleRes.data.data?.id;
+    await api.post('service/addService', servis.value)
+
+    Swal.fire('Berhasil', 'Data servis berhasil disimpan', 'success')
+    closeTambahServis()
+  } catch (error) {
+    Swal.fire('Gagal', 'Gagal menyimpan data servis', 'error')
+    console.error(error)
+  } finally {
+    loadingServices.value = false
+  }
 }
 
 </script>

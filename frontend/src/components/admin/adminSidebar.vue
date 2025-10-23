@@ -11,7 +11,7 @@
       <div class="flex items-center gap-2 pt-2 pl-2 mb-2">
         <router-link to="/dashboard/admin" class="flex items-center">
           <img src="/assets/img/logo.png" alt="logo" class="w-20 h-20 rounded-4xl object-cover" />
-          <span class="font-semibold text-4xl -ml-2">PitStop</span>
+          <span class="font-semibold text-xl -ml-2">Toolroom TKR</span>
         </router-link>
   </div>
 
