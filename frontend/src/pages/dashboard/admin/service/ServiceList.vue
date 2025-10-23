@@ -1,5 +1,14 @@
 <template>
   <div class="p-6">
+    <div class="flex justify-between mb-4">
+      <h2 class="text-2xl font-bold">Daftar Service</h2>
+    </div>
+
+    <p class="text-sm text-gray-500 mb-2" v-if="lastFetched">
+      Terakhir diperbarui:
+      {{ new Date(lastFetched).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }}
+    </p>
+
     <DataTable
       :value="serviceList"
       :loading="loading"
@@ -9,20 +18,20 @@
       tableStyle="min-width: 50rem"
       stripedRows
     >
-      <Column 
-         field="vehicle_id" 
+      <Column
+         field="vehicle_id"
          header="Nomor Kendaraan"
-         
+
       >
          <template #body="slotProps">
             {{ slotProps.data.vehicle?.no_polisi || '-' }}
-         </template>   
+         </template>
       </Column>
 
       <Column field="keluhan_pelanggan" header="Keluhan Pelanggan"></Column>
 
-      <Column 
-         field="taksiran_biaya" 
+      <Column
+         field="taksiran_biaya"
          header="Taksiran Biaya"
       >
          <template #body="slotProps">
@@ -30,8 +39,8 @@
          </template>
       </Column>
 
-      <Column 
-         field="tanggal_masuk" 
+      <Column
+         field="tanggal_masuk"
          header="Tanggal Masuk"
       >
          <template #body="slotProps">
@@ -39,8 +48,8 @@
          </template>
       </Column>
 
-      <Column 
-         field="tanggal_selesai" 
+      <Column
+         field="tanggal_selesai"
          header="Tanggal Selesai"
       >
          <template #body="slotProps">
@@ -48,9 +57,9 @@
          </template>
       </Column>
 
-      <Column field="status" header="Status" class="capitalize"></Column>
-      <Column 
-         field="total_biaya_akhir" 
+      <Column field="status" header="Status" class="capitalize font-bold"></Column>
+      <Column
+         field="total_biaya_akhir"
          header="Total Biaya Akhir"
       >
          <template #body="slotProps">
@@ -68,7 +77,8 @@ import Column from 'primevue/column'
 import useServiceList from '@/composables/useServiceList'
 import Swal from 'sweetalert2'
 
-const { serviceList, loading, error, fetchServiceList } = useServiceList()
+const { serviceList, loading, error, fetchServiceList, lastFetched } = useServiceList()
+
 
 const formatBiaya = (rowData, field) => {
    const value = rowData[field]
@@ -95,7 +105,7 @@ const formatTanggal = (rowData, field) => {
    return `${day}-${month}-${year}`
 }
 
-onMounted( async () => {
+onMounted(async () => {
    await fetchServiceList()
    if (error.value) {
       Swal.fire({ icon: 'error', title: 'Error', text:error.value })

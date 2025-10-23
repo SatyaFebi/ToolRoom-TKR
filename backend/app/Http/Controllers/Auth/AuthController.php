@@ -285,7 +285,6 @@ class AuthController extends Controller
                 'name' => $payload->get('name') ?? null,
                 'email' => $payload->get('email') ?? null
             ];
-            Log::info('Waktu autentikasi : ' . (microtime(true) - $start) . ' detik');
 
             if (!$user) {
                 return response()->json([

@@ -14,17 +14,23 @@
             "active": false,
             "children": [
                 {
+                    "title": "Kategori Barang",
+                    "link": "/dashboard/admin/inventory/kategori-barang",
+                    "type": "link",
+                    "active": false
+                },
+                {
                     "title": "Data Barang",
                     "link": "/dashboard/admin/inventory/data-barang",
                     "type": "link",
                     "active": false
                 },
                 {
-                    "title": "Kategori Barang",
-                    "link": "/dashboard/admin/inventory/kategori-barang",
+                    "title": "Peminjaman Barang",
+                    "link": "/dashboard/admin/inventory/peminjaman-barang",
                     "type": "link",
                     "active": false
-                }
+                }                
             ]
         },
         {

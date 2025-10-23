@@ -13,8 +13,6 @@ class ServiceOrderController extends Controller
     {
         $service = ServiceOrder::with('vehicle')->get();
 
-        dd($service->toArray());
-
         return response()->json([
             'success' => true,
             'data' => $service
@@ -48,5 +46,28 @@ class ServiceOrderController extends Controller
                 'message' => 'Gagal menambahkan data service order : ' . $e
             ], 400);
         }
+    }
+
+    // public function edit($id, Request $request)
+    // {
+    //     try {
+    //         $data = ServiceOrder::findOrFail($id);
+    //         $validated = $request->validate([
+
+    //         ]);
+    //     } catch (\Exception $e) {
+
+    //     }
+    // }
+
+    public function delete($id)
+    {
+        $data = ServiceOrder::findOrFail($id);
+        $data->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data service berhasil dihapus!'
+        ]);
     }
 }

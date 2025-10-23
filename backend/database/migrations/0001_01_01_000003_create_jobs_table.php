@@ -34,7 +34,7 @@ return new class extends Migration
             $table->integer('finished_at')->nullable();
         });
 
-        Schema::connection('tkr_inventory_management')->create('failed_jobtable: s', function (Blueprint $table) {
+        Schema::connection('tkr_inventory_management')->create('failed_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
             $table->text('connection');

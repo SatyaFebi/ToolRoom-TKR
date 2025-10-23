@@ -13,9 +13,10 @@ class Vehicles extends Model
 
     protected $fillable = [
         'customer_id',
+        'jenis_kendaraan',
         'merek',
         'model',
-        'tahun',
+        'tahun_produksi',
         'no_polisi'
     ];
 
