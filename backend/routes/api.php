@@ -11,6 +11,8 @@ use App\Http\Controllers\Service\ServiceOrderController;
 use App\Http\Controllers\Service\VehiclesController;
 use App\Http\Controllers\Service\CustomerController;
 use App\Models\Service\ServiceOrder;
+use App\Http\Controllers\Inventory\BarangController;
+use App\Http\Controllers\Inventory\KategoriBarangController;
 use Illuminate\Support\Facades\Request;
 
 // ================= PUBLIC ROUTES =================
@@ -43,6 +45,8 @@ Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(fun
     Route::apiResource('item-categories', ItemCategoryController::class);
     Route::apiResource('items', ItemController::class);
     Route::apiResource('stock-movements', StockMovementController::class);
+    Route::apiResource('barang', BarangController::class);
+    Route::apiResource('kategori-barang', KategoriBarangController::class);
 });
 
 
