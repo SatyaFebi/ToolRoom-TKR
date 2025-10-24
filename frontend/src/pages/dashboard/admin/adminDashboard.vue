@@ -155,7 +155,7 @@
                   </div>
                   <button
                     type="button"
-                    class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg w-full hover:bg-blue-700 transition cursor-pointer"
+                    class="bg-green-600 text-white font-semibold px-4 py-2 rounded-lg w-full hover:bg-green-700 transition cursor-pointer"
                     @click="addNewCustomer"
                   >
                     Simpan Pelanggan
@@ -505,10 +505,15 @@ const submitServis = async () => {
       title: 'Menyimpan...',
       text: 'Mohon tunggu sebentar',
       allowOutsideClick: false,
-      // didOpen: () => Swal.showLoading()
     })
 
-    vehicle.value.customer_id = selectedCustomer.value.id;
+    let vehicleId = selectedVehicle.value?.id
+
+    if (!vehicleId) {
+      vehicle.value.customer_id = selectCustomer.value.id
+    }
+
+    // vehicle.value.customer_id = selectedCustomer.value.id;
     const vehicleRes = await api.post('service/addVehicle', vehicle.value);
 
     if (!vehicleRes?.data?.data?.id) {

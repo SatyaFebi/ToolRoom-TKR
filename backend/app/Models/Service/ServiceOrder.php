@@ -27,13 +27,13 @@ class ServiceOrder extends Model
         'total_biaya_akhir'
     ];
 
-    public function vehicle()
+    public function vehicles()
     {
         return $this->belongsTo(Vehicles::class, 'vehicle_id', 'id');
     }
 
     public function getNoPolisiAttribute()
     {
-      return $this->vehicle ? $this->vehicle->no_polisi : null;
+      return $this->vehicles ? $this->vehicles->no_polisi : null;
     }
 }

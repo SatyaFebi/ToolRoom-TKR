@@ -88,6 +88,16 @@
               {{ formatBiaya(slotProps.data, 'total_biaya_akhir') }}
           </template>
         </Column>
+        <Column
+          header="Action"
+        >
+        <template #body="slotProps">
+          <div class="flex gap-2">
+            <button @click="editData(slotProps.data)" type="button" class="border rounded-lg py-1 px-5 bg-green-600 text-white font-semibold cursor-pointer hover:bg-green-500 duration-200">Edit</button>
+            <button @click="deleteData(slotProps.data)" type="button" class="border rounded-lg py-1 px-5 bg-red-600 text-white font-semibold cursor-pointer hover:bg-red-500 duration-200">Hapus</button>
+          </div>
+        </template>
+        </Column>
       </DataTable>
     </div>
   </div>
