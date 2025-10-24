@@ -13,4 +13,9 @@ class Customers extends Model
         'no_telp',
         'alamat'
     ];
+
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicles::class);
+    }
 }

@@ -1,6 +1,6 @@
-# PitStop 🚗🛠️
+# ToolRoom TKR 🚗🛠️
 
-PitStop adalah aplikasi web untuk manajemen servis kendaraan dan inventaris suku cadang.  
+ToolRoom TKR adalah aplikasi web untuk manajemen servis kendaraan dan inventaris suku cadang.  
 Frontend-nya menggunakan **Vue.js**, backend-nya menggunakan **Laravel (PHP)**.
 
 ---
@@ -48,8 +48,8 @@ Frontend-nya menggunakan **Vue.js**, backend-nya menggunakan **Laravel (PHP)**.
 
 1. Clone repo  
    ```bash
-   git clone https://github.com/SatyaFebi/PitStop.git
-   cd PitStop
+   git clone https://github.com/SatyaFebi/ToolRoom TKR.git
+   cd ToolRoom TKR
 2. Setup backend
    ```bash
    cd backend  

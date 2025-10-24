@@ -29,7 +29,10 @@ class ServiceOrderController extends Controller
                 'estimasi' => 'nullable|string',
                 'tanggal_masuk' => 'required|date',
                 'tanggal_selesai' => 'nullable|date',
-                'status' => 'required|in:menunggu,dikerjakan,selesai,dibatalkan',
+                'status' => 'nullable|in:menunggu,dikerjakan,selesai,dibatalkan',
+                'pembayaran' => 'nullable|string|in:cash,credit_card,debit_card,e-wallet,qris,transfer',
+                'penggantian_part_material' => 'nullable|string|in:langsung,izin',
+                'catatan_service' => 'nullable|string',
                 'total_biaya_akhir' => 'nullable|numeric'
             ]);
 

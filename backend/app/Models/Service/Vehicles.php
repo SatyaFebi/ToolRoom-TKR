@@ -24,4 +24,9 @@ class Vehicles extends Model
     {
         return $this->belongsTo(Customers::class, 'customer_id');
     }
+
+    public function serviceOrders()
+    {
+        return $this->hasMany(ServiceOrder::class);
+    }
 }
