@@ -30,10 +30,10 @@ export default function useServiceList() {
     Swal.fire('Updated!', 'Data service telah diperbarui', 'success')
   }
 
-  const addCustomer = async (name, no_telp) => {
+  const addCustomer = async (name, no_telp, alamat) => {
     try {
-      await service.addCustomer(name, no_telp)
-      await this.fetchServiceList(true)
+      await service.addCustomer(name, no_telp, alamat)
+      await fetchServiceList(true)
       Swal.fire('Berhasil!', 'Berhasil menambahkan customer', 'success')
     } catch (e) {
       console.error('Gagal menambah user : ', e)

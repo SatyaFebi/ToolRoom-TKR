@@ -39,11 +39,12 @@ class VehiclesController extends Controller
                 ]
             ]);
 
-            Vehicles::create($validated);
+            $vehicle = Vehicles::create($validated);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berhasil menambah data kendaraan'
+                'message' => 'Berhasil menambah data kendaraan',
+                'data' => $vehicle
             ], 201);
         } catch (\Exception $e) {
             Log::error('Error ketika menambah data kendaraan : ' . $e);

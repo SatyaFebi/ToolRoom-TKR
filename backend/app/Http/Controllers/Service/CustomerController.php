@@ -40,7 +40,8 @@ class CustomerController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berhasil menambahkan data customer!'
+                'message' => 'Berhasil menambahkan data customer!',
+                'data' => $validated
             ], 201);
         } catch (\Exception $e) {
             Log::error('Gagal menambahkan customer!' . $e);
