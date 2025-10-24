@@ -10,13 +10,13 @@
 
       <div class="flex items-center gap-2 pt-2 pl-2 mb-2">
         <router-link to="/dashboard/admin" class="flex items-center">
-          <img src="/assets/img/logo.png" alt="logo" class="w-20 h-20 rounded-4xl object-cover" />
-          <span class="font-semibold text-xl -ml-2">Toolroom TKR</span>
+          <img src="/assets/img/logo.png" alt="logo" class="w-16 h-16 rounded-4xl object-cover" />
+          <span class="font-semibold text-2xl">Toolroom TKR</span>
         </router-link>
   </div>
 
     <!-- Sidebar menu -->
-    <div class="pt-0 px-4 pb-2">
+    <div class="pt-4 px-4 pb-2">
       <div v-for="(menu, i) in sidebarData.uiLink" :key="i" class="">
 
         <!-- Single link (Dashboard, dll.) -->
