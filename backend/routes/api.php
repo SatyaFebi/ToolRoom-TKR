@@ -41,13 +41,19 @@ Route::prefix('admin')->group(function () {
 
 // ================= INVENTORY ROUTES =================
 Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(function () {
-    Route::apiResource('item-types', ItemTypeController::class);
-    Route::apiResource('item-categories', ItemCategoryController::class);
-    Route::apiResource('items', ItemController::class);
-    Route::apiResource('stock-movements', StockMovementController::class);
-    Route::apiResource('barang', BarangController::class);
-    Route::apiResource('kategori-barang', KategoriBarangController::class);
+
+Route::get('DataBarang', [BarangController::class, 'index']);
+Route::post('TambahDataBarang', [BarangController::class, 'store']);
+Route::post('EditDataBarang/{id}', [BarangController::class, 'update']);
+Route::post('HapusDataBarang/{id}', [BarangController::class, 'destroy']);
+
+
+Route::get('KategoriBarang', [KategoriBarangController::class, 'index']);
+Route::post('TambahKategoriBarang', [KategoriBarangController::class, 'store']);
+Route::post('HapusKategoriBarang/{id}', [KategoriBarangController::class, 'destroy']);
+
 });
+
 
 
 // ================= SERVICE ROUTES =================
