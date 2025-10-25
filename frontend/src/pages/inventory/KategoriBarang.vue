@@ -1,140 +1,105 @@
 <template>
   <div class="lg:col-span-6 card rounded-2xl bg-white p-9 mt-6">
-    <h3 class="text-lg font-bold text-slate-900">Tambah Kategori Barang</h3>
+    <h3 class="text-lg font-bold text-slate-900 mb-4">Tambah Kategori Barang</h3>
 
-    <form
-      id="formBarang"
-      class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6"
-      @submit.prevent="handleSubmit"
-    >
-      <!-- Nama Barang -->
+    <form @submit.prevent="handleSubmit" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
         <label class="block text-sm text-slate-600 mb-1">Kategori Barang</label>
         <input
           v-model="form.nama"
           required
-          name="nama"
           type="text"
-          class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
-          placeholder="Contoh: Alat berat"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Contoh: Elektronik"
         />
       </div>
 
-      <!-- Kode Barang -->
       <div>
-        <label class="block text-sm text-slate-600 mb-1">Kode Barang</label>
+        <label class="block text-sm text-slate-600 mb-1">Kode Kategori</label>
         <input
           v-model="form.kode"
           required
-          name="kode"
           type="text"
-          class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
-          placeholder="Contoh: BRG-001"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Contoh: KT-001"
         />
       </div>
 
-      <!-- Tombol Simpan -->
-      <div class="sm:col-span-2 flex items-center justify-end gap-2">
+      <div class="sm:col-span-2 flex justify-end">
         <button
           type="submit"
-          class="px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-        >
+          class="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition">
           Simpan
         </button>
       </div>
     </form>
 
-    <!-- Daftar Barang -->
-     <div class="mt-6">
-  <h4 class="font-semibold text-slate-900">Daftar Barang</h4>
-
-  <div class="mt-3 overflow-auto rounded-xl border border-slate-300">
-    <table class="min-w-full text-sm table-auto border-collapse">
-      <!-- Header -->
-      <thead class="bg-[var(--primary)]/10 text-[var(--primary)]">
-        <tr>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">No</th>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">Kategori Barang</th>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">Kode Barang</th>
-          <th class="text-center px-4 py-2">Aksi</th>
-        </tr>
-      </thead>
-
-      <!-- Body -->
-      <tbody>
-        <tr
-          v-for="(item, index) in items"
-          :key="index"
-          class="border-b-2 border-slate-300"
-        >
-          <td class="text-center px-4 py-2 border-r-2 border-slate-200 text-slate-700">
-            {{ index + 1 }}
-          </td>
-          <td class="text-center px-4 py-2 border-r-2 border-slate-200 text-slate-700">
-            {{ item.nama }}
-          </td>
-          <td class="text-center px-4 py-2 border-r-2 border-slate-200 text-slate-700">
-            {{ item.kode }}
-          </td>
-          <td class="text-center px-4 py-2 text-slate-700">
-            <!-- <button
-              @click="editItem(index)"
-              class="text-blue-600 hover:underline mr-3"
-            >
-              Edit
-            </button> -->
-            <button
-              @click="deleteItem(index)"
-              class="px-3 py-1 rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors"
-            >
-              Hapus
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
+    <div class="mt-8">
+      <h4 class="font-semibold text-slate-900 mb-2">Daftar Kategori</h4>
+      <div class="overflow-auto rounded-xl border border-slate-300">
+        <table class="min-w-full text-sm">
+          <thead class="bg-blue-50 text-blue-700">
+            <tr>
+              <th class="px-4 py-2 border">No</th>
+              <th class="px-4 py-2 border">Kategori Barang</th>
+              <th class="px-4 py-2 border">Kode</th>
+              <th class="px-4 py-2 border">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in items" :key="index" class="border">
+              <td class="text-center px-4 py-2">{{ index + 1 }}</td>
+              <td class="px-4 py-2">{{ item.nama }}</td>
+              <td class="text-center px-4 py-2">{{ item.kode }}</td>
+              <td class="text-center px-4 py-2">
+                <button
+                  @click="deleteItem(index)"
+                  class="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
+                  Hapus
+                </button>
+              </td>
+            </tr>
+            <tr v-if="items.length === 0">
+              <td colspan="4" class="text-center text-slate-500 py-3">Belum ada data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <transition name="fade">
+      <div
+        v-if="showToast"
+        class="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        {{ toastMessage }}
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-const form = ref({
-  nama: '',
-  kode: '',
-  jenis: ''
-})
-
+const form = ref({ nama: '', kode: '' })
 const items = ref([])
 const showToast = ref(false)
 const toastMessage = ref('')
 
-
+const handleSubmit = () => {
+  items.value.push({ ...form.value })
+  toastMessage.value = 'Kategori berhasil ditambahkan!'
+  showToast.value = true
+  setTimeout(() => (showToast.value = false), 2000)
+  form.value = { nama: '', kode: '' }
+}
 
 const deleteItem = (index) => {
   items.value.splice(index, 1)
 }
-
-
-const handleSubmit = () => {
-  if (!form.value.nama || !form.value.kode) return
-
-  items.value.push({
-    nama: form.value.nama,
-    kode: form.value.kode,
-    jenis: form.value.jenis || '—'
-  })
-
-  toastMessage.value = 'Barang berhasil ditambahkan!'
-  showToast.value = true
-
-  setTimeout(() => {
-    showToast.value = false
-  }, 3000)
-
-  form.value = { nama: '', kode: '', jenis: '' }
-}
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active { transition: opacity 1s; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }
+</style>

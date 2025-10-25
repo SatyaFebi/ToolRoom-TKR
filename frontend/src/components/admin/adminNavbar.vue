@@ -1,110 +1,90 @@
 <template>
-   <div
-    class="fixed top-0 left-0 right-0 bg-[#12385f] shadow z-30 flex items-center justify-end md:justify-between px-8 md:px-12 py-4"
+  <nav
+    class="fixed top-0 left-0 right-0 h-20 bg-gradient-to-r from-blue-300 to-white shadow-lg shadow-blue-200/40 z-30 flex items-center px-6 md:px-12 backdrop-blur-sm"
   >
-    <!-- Tombol toggle sidebar (mobile) -->
-    <button class="md:hidden text-white text-xl mr-auto" @click="$emit('toggleSidebar')">
+    <!-- Tombol Sidebar (Mobile) -->
+    <button 
+      class="md:hidden text-white text-2xl mr-4 hover:scale-110 transition" 
+      @click="$emit('toggleSidebar')"
+    >
       ☰
     </button>
 
-    <!-- Teks selamat datang (posisi dekat sidebar) -->
-    <div
-      class="absolute left-[280px] text-white font-medium text-xl hidden md:block"
-    >
+    <!-- Teks Selamat Datang -->
+    <h2 class="hidden md:block ml-64 text-gray-800 font-bold text-xl tracking-wide drop-shadow-sm ">
       Selamat datang, {{ userName }}
-    </div>
+    </h2>
 
-    <!-- Bagian kanan (notifikasi + profil) -->
+    <!-- Bagian kanan -->
     <div class="flex items-center gap-6 ml-auto">
       <!-- Notifikasi -->
-      <div class="relative cursor-pointer">
-        <span
-          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full"
-          >99+</span
-        >
-        🔔
+      <div class="relative cursor-pointer group">
+        <BellIcon class="w-7 h-7 text-gray-700 group-hover:text-blue-600 transition-all duration-200" />
+        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full shadow">
+          99+
+        </span>
       </div>
 
       <!-- Profil -->
       <div class="relative">
         <button
           @click="isProfileOpen = !isProfileOpen"
-          class="flex items-center gap-2 focus:outline-none cursor-pointer p-2 rounded-lg"
+          class="flex items-center gap-3 hover:bg-blue-100/30 px-3 py-2 rounded-lg transition"
         >
-          <img src="/assets/img/clown.jpeg" class="w-9 h-9 rounded-full border" alt="profile"/>
-          <span class="hidden md:inline text-white font-semibold text-sm">{{ userName }}</span>
+          <img 
+            src="/assets/img/clown.jpeg" 
+            class="w-10 h-10 rounded-full border-2 border-white shadow" 
+          />
+          <span class="hidden md:inline text-gray-800 font-medium">{{ userName }}</span>
         </button>
 
         <!-- Dropdown -->
         <transition
-          enter-active-class="transition ease-out duration-200"
-          enter-from-class="opacity-0 translate-y-1"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition ease-in duration-150"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 translate-y-1"
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="transform opacity-0 -translate-y-2"
+          enter-to-class="transform opacity-100 translate-y-0"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="transform opacity-100 translate-y-0"
+          leave-to-class="transform opacity-0 -translate-y-2"
         >
           <div
             v-if="isProfileOpen"
-            class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 z-40"
+            class="absolute right-0 mt-3 w-52 bg-white border rounded-lg shadow-lg py-2 z-50"
           >
-            <a
-              href="/dashboard/admin/update"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >Update Profile</a
-            >
-            <a
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >Ganti Password</a
-            >
-            <a
-              href="#"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >Activity Logs</a
-            >
+            <a href="/dashboard/admin/update" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Update Profile</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Ganti Password</a>
+            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Activity Logs</a>
+
             <form @submit.prevent="handleLogout">
-              <button
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >Logout
-              </button>
+              <button class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50">Logout</button>
             </form>
           </div>
         </transition>
       </div>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue"
-import useAuth from '@/composables/useAuth'
-import router from '@/router'
+import { BellIcon } from "@heroicons/vue/24/outline"
 import { jwtDecode } from "jwt-decode"
+import useAuth from "@/composables/useAuth"
+import router from "@/router"
 
 const isProfileOpen = ref(false)
-const successMessage = ref('')
-const errorMessage = ref('')
-const isLoading = ref(false)
+const userName = ref("")
 const { logout } = useAuth()
-const userName = ref('')
 
 const handleLogout = async () => {
-    successMessage.value = ''
-    errorMessage.value = ''
-    isLoading.value = true
-    try {
-        await logout()
-        successMessage.value = 'Logout sukses! Mengalihkan...'
-        router.push('/login')
-    } catch (err) {
-        errorMessage.value = err.response?.data?.message || 'Logout gagal. Silakan coba lagi.'
-    } finally {
-        isLoading.value = false
-    }
+  try {
+    await logout()
+    router.push("/login")
+  } catch (err) {
+    console.error(err)
+  }
 }
 
-// Biar dropdown ketutup pas klik di luar
 const handleClickOutside = (e) => {
   if (!e.target.closest(".relative")) {
     isProfileOpen.value = false
@@ -112,16 +92,15 @@ const handleClickOutside = (e) => {
 }
 
 onMounted(() => {
-   const token = localStorage.getItem('authToken')
-   if (token) {
-      try {
-         const decoded = jwtDecode(token)
-         userName.value = decoded.name || decoded.sub
-      } catch (err) {
-         console.error('Invalid token', err)
-      }
-   }
-
+  const token = localStorage.getItem("authToken")
+  if (token) {
+    try {
+      const decoded = jwtDecode(token)
+      userName.value = decoded.name || decoded.sub || "User"
+    } catch {
+      userName.value = "User"
+    }
+  }
   window.addEventListener("click", handleClickOutside)
 })
 </script>

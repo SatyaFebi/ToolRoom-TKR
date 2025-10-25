@@ -1,196 +1,119 @@
 <template>
   <div class="lg:col-span-6 card rounded-2xl bg-white p-9 mt-6">
-    <h3 class="text-lg font-bold text-slate-900">Tambah Barang</h3>
-    <form id="formBarang" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4" @submit.prevent="handleSubmit">
+    <h3 class="text-lg font-bold text-slate-900 mb-4">Tambah Barang</h3>
+
+    <form @submit.prevent="handleSubmit" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
         <label class="block text-sm text-slate-600 mb-1">Nama Barang</label>
         <input
           v-model="form.nama"
           required
-          name="nama"
           type="text"
-          class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Contoh: Laptop"
         />
       </div>
+
       <div>
         <label class="block text-sm text-slate-600 mb-1">Jenis Barang</label>
         <input
           v-model="form.jenis"
           required
-          name="jenis"
           type="text"
-          class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Contoh: Elektronik"
         />
       </div>
+
       <div>
         <label class="block text-sm text-slate-600 mb-1">Kode Barang</label>
         <input
           v-model="form.kode"
           required
-          name="kode"
           type="text"
-          class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Contoh: BRG-001"
         />
       </div>
-      <div class="sm:col-span-3 flex items-center justify-end gap-2">
+
+      <div class="sm:col-span-2 flex justify-end">
         <button
           type="submit"
-           class="px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-        >
+          class="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition">
           Simpan
         </button>
       </div>
     </form>
 
-
-     <div class="mt-6">
-  <h4 class="font-semibold text-slate-900">Daftar Barang</h4>
-
-  <div class="mt-3 overflow-auto rounded-xl border border-slate-300">
-    <table class="min-w-full text-sm table-auto border-collapse">
-      <!-- Header -->
-      <thead class="bg-[var(--primary)]/10 text-[var(--primary)]">
-        <tr>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">No</th>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">Jenis Barang</th>
-          <th class="text-center px-4 py-2 border-r-2 border-slate-300">Kode Barang</th>
-          <th class="text-center px-4 py-2">Aksi</th>
-        </tr>
-      </thead>
-
-      <!-- Body -->
-      <tbody>
-        <tr
-          v-for="(item, index) in items"
-          :key="index"
-          class="border-b-2 border-slate-300"
-        >
-          <td class="text-center px-4 py-2 border-r-2 border-slate-200 text-slate-700">
-            {{ index + 1 }}
-          </td>
-          <td class="text-center px-4 py-2 border-r-2 border-slate-200 text-slate-700">
-            {{ item.nama }}
-          </td>
-          <td class="text-center px-4 py-2 border-r-2 border-slate-200 text-slate-700">
-            {{ item.kode }}
-          </td>
-          <td class="text-center px-4 py-2 text-slate-700">
-            <button
-              @click="editItem(index)"
-              class="px-2 py-1 rounded-md mr-2 bg-yellow-600 text-white hover:bg-red-700 transition-colors"
-            >
-              Edit
-            </button>
-            <button
-              @click="deleteItem(index)"
-              class="px-2 py-1 rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors"
-            >
-              Hapus
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-    <!-- Toast -->
-    <div
-      v-if="showToast"
-      class="fixed bottom-4 right-4 z-50 rounded-xl bg-slate-900 text-white px-4 py-3 shadow-lg flex items-center gap-2"
-    >
-      <svg viewBox="0 0 24 24" class="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-      <span class="text-sm">{{ toastMessage }}</span>
+    <div class="mt-8">
+      <h4 class="font-semibold text-slate-900 mb-2">Daftar Barang</h4>
+      <div class="overflow-auto rounded-xl border border-slate-300">
+        <table class="min-w-full text-sm">
+          <thead class="bg-blue-50 text-blue-700">
+            <tr>
+              <th class="px-4 py-2 border">No</th>
+              <th class="px-4 py-2 border">Nama Barang</th>
+              <th class="px-4 py-2 border">Jenis Barang</th>
+              <th class="px-4 py-2 border">Kode</th>
+              <th class="px-4 py-2 border">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in items" :key="index" class="border">
+              <td class="text-center px-4 py-2">{{ index + 1 }}</td>
+              <td class="px-4 py-2">{{ item.nama }}</td>
+              <td class="px-4 py-2">{{ item.jenis }}</td>
+              <td class="text-center px-4 py-2">{{ item.kode }}</td>
+              <td class="text-center px-4 py-2">
+                <button
+                  @click="deleteItem(index)"
+                  class="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
+                  Hapus
+                </button>
+              </td>
+            </tr>
+            <tr v-if="items.length === 0">
+              <td colspan="5" class="text-center text-slate-500 py-3">Belum ada data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <transition name="fade">
+      <div
+        v-if="showToast"
+        class="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        {{ toastMessage }}
+      </div>
+    </transition>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'AddItem',
+<script setup>
+import { ref } from 'vue'
 
+const form = ref({ nama: '', jenis: '', kode: '' })
+const items = ref([])
+const showToast = ref(false)
+const toastMessage = ref('')
 
-  
-  data() {
-    return {
-      form: {
-        nama: '',
-        jenis: '',
-        kode: ''
-      },
-      items: [],
-      showToast: false,
-      toastMessage: '',
-      toastTimer: null,
-      isEditing: false,   
-      editIndex: null
-    };
-  },
-  methods: {
-     handleSubmit() {
-    if (this.form.nama && this.form.jenis && this.form.kode) {
-      if (this.isEditing) {
-        // Update item yang sedang diedit
-        this.items.splice(this.editIndex, 1, { ...this.form });
-        this.showToastMessage('Barang diperbarui');
-      } else {
-        // Tambah item baru
-        this.items.push({ ...this.form });
-        this.showToastMessage('Barang tersimpan');
-      }
-      this.resetForm();
-    }
-  },
-
-  editItem(index) {
-    this.form = { ...this.items[index] };
-    this.isEditing = true;
-    this.editIndex = index;
-  },
-
-  deleteItem(index) {
-    this.items.splice(index, 1);
-    this.showToastMessage('Barang dihapus');
-    // Kalau sedang mengedit item yang dihapus, reset form
-    if (this.isEditing && this.editIndex === index) {
-      this.resetForm();
-    }
-  },
-
-  resetForm() {
-    this.form = { nama: '', jenis: '', kode: '' };
-    this.isEditing = false;
-    this.editIndex = null;
-  },
-
-  showToastMessage(message) {
-    this.toastMessage = message;
-    this.showToast = true;
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toastTimer = setTimeout(() => {
-      this.showToast = false;
-    }, 2200);
-  }
+const handleSubmit = () => {
+  items.value.push({ ...form.value })
+  toastMessage.value = 'Barang berhasil ditambahkan!'
+  showToast.value = true
+  setTimeout(() => (showToast.value = false), 2000)
+  form.value = { nama: '', jenis: '', kode: '' }
 }
 
-};
+const deleteItem = (index) => {
+  items.value.splice(index, 1)
+}
 </script>
 
-<style scoped>
-:root {
-  --primary: #3d6195;
-  --primary-dark: #2f4d78;
-  --primary-darker: #243c5d;
-  --primary-soft: #edf2fb;
-}
-
-.card {
-  box-shadow: 0 8px 24px rgba(61, 97, 149, 0.08), 0 2px 6px rgba(61, 97, 149, 0.05);
-}
+<style>
+.fade-enter-active,
+.fade-leave-active { transition: opacity 0.5s; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }
 </style>
