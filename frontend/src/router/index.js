@@ -22,11 +22,17 @@ const routes = [
     name: 'Login',
     component: adminLogin
   },
-  {
-    path: '/',
-    name: 'LandingPage',
-    component: () => import('@/layouts/LandingPageLayout.vue')
-  },
+{
+  path: '/',
+  component: () => import('@/layouts/LandingPageLayout.vue'),
+  children: [
+    {
+      path: '',
+      name: 'LandingPage',
+      component: () => import('@/pages/LandingPage.vue')
+    }
+  ]
+},
 
   // Dashboard Root
   {
@@ -41,7 +47,7 @@ const routes = [
       },
       {
         path: 'update',
-        name: 'AdminUpdate',
+        name: 'adminUpdate',
         component: adminUpdate
       },
       {
