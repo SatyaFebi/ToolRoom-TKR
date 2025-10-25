@@ -7,9 +7,9 @@ import adminLogin from '@/pages/auth/loginPage.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // Pages
-import adminDashboard from '@/pages/dashboard/admin/AdminDashboard.vue'
+import adminDashboard from '@/pages/dashboard/admin/adminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
-import adminUpdate from '@/pages/auth/AdminUpdate.vue'
+import adminUpdate from '@/pages/auth/adminUpdate.vue'
 // import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
 import DataBarang from '@/pages/inventory/DataBarang.vue'
 import KategoriBarang from '@/pages/inventory/KategoriBarang.vue'
@@ -21,6 +21,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: adminLogin
+  },
+  {
+    path: '/',
+    name: 'LandingPage',
+    component: () => import('@/layouts/LandingPageLayout.vue')
   },
 
   // Dashboard Root
