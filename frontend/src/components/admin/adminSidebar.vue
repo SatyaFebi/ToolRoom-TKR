@@ -1,77 +1,72 @@
 <template>
-  <div
-    :class="[
-      'fixed top-0 left-0 h-full bg-white shadow-lg z-40 transition-transform duration-300',
+  <aside
+    :class="[ 
+      'fixed top-0 left-0 h-full shadow-lg z-40 transition-transform duration-300 ease-in-out backdrop-blur-sm',
       isOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64',
-      'md:translate-x-0 md:w-64'
+      'md:translate-x-0 md:w-64',
+      'bg-gradient-to-b from-blue-200 to-white border-r border-blue-100'
     ]"
   >
-    <!-- Sidebar header -->
+    <!-- Header -->
+    <div class="flex items-center gap-2 pt-4 pl-4 mb-6">
+      <router-link to="/dashboard/admin" class="flex items-center">
+        <img src="/assets/img/logo.png" alt="logo" class="w-14 h-14 rounded-2xl object-cover shadow-md" />
+        <span class="ml-3 font-bold text-2xl text-gray-800 tracking-tight">Toolroom TKR</span>
+      </router-link>
+    </div>
 
-      <div class="flex items-center gap-2 pt-2 pl-2 mb-2">
-        <router-link to="/dashboard/admin" class="flex items-center">
-          <img src="/assets/img/logo.png" alt="logo" class="w-16 h-16 rounded-4xl object-cover" />
-          <span class="font-semibold text-2xl">Toolroom TKR</span>
-        </router-link>
-  </div>
-
-    <!-- Sidebar menu -->
-    <div class="pt-4 px-4 pb-2">
-      <div v-for="(menu, i) in sidebarData.uiLink" :key="i" class="">
-
-        <!-- Single link (Dashboard, dll.) -->
+    <!-- Menu -->
+    <nav class="px-4 space-y-2">
+      <div v-for="(menu, i) in sidebarData.uiLink" :key="i">
+        <!-- Single Link -->
         <template v-if="menu.type === 'link'">
           <router-link
             :to="menu.link"
-            class="flex items-center gap-3 p-2 rounded hover:bg-blue-700 hover:text-white"
-            exact-active-class="font-semibold text-blue-600 bg-blue-100"
+            class="group flex items-center gap-3 p-3 rounded-xl text-gray-700 transition-all duration-300 hover:translate-x-2 hover:bg-blue-100 hover:text-blue-700"
+            exact-active-class="bg-blue-100 text-blue-700 font-semibold shadow-inner"
           >
-            <font-awesome-icon :icon="menu.icon" />
-            {{ menu.title }}
+            <font-awesome-icon :icon="menu.icon" class="text-gray-500 group-hover:text-blue-600 transition-colors duration-300" />
+            <span class="font-medium">{{ menu.title }}</span>
           </router-link>
         </template>
 
-        <!-- Sub menu (Inventory, Services, Operasi) -->
+        <!-- Submenu -->
         <template v-else-if="menu.type === 'sub'">
           <div>
             <!-- Parent -->
             <div
-              class="flex items-center gap-3 py-3 px-2 rounded cursor-pointer hover:bg-blue-700 hover:text-white"
+              class="flex items-center gap-3 p-3 rounded-xl text-gray-700 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-all duration-300"
               @click="toggleExpand(i)"
             >
-              <font-awesome-icon :icon="menu.icon" />
-              {{ menu.title }}
-
+              <font-awesome-icon :icon="menu.icon" class="text-gray-500 group-hover:text-blue-600" />
+              <span class="font-medium">{{ menu.title }}</span>
               <font-awesome-icon
                 :icon="['fas', 'chevron-right']"
-                class="ml-auto transition-transform duration-300"
-                :class="{ 'rotate-90': expandedIndex === i }"
+                class="ml-auto text-gray-400 transition-transform duration-300"
+                :class="{ 'rotate-90 text-blue-600': expandedIndex === i }"
               />
             </div>
 
             <!-- Children -->
-            <div
-              class="submenu ml-6"
-              :class="{ open: expandedIndex === i }"
-            >
-              <router-link
-                v-for="(child, j) in menu.children"
-                :key="j"
-                :to="child.link"
-                class="block p-2 pl-4 rounded hover:bg-blue-700 hover:text-white"
-                active-class="text-blue-600 font-semibold bg-blue-100"
-              >
-                {{ child.title }}
-              </router-link>
-            </div>
+            <transition name="slide-fade">
+              <div v-if="expandedIndex === i" class="ml-6 mt-1 space-y-1">
+                <router-link
+                  v-for="(child, j) in menu.children"
+                  :key="j"
+                  :to="child.link"
+                  class="block p-2 pl-4 rounded-lg hover:bg-blue-50 hover:text-blue-700 text-gray-600 transition-all duration-300"
+                  active-class="bg-blue-100 text-blue-700 font-semibold shadow-inner"
+                >
+                  {{ child.title }}
+                </router-link>
+              </div>
+            </transition>
           </div>
         </template>
-
       </div>
-    </div>
-  </div>
+    </nav>
+  </aside>
 </template>
-
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -85,32 +80,26 @@ const toggleExpand = (i) => {
   expandedIndex.value = expandedIndex.value === i ? null : i
 }
 
-defineProps({
-  isOpen: Boolean
-})
+defineProps({ isOpen: Boolean })
 
 onMounted(() => {
   sidebarData.uiLink.forEach((menu, i) => {
     if (menu.type === 'sub') {
-      const isActiveChild = menu.children.some((child) =>
-        route.path.startsWith(child.link)
-      )
-      if (isActiveChild) {
-        expandedIndex.value = i
-      }
+      const isActiveChild = menu.children.some((child) => route.path.startsWith(child.link))
+      if (isActiveChild) expandedIndex.value = i
     }
   })
 })
 </script>
 
 <style scoped>
-.submenu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
 }
-
-.submenu.open {
-  max-height: 500px; /* harus lebih tinggi dari isi submenu */
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 </style>
