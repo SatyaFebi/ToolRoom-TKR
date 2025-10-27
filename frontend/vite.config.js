@@ -14,7 +14,7 @@ export default defineConfig({
   ],
     server: {
     host: true,
-    port: 5173,
+    port: 5174, // Ganti sesuai port local (default 5173)
   },
   resolve: {
     alias: {
