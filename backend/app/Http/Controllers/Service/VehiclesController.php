@@ -10,10 +10,11 @@ use Illuminate\Validation\Rule;
 
 class VehiclesController extends Controller
 {
-public function checkVehicle($no_polisi)
+public function checkVehicle(Request $request, $no_polisi)
 {
     try {
         $no_polisi = strtoupper(trim($no_polisi));
+        $showAll = $request->boolean('show_all', false); 
 
         $vehicle = Vehicles::where('no_polisi', $no_polisi)
             ->with([
@@ -31,7 +32,8 @@ public function checkVehicle($no_polisi)
             ], 404);
         }
 
-        $latestOrder = $vehicle->serviceOrders->first();
+        $serviceOrders = $vehicle->serviceOrders;
+        $latestOrder = $serviceOrders->first();
 
         return response()->json([
             'success' => true,
@@ -45,15 +47,18 @@ public function checkVehicle($no_polisi)
                 'status_service' => $latestOrder->status ?? 'Belum ada service',
                 'tanggal_masuk' => $latestOrder->tanggal_masuk ?? null,
                 'tanggal_selesai' => $latestOrder->tanggal_selesai ?? null,
-                'jumlah_service' => $vehicle->serviceOrders->count(),
-                'riwayat_service' => $vehicle->serviceOrders->map(function ($order) {
-                    return [
-                        'id' => $order->id,
-                        'status_service' => $order->status,
-                        'tanggal_masuk' => $order->tanggal_masuk,
-                        'tanggal_selesai' => $order->tanggal_selesai,
-                    ];
-                }),
+                'jumlah_service' => $serviceOrders->count(),
+
+                // ambil 3 terakhir dulu, kecuali kalau show_all=true
+                'riwayat_service' => ($showAll ? $serviceOrders : $serviceOrders->take(3))
+                    ->map(function ($order) {
+                        return [
+                            'id' => $order->id,
+                            'status_service' => $order->status,
+                            'tanggal_masuk' => $order->tanggal_masuk,
+                            'tanggal_selesai' => $order->tanggal_selesai,
+                        ];
+                    }),
             ]
         ], 200);
 
@@ -66,7 +71,6 @@ public function checkVehicle($no_polisi)
         ], 500);
     }
 }
-
     
     public function get()
     {

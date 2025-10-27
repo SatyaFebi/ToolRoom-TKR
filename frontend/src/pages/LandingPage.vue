@@ -88,44 +88,30 @@
           </div>
 
           <!-- Vehicle Info Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-[#12385f]/10 rounded-xl p-4 border border-[#12385f]/20">
+              <p class="text-gray-600 text-sm mb-1">Nama Pelanggan</p>
+              <p class="text-gray-800 text-xl font-bold">{{ result.nama_pelanggan }}</p>
+            </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-  <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-    <p class="text-gray-600 text-sm mb-1">Nama Pelanggan</p>
-    <p class="text-gray-800 text-xl font-bold">{{ result.nama_pelanggan }}</p>
-  </div>
-</div> 
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-  <div class="bg-[#12385f]/10 rounded-xl p-4 border border-[#12385f]/20">
-    <p class="text-gray-600 text-sm mb-1">Nomor Polisi</p>
-    <p class="text-gray-800 text-xl font-bold">{{ result.no_polisi }}</p>
-  </div>
-  
-  <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-    <p class="text-gray-600 text-sm mb-1">Jenis Kendaraan</p>
-    <p class="text-gray-800 text-xl font-bold">{{ result.jenis_kendaraan }}</p>
-  </div>
-  
-  <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-    <p class="text-gray-600 text-sm mb-1">Merek</p>
-    <p class="text-gray-800 text-xl font-bold">{{ result.merek }}</p>
-  </div>
-  
-  <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-    <p class="text-gray-600 text-sm mb-1">Model</p>
-    <p class="text-gray-800 text-xl font-bold">{{ result.model || '-' }}</p>
-  </div>
-  
-  <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
-    <p class="text-gray-600 text-sm mb-1">Tahun Produksi</p>
-    <p class="text-gray-800 text-xl font-bold">{{ result.tahun_produksi || '-' }}</p>
-  </div>
-</div>
-
+            <div class="bg-[#12385f]/10 rounded-xl p-4 border border-[#12385f]/20">
+              <p class="text-gray-600 text-sm mb-1">Nomor Polisi</p>
+              <p class="text-gray-800 text-xl font-bold">{{ result.no_polisi }}</p>
+            </div>
+            
+            <div class="bg-[#12385f]/10 rounded-xl p-4 border border-[#12385f]/20">
+              <p class="text-gray-600 text-sm mb-1">Merek / Model</p>
+              <p class="text-gray-800 text-xl font-bold">{{ result.merek }} / {{ result.model || '-' }}</p>
+            </div>
+            
+            <div class="bg-[#12385f]/10 rounded-xl p-4 border border-[#12385f]/20">
+              <p class="text-gray-600 text-sm mb-1">Tahun Produksi</p>
+              <p class="text-gray-800 text-xl font-bold">{{ result.tahun_produksi || '-' }}</p>
+            </div>
+          </div>
 
           <!-- Status Service -->
-          <div class="bg-gradient-to-br from-[#12385f] to-[#0d2844] rounded-xl p-6 text-white">
+          <div class="bg-gradient-to-br from-[#12385f] to-[#0d2844] rounded-xl p-6 text-white mb-6">
             <div class="flex items-center gap-3 mb-3">
               <div class="bg-white/20 p-2 rounded-lg">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,12 +119,12 @@
                 </svg>
               </div>
               <div>
-                <p class="text-blue-50 text-sm">Status Servis</p>
+                <p class="text-blue-50 text-sm">Status Servis Terakhir</p>
                 <p class="text-2xl font-bold">{{ result.status_service }}</p>
               </div>
             </div>
 
-            <div v-if="result.tanggal_masuk" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
               <div>
                 <p class="text-blue-50 text-xs mb-1">Tanggal Masuk</p>
                 <p class="font-semibold">{{ result.tanggal_masuk }}</p>
@@ -149,6 +135,56 @@
               </div>
             </div>
           </div>
+
+          <!-- Riwayat Service -->
+          <div v-if="result.riwayat_service && result.riwayat_service.length">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#12385f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Riwayat Servis 
+                <span class="text-sm font-normal text-gray-600">({{ result.jumlah_service }}x)</span>
+              </h3>
+              <button
+                v-if="!showAll && result.jumlah_service > 3"
+                @click="loadAllHistory"
+                class="text-[#12385f] hover:text-[#0d2844] font-semibold text-sm flex items-center gap-1 transition-colors"
+              >
+                Lihat Semua
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="space-y-3">
+              <div 
+                v-for="(item, index) in result.riwayat_service" 
+                :key="index"
+                class="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:border-[#12385f]/30 hover:bg-[#12385f]/5 transition-all duration-200"
+              >
+                <div class="flex justify-between items-start mb-2">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="inline-block w-2 h-2 rounded-full bg-[#12385f]"></span>
+                      <p class="font-bold text-gray-800">{{ item.status_service }}</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                      </svg>
+                      <span>{{ item.tanggal_masuk }}</span>
+                      <span class="text-gray-400">→</span>
+                      <span>{{ item.tanggal_selesai || 'Belum selesai' }}</span>
+                    </div>
+                  </div>
+                  <span class="text-xs text-gray-400 font-mono bg-gray-200 px-2 py-1 rounded">{{ item.id }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -178,8 +214,9 @@ const noPolisi = ref('')
 const result = ref(null)
 const error = ref('')
 const loading = ref(false)
+const showAll = ref(false)
 
-const checkVehicle = async () => {
+const checkVehicle = async (show_all = false) => {
   if (!noPolisi.value.trim()) {
     error.value = 'Masukkan nomor polisi terlebih dahulu.'
     result.value = null
@@ -189,10 +226,11 @@ const checkVehicle = async () => {
   loading.value = true
   error.value = ''
   result.value = null
+  showAll.value = show_all
 
   try {
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'}/service/checkVehicle/${encodeURIComponent(noPolisi.value.trim())}`
+      `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'}/service/checkVehicle/${encodeURIComponent(noPolisi.value.trim())}?show_all=${show_all}`
     )
     const data = await res.json()
 
@@ -205,6 +243,8 @@ const checkVehicle = async () => {
     loading.value = false
   }
 }
+
+const loadAllHistory = () => checkVehicle(true)
 </script>
 
 <style scoped>
