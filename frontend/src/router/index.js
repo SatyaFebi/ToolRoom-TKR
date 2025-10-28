@@ -7,7 +7,7 @@ import adminLogin from '@/pages/auth/loginPage.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 // Pages
-import adminDashboard from '@/pages/dashboard/admin/adminDashboard.vue'
+// import adminDashboard from '@/pages/dashboard/admin/adminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
 import adminUpdate from '@/pages/auth/adminUpdate.vue'
 // import userTable from '@/pages/dashboard/admin/operasi/UserTable.vue'
@@ -43,7 +43,7 @@ const routes = [
       {
         path: '',
         name: 'Home',
-        component: adminDashboard
+        component: () => import('@/pages/dashboard/admin/adminDashboard.vue')
       },
       {
         path: 'update',
