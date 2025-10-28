@@ -243,6 +243,33 @@
                   />
                 </div>
               </div>
+              <div>
+                <p class="text-gray-400 my-4 font-semibold text-center">------------------- ATAU -------------------</p>
+              </div>
+              <div>
+                <label class="text-gray-700 font-semibold mb-1" for="pilih_kendaraan">Pilih Kendaraan <span class="font-bold">(Jika sudah ada)</span></label>
+                <AutoComplete
+                  v-model="vehicleSearch"
+                  :suggestions="vehicleSuggestions"
+                  @complete="searchItems"
+                  @item-select="onVehicleSelect"
+                  @dropdown-click="showDefaultVehicles"
+                  :virtualScrollerOptions="{ itemSize: 38 }"
+                  :loading="loading"
+                  :minLength="0"
+                  optionLabel="label"
+                  placeholder="Cari kendaraan"
+                  class="w-full"
+                  appendTo="self"
+                  panelClass="autocomplete-panel"
+                  forceSelection
+                  dropdown
+                >
+                  <template #loadingicon>
+                    <i class="pi pi-spin pi-spinner text-gray-400"></i>
+                  </template>
+                </AutoComplete>
+              </div>
               <button
                 v-if="customerVehicles.length > 0"
                 type="button"
@@ -343,6 +370,7 @@ import Swal from 'sweetalert2'
 import useServiceList from '@/composables/useServiceList'
 import Select from 'primevue/select'
 import api from '@/plugins/api'
+import AutoComplete from 'primevue/autocomplete'
 
 const isTambahServisOpen = ref(false)
 const currentStep = ref(0)
@@ -356,6 +384,11 @@ const showNewCustomerForm = ref(false)
 const showVehicleError = ref(false)
 const isCustomerFetched = ref(false)
 const loadingServices = ref(false)
+const vehicleSearch = ref('')
+const vehicleSuggestions = ref([])
+const loading = ref(false)
+let debounceTimer = null
+const vehicleCache = new Map()
 
 const newCustomer = ref({ name: '', no_telp: '', alamat: '' })
 
@@ -408,6 +441,79 @@ const vehicle = ref({
   no_polisi: '',
 })
 
+const existingVehicles = ref([])
+
+const showDefaultVehicles = async () => {
+  loading.value = true
+
+  // Cache masih belum bener
+  if (vehicleCache.length > 0) {
+    vehicleSuggestions.value = vehicleCache.value
+    loading.value = false
+    console.log("Menggunakan cache vehicle")
+    return
+  }
+
+  try {
+    const res = await api.get('service/getVehicles?limit=25')
+    const data = res.data?.data || res.data || []
+    vehicleSuggestions.value = data.map(v => ({
+      ...v,
+      label: `${v.merek} ${v.model} - ${v.no_polisi}`
+    }))
+
+    // Masih salah set cachenya
+    vehicleCache.set('cache_dropdown', vehicleSuggestions.value)
+  } catch (error) {
+    console.error('Gagal mengambil data kendaraan:', error)
+    vehicleSuggestions.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+const searchItems = (event) => {
+  const query = event.query.trim().toLowerCase()
+
+  clearTimeout(debounceTimer)
+
+  debounceTimer = setTimeout( async () => {
+    if (!query) {
+      vehicleSuggestions.value = []
+      return
+    }
+
+    // Get cache
+    if (vehicleCache.has(query)) {
+      vehicleSuggestions.value = vehicleCache.get(query)
+      return
+    }
+
+    // Jika size cache udah 30, hapus item pertama dan seterusnya
+    if (vehicleCache.size >= 30) {
+      const firstKey = vehicleCache.keys().next().value
+      vehicleCache.delete(firstKey)
+    }
+
+    loading.value = true
+    try {
+      const res = await api.get(`service/getVehicles?search=${encodeURIComponent(query)}`)
+      const data = (res.data?.data || res.data || []).map(v => ({
+        ...v,
+        label: `${v.merek} ${v.model} - ${v.no_polisi}`
+      }))
+      vehicleSuggestions.value = data
+      vehicleCache.set(query, data)
+    } catch (error) {
+      console.error('Gagal mengambil data kendaraan :', error)
+      vehicleSuggestions.value = []
+    } finally {
+      loading.value = false
+    }
+  }, 400)
+
+}
+
 const vehicleTypes = ref([
   { name: 'Mobil', value: 'Mobil' },
   { name: 'Motor', value: 'Motor' }
@@ -431,6 +537,16 @@ const getCustomerData = async (force = false) => {
   } catch (e) {
     Swal.fire('Gagal', 'Gagal mencari data pelanggan. Silakan hubungi admin', 'error')
     throw e
+  }
+}
+
+const getExistingVehicles = async () => {
+  existingVehicles.value = []
+  try {
+    const res = await api.get('service/getVehicles')
+    existingVehicles.value = Array.isArray(res) ? res : Array.isArray(res.data) ? res.data : []
+  } catch (error) {
+    console.error('Gagal mengambil data kendaraan :', error)
   }
 }
 
@@ -464,6 +580,8 @@ const closeTambahServis = () => {
   showNewVehicleForm.value = false
   showCustomerList.value = false
   customerVehicles.value = []
+  vehicleSearch.value = ''
+  vehicleSuggestions.value = []
 
   vehicle.value = {
     customer_id: '',
@@ -484,6 +602,9 @@ const closeTambahServis = () => {
 }
 
 const goToNextStep = () => {
+  if (currentStep.value === 0) {
+    getExistingVehicles()
+  }
   if (currentStep.value === 1) {
     const isVehicleValid = selectedVehicle.value || (vehicle.value.merek && vehicle.value.model && vehicle.value.tahun_produksi && vehicle.value.no_polisi)
 
@@ -498,6 +619,21 @@ const goToNextStep = () => {
   currentStep.value++
 }
 
+const onVehicleSelect = (e) => {
+  selectedVehicle.value = e.value
+  showNewVehicleForm.value = false
+
+  // Reset form tambah kendaraan baru
+  vehicle.value = {
+    customer_id: '',
+    jenis_kendaraan: '',
+    merek: '',
+    model: '',
+    tahun_produksi: '',
+    no_polisi: ''
+  }
+}
+
 const submitServis = async () => {
   loadingServices.value = true
   try {
@@ -510,17 +646,18 @@ const submitServis = async () => {
     let vehicleId = selectedVehicle.value?.id
 
     if (!vehicleId) {
-      vehicle.value.customer_id = selectCustomer.value.id
+      vehicle.value.customer_id = selectedCustomer.value.id
+      const vehicleRes = await api.post('service/addVehicle', vehicle.value);
+
+      if (!vehicleRes?.data?.data?.id) {
+        throw new Error('Reponse kendaraan tidak mengembalikan ID yang valid');
+      }
+
+      vehicleId = vehicleRes.data.data.id
     }
 
-    // vehicle.value.customer_id = selectedCustomer.value.id;
-    const vehicleRes = await api.post('service/addVehicle', vehicle.value);
+    servis.value.vehicle_id = vehicleId;
 
-    if (!vehicleRes?.data?.data?.id) {
-      throw new Error('Reponse kendaraan tidak mengembalikan ID yang valid');
-    }
-
-    servis.value.vehicle_id = vehicleRes.data.data?.id;
     await api.post('service/addService', servis.value)
 
     Swal.fire('Berhasil', 'Data servis berhasil disimpan', 'success')
@@ -575,5 +712,9 @@ const submitServis = async () => {
 .slide-down-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.autocomplete-panel {
+  margin-top: 0.5rem !important;
 }
 </style>

@@ -10,13 +10,22 @@ use Illuminate\Validation\Rule;
 
 class VehiclesController extends Controller
 {
-    public function get()
+    public function get(Request $request)
     {
-        $data = Vehicles::all();
+        $query = $request->input('search');
+
+        $vehicles = Vehicles::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('merek', 'like', "%{$query}%")
+                    ->orWhere('model', 'like', "%{$query}%")
+                    ->orWhere('no_polisi', 'like', "%{$query}%");
+            })
+            ->limit($request->input('limit', 10))
+            ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $vehicles
         ]);
     }
 
