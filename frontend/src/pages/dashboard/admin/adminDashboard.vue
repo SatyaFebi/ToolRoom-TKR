@@ -1,5 +1,5 @@
 <template>
-  <main class="p-6 flex-1 bg-gray-100 backdrop-blur-md">
+  <main class="p-6 flex-1 bg-gray-100">
     <!-- Statistik Cards -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <div class="bg-white shadow rounded-lg p-6 text-center hover:shadow-md">
@@ -20,17 +20,17 @@
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <button
         @click="toggleTambahServis"
-        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700 cursor-pointer transition-all duration-200"
+        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700 cursor-pointer"
       >
         ➕ Tambah Servis
       </button>
       <button
-        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700 cursor-pointer transition-all duration-200"
+        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700 cursor-pointer"
       >
         👀 Lihat Daftar Pekerjaan
       </button>
       <button
-        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700 cursor-pointer transition-all duration-200"
+        class="bg-blue-600 text-white rounded-xl p-6 text-lg font-bold shadow hover:bg-blue-700 cursor-pointer"
       >
         📁 Lihat Laporan
       </button>
@@ -253,7 +253,6 @@
                   :suggestions="vehicleSuggestions"
                   @complete="searchItems"
                   @item-select="onVehicleSelect"
-                  @dropdown-click="showDefaultVehicles"
                   :virtualScrollerOptions="{ itemSize: 38 }"
                   :loading="loading"
                   :minLength="0"
@@ -263,6 +262,8 @@
                   appendTo="self"
                   panelClass="autocomplete-panel"
                   forceSelection
+                  @dropdown-click="onDropdownClick"
+                  @hide="onDropdownHide"
                   dropdown
                 >
                   <template #loadingicon>
@@ -365,12 +366,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import Swal from 'sweetalert2'
+import { ref, computed, defineAsyncComponent } from 'vue'
+// import Swal from 'sweetalert2'
+const Swal = defineAsyncComponent(() => import('sweetalert2'))
+const AutoComplete = defineAsyncComponent(() => import('primevue/autocomplete'))
 import useServiceList from '@/composables/useServiceList'
 import Select from 'primevue/select'
 import api from '@/plugins/api'
-import AutoComplete from 'primevue/autocomplete'
+// import AutoComplete from 'primevue/autocomplete'
 
 const isTambahServisOpen = ref(false)
 const currentStep = ref(0)
@@ -389,6 +392,7 @@ const vehicleSuggestions = ref([])
 const loading = ref(false)
 let debounceTimer = null
 const vehicleCache = new Map()
+const isDropdownOpen = ref(false)
 
 const newCustomer = ref({ name: '', no_telp: '', alamat: '' })
 
@@ -445,25 +449,16 @@ const existingVehicles = ref([])
 
 const showDefaultVehicles = async () => {
   loading.value = true
-
-  // Cache masih belum bener
-  if (vehicleCache.length > 0) {
-    vehicleSuggestions.value = vehicleCache.value
-    loading.value = false
-    console.log("Menggunakan cache vehicle")
-    return
-  }
-
   try {
     const res = await api.get('service/getVehicles?limit=25')
     const data = res.data?.data || res.data || []
-    vehicleSuggestions.value = data.map(v => ({
+    const mappedData = data.map(v => ({
       ...v,
       label: `${v.merek} ${v.model} - ${v.no_polisi}`
     }))
+    vehicleSuggestions.value = mappedData
 
-    // Masih salah set cachenya
-    vehicleCache.set('cache_dropdown', vehicleSuggestions.value)
+    vehicleCache.set('default_vehicles', mappedData)
   } catch (error) {
     console.error('Gagal mengambil data kendaraan:', error)
     vehicleSuggestions.value = []
@@ -601,10 +596,40 @@ const closeTambahServis = () => {
   }
 }
 
-const goToNextStep = () => {
+const onDropdownClick = async () => {
+  try {
+    isDropdownOpen.value = true
+
+    if (vehicleCache.has('default_vehicles')) {
+      vehicleSuggestions.value = vehicleCache.get('default_vehicles')
+      return
+    }
+
+    await showDefaultVehicles()
+  } catch (e) {
+    console.error('Gagal menampilkan data kendaraan default:', e)
+  }
+}
+
+const onDropdownHide = () => {
+  isDropdownOpen.value = false
+  // if (!vehicleSearch.value) {
+  //   vehicleSuggestions.value = []
+  // }
+
+  setTimeout(() => {
+    if (!vehicleSearch.value) {
+      vehicleSuggestions.value = []
+      console.log('Suggestions direset')
+    }
+  }, 100)
+}
+
+const goToNextStep = async () => {
   if (currentStep.value === 0) {
     getExistingVehicles()
   }
+
   if (currentStep.value === 1) {
     const isVehicleValid = selectedVehicle.value || (vehicle.value.merek && vehicle.value.model && vehicle.value.tahun_produksi && vehicle.value.no_polisi)
 
@@ -636,6 +661,14 @@ const onVehicleSelect = (e) => {
 
 const submitServis = async () => {
   loadingServices.value = true
+
+  console.log('=== PAYLOAD YANG AKAN DISUBMIT ===')
+  console.log('Selected Customer:', selectedCustomer.value)
+  console.log('Selected Vehicle:', selectedVehicle.value)
+  console.log('Vehicle Form Data:', vehicle.value)
+  console.log('Servis Data:', servis.value)
+  console.log('===================================')
+
   try {
     Swal.fire({
       title: 'Menyimpan...',
