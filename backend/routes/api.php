@@ -57,6 +57,11 @@ Route::post('HapusKategoriBarang/{id}', [KategoriBarangController::class, 'destr
 
 
 // ================= SERVICE ROUTES =================
+
+Route::prefix('service')->group(function () {
+    Route::get('checkVehicle/{no_polisi}', [VehiclesController::class, 'checkVehicle']);
+});
+
 Route::prefix('service')->middleware(['auth:api', 'throttle:60,1'])->group(function (){
     Route::get('getService', [ServiceOrder::class, 'get']);
     Route::get('getVehicles', [VehiclesController::class, 'get']);
