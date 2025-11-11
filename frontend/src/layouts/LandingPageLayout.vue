@@ -17,7 +17,6 @@ import LandingPageNavbar from '@/components/LandingPage/LandingPageNavbar.vue'
 
 <style scoped>
 main {
-  max-width: 900px;
   margin: 0 auto;
 }
 </style>
