@@ -33,6 +33,7 @@ const routes = [
     path: '/dashboard/admin',
     component: AdminLayout,
     meta: { requiresAuth: true, role: 'admin' },
+    redirect: { name: 'Home' }, // ⬅️ Redirect default ke dashboard
     children: [
       {
         path: '',
@@ -76,8 +77,7 @@ const routes = [
             path: 'form-peminjaman',
             name: 'Formpeminjaman',
             component: Formpeminjaman
-          },
-
+          }
         ]
       },
       {
@@ -91,19 +91,19 @@ const routes = [
         ]
       },
       {
-         path: 'operasi',
-         children: [
-            {
-               path: 'user-management',
-               name: 'UserManagement',
-               component: () => import('@/pages/dashboard/admin/operasi/UserManagement.vue')
-            },
-            {
-               path: 'user-table',
-               name: 'UserTable',
-               component: () => import('@/pages/dashboard/admin/operasi/UserTable.vue')
-            }
-         ]
+        path: 'operasi',
+        children: [
+          {
+            path: 'user-management',
+            name: 'UserManagement',
+            component: () => import('@/pages/dashboard/admin/operasi/UserManagement.vue')
+          },
+          {
+            path: 'user-table',
+            name: 'UserTable',
+            component: () => import('@/pages/dashboard/admin/operasi/UserTable.vue')
+          }
+        ]
       }
     ]
   },
@@ -121,15 +121,29 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('authToken')
+  const token = localStorage.getItem('auth_token')
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'Login' })
-  } else if (to.name === 'Login' && isAuthenticated) {
-    next({ name: 'Home' })
-  } else {
-    next()
+  console.log('Navigating to:', to.fullPath)
+  console.log('Token in guard:', token)
+
+  //  Cek level route
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+
+  // login tapi gada token
+  if (requiresAuth && !token) {
+    console.warn('⛔ Akses ditolak: belum login')
+    return next({ name: 'Login' })
   }
+
+  // udh login, login lagi
+  if (to.name === 'Login' && token) {
+    console.info('Sudah login, alihkan ke dashboard')
+    return next('/dashboard/admin')
+  }
+
+  // masuk ke dashboard
+  console.log('✅ Akses diizinkan')
+  next()
 })
 
 export default router

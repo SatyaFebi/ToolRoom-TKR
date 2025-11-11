@@ -1,60 +1,53 @@
 import axios from 'axios'
 import router from '@/router'
-// import { useAuthStore } from '@/stores/auth'
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_APP_API_BASE_URL
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
 })
 
-api.interceptors.request.use(config => {
-    // const auth = useAuthStore()
-    const token = localStorage.getItem('authToken')
+// 🔹 Interceptor Request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('auth_token')
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`
     }
-    return config;
-})
-
-api.interceptors.response.use(response => response,
-    async error => {
-        const originalRequest = error.config
-
-        if (error.response && error.response.status === 401) {
-            originalRequest._retry = true
-            console.warn("Unauthorized! Redirecting to login...");
-            await handleLogout();
-            return Promise.reject(error);
-            // try {
-            //     const token = localStorage.getItem('authToken')
-                // const res = await axios.post(`${import.meta.env.VITE_APP_API_BASE_URL.replace(/\/$/, '')}refresh`, {}, {
-                //     headers: { Authorization: `Bearer ${token}` }
-                // })
-
-            //     const newToken = res.token
-            //     if (newToken) {
-            //         localStorage.setItem('authToken', newToken)
-            //         api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
-            //         return api.request(originalRequest)
-            //     } else {
-            //         localStorage.removeItem('authToken')
-            //         return Promise.reject(error)
-            //     }
-            // } catch (err) {
-            //     localStorage.removeItem('authToken')
-            //     return Promise.reject(err)
-            // }
-        }
-
-        return Promise.reject(error)
-    }
+    return config
+  },
+  (error) => Promise.reject(error)
 )
 
-const handleLogout = async() => {
-  localStorage.removeItem('authToken')
+// 🔹 Interceptor Response
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config
 
-  delete api.defaults.headers.common["Authorization"]
+    // Jika token expired / unauthorized
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+      console.warn('⚠️ Token invalid atau expired. Logout otomatis...')
+      await handleLogout()
+      return Promise.reject(error)
+    }
 
-  router.push({ name: "Login" });
+    return Promise.reject(error)
+  }
+)
+
+// 🔹 Logout Handler
+const handleLogout = async () => {
+  try {
+    localStorage.removeItem('auth_token')
+    delete api.defaults.headers.common['Authorization']
+    await router.push({ name: 'Login' })
+  } catch (err) {
+    console.error('Logout gagal:', err)
+  }
 }
 
 export default api

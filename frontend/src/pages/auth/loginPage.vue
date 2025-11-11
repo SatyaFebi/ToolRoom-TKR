@@ -125,6 +125,10 @@
 import useAuth from '@/composables/useAuth'
 import { ref } from 'vue'
 import router from '@/router'
+import { nextTick } from 'vue'
+import axios from 'axios'
+
+
 
 const email = ref('')
 const password = ref('')
@@ -145,17 +149,42 @@ const handleLogin = async () => {
   isLoading.value = true
   errorMessage.value = ''
   successMessage.value = ''
+
   try {
-    await login(email.value, password.value, rememberMe.value)
+    // Kirim request login
+    const response = await login(email.value, password.value)
+
+    // Ambil token dari response
+    const token = response?.data?.token
+    if (!token) throw new Error('Token tidak ditemukan di response')
+
+    // Simpan token ke localStorage
+    localStorage.setItem('auth_token', token)
+
+
+    console.log('Token disimpan:', localStorage.getItem('auth_token'))
+
+    // Set token ke Axios default header
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+    // Simpan email kalau Remember Me aktif
     if (rememberMe.value) {
       localStorage.setItem('rememberEmail', email.value)
     } else {
       localStorage.removeItem('rememberEmail')
     }
+
+    // Tampilkan pesan sukses
     successMessage.value = 'Login sukses! Mengalihkan...'
-    router.push('/dashboard/admin')
+
+    await nextTick()
+    setTimeout(() => {
+      router.push('/dashboard/admin')
+    }, 200)
+
   } catch (err) {
-    errorMessage.value = err.response?.data?.message || 'Login gagal. Silakan coba lagi.'
+    // Tangani error login
+    errorMessage.value = err.response?.data?.message || err.message || 'Login gagal. Silakan coba lagi.'
   } finally {
     isLoading.value = false
   }

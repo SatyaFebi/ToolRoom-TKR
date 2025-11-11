@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('barang', function (Blueprint $table) {
-            $table->integer('jumlah')->default(0);
-
+        Schema::table('data_barang', function (Blueprint $table) {
+            $table->enum('lokasi_penyimpanan', ['ruang toolman', 'ruang ttep', 'ruang bengkel tefa']);
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('barang', function (Blueprint $table) {
-             $table->dropColumn('jumlah');
-
+        Schema::table('data_barang', function (Blueprint $table) {
+            //
         });
     }
 };

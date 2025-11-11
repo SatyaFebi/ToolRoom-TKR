@@ -3,35 +3,31 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
-use App\Models\Inventory\KategoriBarang;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Inventory\DataBarang;
+use App\Models\Inventory\KategoriBarang;
 
 class KategoriBarangController extends Controller
 {
-   public function index()
+     // GET semua kategori
+    public function index()
     {
-        $kategori = KategoriBarang::all();
-        return response()->json($kategori);
+            $kategori = KategoriBarang::all();
+            return response()->json(['data' => $kategori]);
+
     }
 
+    // POST tambah kategori
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:100',
-            'kode' => 'required|string|size:3|unique:kategori_barang,kode'
+        $request->validate([
+            'nama_kategori_barang' => 'required|string|max:100',
+            'kode_kategori' => 'required|string|size:3|unique:kategori_barang,kode_kategori',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         $kategori = KategoriBarang::create([
-            'nama' => $request->nama,
-            'kode' => strtoupper($request->kode)
+            'nama_kategori_barang' => $request->nama_kategori_barang,
+            'kode_kategori' => strtoupper($request->kode_kategori),
         ]);
 
         return response()->json([
@@ -40,6 +36,7 @@ class KategoriBarangController extends Controller
         ], 201);
     }
 
+    // DELETE kategori
     public function destroy($id)
     {
         $kategori = KategoriBarang::find($id);
@@ -49,9 +46,6 @@ class KategoriBarangController extends Controller
         }
 
         $kategori->delete();
-        
-        return response()->json([
-            'message' => 'Kategori berhasil dihapus'
-        ]);
+        return response()->json(['message' => 'Kategori berhasil dihapus']);
     }
 }
