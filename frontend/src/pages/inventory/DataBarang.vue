@@ -41,6 +41,7 @@
         <label class="block text-sm text-slate-600 mb-1">Kode Barang</label>
         <input
           v-model="form.kode"
+          :readonly="true"
           required
           name="kode"
           type="text"
@@ -78,7 +79,7 @@
       <div class="sm:col-span-3 flex items-center justify-end gap-2">
         <button
           type="submit"
-           class="px-4 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+           class="px-6 py-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors"
         >
           Simpan
         </button>
@@ -89,6 +90,36 @@
      <div class="mt-6">
   <h4 class="font-semibold text-slate-900">Daftar Barang</h4>
 
+  <!-- button download excel -->
+  <div class="relative w-full flex justify-end mt-2">
+    <button id="dowloadBtn" class="w-full md:w-auto bg-gradient-to-r 
+    from-green-400 to-green-600 hover:from-green-700 hover:to-green-700
+    text-white px-4 py-2 rounded-xl font-semibold transition-all duration-200 transform 
+    hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 text-sm">Download file excel</button>
+
+    <div id="downloadMenu" class="hidden absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+      <div class="py-2">
+
+        <!-- download excel biasa -->
+        <div class="download-option px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 flex items-center gap-3" data-type="excel">
+          <div>
+            <div class="font-semibold text-sm">Download file excel biasa </div>
+          </div>
+        </div>
+
+        <!-- download excel yang ada QR nya -->
+        <div>
+          <div class="download-option px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 flex items-center gap-3" data-type="excel-qr">
+            <div>
+              <div class="font-semibold text-sm">Download file excel dengan QR Code</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
   <div class="mt-3 overflow-auto rounded-xl border border-slate-300">
     <table class="min-w-full text-sm table-auto border-collapse">
       <!-- Header -->
@@ -152,7 +183,7 @@
     :disabled="currentPage === 1"
     class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
   >
-    ← Sebelumnya
+    ←
   </button>
 
   <span class="px-3 py-1 text-slate-700">Halaman {{ currentPage }} dari {{ totalPages }}</span>
@@ -162,7 +193,7 @@
     :disabled="currentPage === totalPages"
     class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 disabled:opacity-50"
   >
-    Selanjutnya →
+    →
   </button>
 </div>
 </div>
@@ -220,14 +251,120 @@ export default {
   mounted() {
     this.loadDataBarang();
     this.loadKategoriBarang();
+    this.setupDownloadMenu();
   },
 
   methods: {
+
+    // export excel
+    async exportExcel(withQR) {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get(
+          `http://localhost:8000/api/inventory/export?with_qr=${withQR}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            },
+            responseType: 'blob'
+          }
+        );
+
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = withQR
+          ? 'DataBarang_dengan_QR.xlsx'
+          : 'DataBarang.xlsx';
+        link.click();
+
+        this.showToastMessage('File berhasil diunduh!', 'success');
+      } catch (error) {
+        console.error('Gagal export:', error);
+        this.showToastMessage('Gagal mengunduh file', 'error');
+      }
+    },
+
+
+    //dropdown yg download
+    setupDownloadMenu() {
+      const downloadBtn = document.getElementById('dowloadBtn');
+      const downloadMenu = document.getElementById('downloadMenu');
+
+      // klik tombol → toggle menu
+      downloadBtn.addEventListener('click', () => {
+        downloadMenu.classList.toggle('hidden');
+      });
+
+      // klik di luar menu → tutup menu
+      document.addEventListener('click', (e) => {
+        if (
+          !downloadBtn.contains(e.target) &&
+          !downloadMenu.contains(e.target)
+        ) {
+          downloadMenu.classList.add('hidden');
+        }
+      });
+
+      // klik salah satu opsi download
+      document.querySelectorAll('.download-option').forEach((option) => {
+        option.addEventListener('click', () => {
+          const type = option.getAttribute('data-type');
+          downloadMenu.classList.add('hidden');
+
+          if (type === 'excel') {
+            this.exportExcel(false); // tanpa QR
+          } else if (type === 'excel-qr') {
+            this.exportExcel(true); // dengan QR
+          }
+        });
+      });
+    },
+
+
+    //yang buat dropdown pilihhan excel
+    setupDownloadMenu() {
+      const downloadBtn = document.getElementById('dowloadBtn');
+      const downloadMenu = document.getElementById('downloadMenu');
+
+      // klik tombol → toggle menu
+      downloadBtn.addEventListener('click', () => {
+        downloadMenu.classList.toggle('hidden');
+      });
+
+      // klik di luar menu → tutup menu
+      document.addEventListener('click', (e) => {
+        if (
+          !downloadBtn.contains(e.target) &&
+          !downloadMenu.contains(e.target)
+        ) {
+          downloadMenu.classList.add('hidden');
+        }
+      });
+
+      // klik salah satu opsi download
+      document.querySelectorAll('.download-option').forEach((option) => {
+        option.addEventListener('click', () => {
+          const type = option.getAttribute('data-type');
+          downloadMenu.classList.add('hidden');
+
+          if (type === 'excel') {
+            this.exportExcel(false); // tanpa QR
+          } else if (type === 'excel-qr') {
+            this.exportExcel(true); // dengan QR
+          }
+        });
+      });
+    },
+
     // ========== LOAD KATEGORI BARANG ==========
     async loadKategoriBarang() {
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
         if (!token) {
           this.showToastMessage('Anda belum login!', 'error');
           return;
@@ -264,7 +401,7 @@ export default {
     async loadDataBarang() {
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
         if (!token) {
           this.showToastMessage('Anda belum login!', 'error');
           return;
@@ -303,7 +440,7 @@ export default {
     async tambahBarang() {
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
 
         const data = {
           nama_barang: this.form.nama,
@@ -341,7 +478,7 @@ export default {
     async updateBarang() {
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
 
         const data = {
           nama_barang: this.form.nama,
@@ -377,7 +514,7 @@ export default {
 
     // ========== EDIT ITEM ==========
     editItem(index) {
-      const item = this.itemsBarang[index];
+      const item = this.paginatedItems[index];
       this.form = {
         nama: item.nama_barang,
         jenis: item.jenis_barang,
@@ -397,7 +534,7 @@ export default {
 
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
         const item = this.itemsBarang[index];
 
         await axios.post(
@@ -424,7 +561,7 @@ export default {
       } finally {
         this.isLoading = false;
       }
-    },
+    },  
 
     // ========== RESET FORM ==========
     resetForm() {

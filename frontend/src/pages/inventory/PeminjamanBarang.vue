@@ -12,7 +12,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
-        Tambah Barang
+        Pinjam Barang
       </button>
     </div>
 
@@ -22,14 +22,11 @@
         <thead class="bg-gray-50">
           <tr>
             <th class="px-4 py-3 text-left font-medium text-gray-600 uppercase tracking-wider">No</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600 uppercase tracking-wider">Nama Peminjam</th>
-            <th class="px-4 py-3 text-left font-medium text-gray-600 uppercase tracking-wider">Kelas</th>
             <th class="px-4 py-3 text-left font-medium text-gray-600 uppercase tracking-wider">Barang yang di pinjam</th>
             <th class="px-4 py-3 text-left font-medium text-gray-600 uppercase tracking-wider">Kategori Barang</th>
-            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Tanggal Meminjam</th>
-            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Jumlah Barang</th>
-            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Bukti Peminjaman</th>
-            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Keterangan</th>
+            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Kode barang</th>
+            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Tanggal Dipinjam</th>
+            <th class="px-4 py-3 text-center font-medium text-gray-600 uppercase tracking-wider">Tanggal Dikembalikan</th>
           </tr>
         </thead>
 

@@ -164,7 +164,7 @@ export default {
     async loadKategoriBarang() {
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
         if (!token) {
           this.showToastMessage('Anda belum login!', 'error');
           return;
@@ -199,7 +199,7 @@ export default {
     async tambahKategori() {
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
         const data = {
           nama_kategori_barang: this.form.nama,
           kode_kategori: this.form.kode.toUpperCase()
@@ -243,7 +243,7 @@ export default {
 
       this.isLoading = true;
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('authToken');
         const item = this.items[index];
 
         await axios.post(

@@ -1,7 +1,6 @@
 import { useAuthStore } from '../stores/auth'
 import { computed } from 'vue'
 import Swal from 'sweetalert2'
-import router from '@/router' // ✅ tambahkan ini biar bisa push setelah login
 
 export default function useAuth() {
   const auth = useAuthStore()
@@ -9,9 +8,8 @@ export default function useAuth() {
   const user = computed(() => auth.user)
   const isLoggedIn = computed(() => !!auth.token)
 
-  // ===================== REGISTER =====================
   const register = async (payload) => {
-    try {
+   try {
       const data = await auth.register(payload)
       Swal.fire({
         icon: 'success',
@@ -20,54 +18,37 @@ export default function useAuth() {
         timer: 2000,
       })
       return data
-    } catch (err) {
+   } catch (err) {
       Swal.fire({
         icon: 'error',
         title: 'Gagal menambah user baru',
         text: err.response?.data?.message || 'Terjadi kesalahan',
       })
       throw err
-    }
+   }
   }
 
-  // ===================== LOGIN =====================
   const login = async (email, password) => {
     try {
-      const response = await auth.login(email, password)
-
-      // ✅ pastikan token tersimpan
-      const token = response?.data?.token
-      if (token) {
-        localStorage.setItem('auth_token', token)
-        auth.token = token
-        console.log('Token disimpan:', localStorage.getItem('auth_token'))
-      }
-
+      await auth.login(email, password)
+      // await auth.getMe()
       Swal.fire({
         icon: 'success',
         title: 'Login sukses!',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
       })
-
-      // ✅ tunggu SweetAlert selesai lalu arahkan ke dashboard
-      setTimeout(() => {
-        router.push('/dashboard/admin')
-      }, 1500)
-
-      return response
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Terjadi kesalahan'
       Swal.fire({
         icon: 'error',
-        title: 'Login gagal',
+        title: 'Login failed',
         text: errorMessage,
       })
       throw err
     }
   }
 
-  // ===================== UPDATE PROFILE =====================
   const updateProfile = async (data) => {
     try {
       await auth.update(data)
@@ -86,62 +67,52 @@ export default function useAuth() {
     }
   }
 
-  // EDIT USER 
   const editUser = async (id, payload) => {
-    try {
+   try {
       return await auth.editUser(id, payload)
-    } catch (err) {
+   } catch (err) {
       let msg = 'Tolong cek data input.'
       if (err.response?.status === 422 && err.response.data.errors) {
-        const errors = err.response.data.errors
-        msg =
-          '<ul style="text-align:left; padding-left: 1rem;">' +
-          Object.values(errors).flat().map(e => `<li>${e}</li>`).join('') +
-          '</ul>'
+         const errors = err.response.data.errors
+         // bikin list HTML supaya gampang dibaca
+         msg = '<ul style="text-align:left; padding-left: 1rem;">' +
+               Object.values(errors).flat().map(e => `<li>${e}</li>`).join('') +
+               '</ul>'
       } else if (err.response?.data?.message) {
-        msg = err.response.data.message
+         msg = err.response.data.message
       }
 
       Swal.fire({
-        icon: 'error',
-        title: 'Validasi gagal',
-        html: msg,
-        showConfirmButton: true
+         icon: 'error',
+         title: 'Validasi gagal',
+         html: msg,
+         showConfirmButton: true
       })
       throw err
-    }
-  }
+   }
+   }
 
-  // ===================== DELETE USER =====================
+
   const deleteUser = async (id) => {
     try {
       return await auth.deleteUser(id)
     } catch (err) {
       Swal.fire({
         icon: 'error',
-        title: 'Gagal menghapus data.',
+        title: 'Gagal mengedit data.',
         text: err.response?.data?.message || 'Tidak dapat menghapus user, mohon coba lagi',
       })
       throw err
     }
   }
 
-  // ===================== LOGOUT =====================
-  const logout = async () => {
-    auth.logout()
-    localStorage.removeItem('auth_token')
-    Swal.fire({
-      icon: 'success',
-      title: 'Logout berhasil!',
-      timer: 1500,
-      showConfirmButton: false,
-    })
-    router.push({ name: 'Login' })
+  const getUserData = async () => {
+    return await auth.getUserData()
   }
 
-  // ===================== GET DATA =====================
-  const getUserData = async () => await auth.getUserData()
-  const getUserRole = async () => await auth.getUserRole()
+  const getUserRole = async () => {
+    return await auth.getUserRole()
+  }
 
   return {
     user,
@@ -151,7 +122,7 @@ export default function useAuth() {
     updateProfile,
     editUser,
     deleteUser,
-    logout,
+    logout: auth.logout,
     getMe: auth.getMe,
     getUserData,
     getUserRole,
