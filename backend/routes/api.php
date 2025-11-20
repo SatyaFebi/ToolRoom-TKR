@@ -14,6 +14,7 @@ use App\Models\Service\ServiceOrder;
 use App\Http\Controllers\Inventory\DataBarangController;
 use App\Http\Controllers\Inventory\KategoriBarangController;
 use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\Inventory\ExportBarangController;
 
 // ================= PUBLIC ROUTES =================
 Route::get('/me', [AuthController::class, 'me']);
@@ -46,6 +47,8 @@ Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(fun
     Route::post('EditDataBarang/{id}', [DataBarangController::class, 'update']);
     Route::post('HapusDataBarang/{id}', [DataBarangController::class, 'destroy']);
 
+    Route::get('Qr-Barang/{id}', [DataBarangController::class, 'generateQr']);
+    Route::get('export', [ExportBarangController::class, 'export']);
 
     Route::get('KategoriBarang', [KategoriBarangController::class, 'index']);
     Route::post('TambahKategoriBarang', [KategoriBarangController::class, 'store']);
