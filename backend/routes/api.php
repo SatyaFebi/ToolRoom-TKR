@@ -15,6 +15,7 @@ use App\Http\Controllers\Inventory\DataBarangController;
 use App\Http\Controllers\Inventory\KategoriBarangController;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Inventory\ExportBarangController;
+use App\Http\Controllers\Inventory\PeminjamanController;
 
 // ================= PUBLIC ROUTES =================
 Route::get('/me', [AuthController::class, 'me']);
@@ -53,6 +54,10 @@ Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(fun
     Route::get('KategoriBarang', [KategoriBarangController::class, 'index']);
     Route::post('TambahKategoriBarang', [KategoriBarangController::class, 'store']);
     Route::post('HapusKategoriBarang/{id}', [KategoriBarangController::class, 'destroy']);
+
+    Route::post('Peminjaman', [PeminjamanController::class, 'store']);
+    Route::post('Pengembalian/{id}', [PeminjamanController::class, 'pengembalian']);
+    Route::get('Pinjam', [PeminjamanController::class, 'index']);
 
 });
 

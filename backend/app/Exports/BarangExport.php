@@ -136,7 +136,7 @@ class BarangExport implements FromCollection, WithHeadings, WithMapping, WithEve
                         if (file_exists($pngPath)) {
                             $drawing = new Drawing();
                             $drawing->setPath($pngPath);
-                            $drawing->setCoordinates('D' . $row); // ✅ kolom QR yang benar
+                            $drawing->setCoordinates('D' . $row); 
                             $drawing->setHeight(80);
                             $drawing->setOffsetY(5);
                             $drawing->setOffsetX(30);
