@@ -41,6 +41,17 @@ export default function useServiceList() {
     }
   }
 
+  const updateService = async (id, payload) => {
+    try {
+      await service.updateData(id, payload)
+      await fetchServiceList(true)
+      Swal.fire('Berhasil!', 'Berhasil menupdate data service', 'success')
+    } catch (e) {
+      console.error('Gagal mengupdate user : ', e)
+      Swal.fire('Gagal', 'Gagal Mengupdate Service', 'error')
+    }
+  }
+
   const getCustomer = async () => {
     return await service.getData()
   }
@@ -65,5 +76,6 @@ export default function useServiceList() {
     getCustomer,
     refreshCache,
     invalidateCache: service.invalidateCache,
+    updateService,
   }
 }

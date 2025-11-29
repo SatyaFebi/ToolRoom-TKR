@@ -43,7 +43,6 @@ class ServiceOrderController extends Controller
                 'message' => 'Data Service Order berhasil dibuat!'
             ], 201);
         } catch (\Exception $e) {
-            Log::error('Gagal menambahkan data service order: ' . $e);
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal menambahkan data service order : ' . $e
@@ -51,17 +50,37 @@ class ServiceOrderController extends Controller
         }
     }
 
-    // public function edit($id, Request $request)
-    // {
-    //     try {
-    //         $data = ServiceOrder::findOrFail($id);
-    //         $validated = $request->validate([
+    public function update($id, Request $request)
+    {
+        $service = ServiceOrder::findOrFail($id);
+        try {
+            $validated = $request->validate([
+                'vehicle_id' => 'sometimes|integer',
+                'keluhan_pelanggan' => 'sometimes|string',
+                'taksiran_biaya' => 'nullable|numeric',
+                'estimasi' => 'nullable|string',
+                'tanggal_masuk' => 'sometimes|date',
+                'tanggal_selesai' => 'nullable|date',
+                'status' => 'nullable|in:menunggu,dikerjakan,selesai,dibatalkan',
+                'pembayaran' => 'nullable|string|in:cash,credit_card,debit_card,e-wallet,qris,transfer',
+                'penggantian_part_material' => 'nullable|string|in:langsung,izin',
+                'catatan_service' => 'nullable|string',
+                'total_biaya_akhir' => 'nullable|numeric'
+            ]);
 
-    //         ]);
-    //     } catch (\Exception $e) {
+            $service->update($validated);
 
-    //     }
-    // }
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Service berhasil diupdate!'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate data service order : ' . $e
+            ], 400);
+        }
+    }
 
     public function delete($id)
     {

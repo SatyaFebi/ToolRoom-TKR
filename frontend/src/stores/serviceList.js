@@ -40,7 +40,7 @@ export const useServiceListStore = defineStore('serviceList', {
 
         sessionStorage.setItem('services', JSON.stringify(data))
         sessionStorage.setItem('services_cached_at', Date.now())
-        
+
         return data
       } catch (err) {
         this.error = err.response?.data?.message || 'Gagal mengambil data service'
@@ -61,6 +61,10 @@ export const useServiceListStore = defineStore('serviceList', {
     },
     async getData() {
       const { data } = await api.get('/service/getCustomer')
+      return data
+    },
+    async updateData(id, payload) {
+      const { data } = await api.post(`/service/updateService/${id}`, payload)
       return data
     }
   },
