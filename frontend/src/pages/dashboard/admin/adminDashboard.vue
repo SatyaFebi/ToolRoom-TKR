@@ -86,7 +86,7 @@
               <transition name="fade">
                 <ul
                   v-if="showCustomerList && filteredCustomer.length"
-                  class="border rounded-lg divide-y mt-2 absolute bg-white w-full max-h-48 overflow-y-auto shadow-md z-10"
+                  class="border rounded-lg divide-y mt-2 bg-white w-full max-h-48 overflow-y-auto shadow-md z-10"
                 >
                   <li
                     v-for="cust in filteredCustomer"
@@ -193,6 +193,8 @@
                 type="button"
                 class="text-blue-600 underline text-sm mt-3 cursor-pointer"
                 @click="showNewVehicleForm = true"
+                :disabled="selectedVehicle"
+                v-if="!selectedVehicle"
               >
                 + Kendaraan lain yang belum terdaftar
               </button>

@@ -65,4 +65,6 @@ Route::prefix('service')->middleware(['auth:api', 'throttle:60,1'])->group(funct
     Route::post('addCustomer', [CustomerController::class, 'add']);
     Route::post('addService', [ServiceOrderController::class, 'add']);
     Route::post('addVehicle', [VehiclesController::class, 'add']);
+
+    Route::post('updateService/{id}', [ServiceOrderController::class, 'update']);
 });
