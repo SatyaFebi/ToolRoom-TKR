@@ -11,9 +11,11 @@ use App\Http\Controllers\Service\ServiceOrderController;
 use App\Http\Controllers\Service\VehiclesController;
 use App\Http\Controllers\Service\CustomerController;
 use App\Models\Service\ServiceOrder;
-use App\Http\Controllers\Inventory\BarangController;
+use App\Http\Controllers\Inventory\DataBarangController;
 use App\Http\Controllers\Inventory\KategoriBarangController;
 use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\Inventory\ExportBarangController;
+use App\Http\Controllers\Inventory\PeminjamanController;
 
 // ================= PUBLIC ROUTES =================
 Route::get('/me', [AuthController::class, 'me']);
@@ -41,16 +43,21 @@ Route::prefix('admin')->group(function () {
 
 // ================= INVENTORY ROUTES =================
 Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(function () {
+    Route::get('DataBarang', [DataBarangController::class, 'index']);
+    Route::post('TambahDataBarang', [DataBarangController::class, 'store']);
+    Route::post('EditDataBarang/{id}', [DataBarangController::class, 'update']);
+    Route::post('HapusDataBarang/{id}', [DataBarangController::class, 'destroy']);
 
-Route::get('DataBarang', [BarangController::class, 'index']);
-Route::post('TambahDataBarang', [BarangController::class, 'store']);
-Route::post('EditDataBarang/{id}', [BarangController::class, 'update']);
-Route::post('HapusDataBarang/{id}', [BarangController::class, 'destroy']);
+    Route::get('Qr-Barang/{id}', [DataBarangController::class, 'generateQr']);
+    Route::get('export', [ExportBarangController::class, 'export']);
 
+    Route::get('KategoriBarang', [KategoriBarangController::class, 'index']);
+    Route::post('TambahKategoriBarang', [KategoriBarangController::class, 'store']);
+    Route::post('HapusKategoriBarang/{id}', [KategoriBarangController::class, 'destroy']);
 
-Route::get('KategoriBarang', [KategoriBarangController::class, 'index']);
-Route::post('TambahKategoriBarang', [KategoriBarangController::class, 'store']);
-Route::post('HapusKategoriBarang/{id}', [KategoriBarangController::class, 'destroy']);
+    Route::post('Peminjaman', [PeminjamanController::class, 'store']);
+    Route::post('Pengembalian/{id}', [PeminjamanController::class, 'pengembalian']);
+    Route::get('Pinjam', [PeminjamanController::class, 'index']);
 
 });
 

@@ -2,8 +2,9 @@
 
 namespace App\Models\Inventory;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class KategoriBarang extends Model
 {
@@ -11,10 +12,11 @@ class KategoriBarang extends Model
 
     protected $table = 'kategori_barang';
 
-    protected $fillable = ['nama', 'kode'];
+    protected $fillable = ['nama_kategori_barang', 'kode_kategori'];
 
-    public function barang()
+    public function databarang()
     {
-        return $this->hasMany(Barang::class, 'kategori_id');
+        return $this->hasMany(Barang::class, 'kategori_barang_id');
     }
+
 }
