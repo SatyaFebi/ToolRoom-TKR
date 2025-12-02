@@ -51,7 +51,7 @@ class PeminjamanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Barang berhasil dipinjam',
-            // 'data'    => $peminjaman->load('barang','user')
+            'data'    => $peminjaman->load('barang','user')
         ]);
     }
 
@@ -75,7 +75,7 @@ class PeminjamanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Barang berhasil dikembalikan',
-            // 'data'    => $peminjaman->load('barang','user')
+            'data'    => $peminjaman->load('barang','user')
         ]);
     }
 }

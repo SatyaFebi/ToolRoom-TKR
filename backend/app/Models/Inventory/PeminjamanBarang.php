@@ -21,10 +21,10 @@ class PeminjamanBarang extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 
     public function barang() {
-        return $this->belongsTo(DataBarang::class);
+        return $this->belongsTo(DataBarang::class, 'barang_id');
     }
 }

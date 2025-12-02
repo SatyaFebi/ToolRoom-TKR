@@ -160,7 +160,7 @@ export default {
   },
 
   methods: {
-    // ========== LOAD DATA ==========
+    //LOAD DATA 
     async loadKategoriBarang() {
       this.isLoading = true;
       try {
@@ -186,7 +186,7 @@ export default {
       }
     },
 
-    // ========== SUBMIT FORM ==========
+    //SUBMIT FORM
     async handleSubmit() {
       if (this.form.nama && this.form.kode) {
         await this.tambahKategori();
@@ -195,7 +195,7 @@ export default {
       }
     },
 
-    // ========== TAMBAH KATEGORI ==========
+    //TAMBAH KATEGORI
     async tambahKategori() {
       this.isLoading = true;
       try {
@@ -237,7 +237,7 @@ export default {
       }
     },
 
-    // ========== HAPUS KATEGORI ==========
+    // HAPUS KATEGORI
     async deleteItem(index) {
       if (!confirm('Yakin ingin menghapus kategori ini?')) return;
 
@@ -267,12 +267,12 @@ export default {
       }
     },
 
-    // ========== RESET FORM ==========
+    // RESET FORM
     resetForm() {
       this.form = { nama: '', kode: '' };
     },
 
-    // ========== TOAST ==========
+    // TOAST
     showToastMessage(message, type = 'success') {
       this.toastMessage = message;
       this.toastType = type;
