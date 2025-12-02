@@ -22,6 +22,22 @@ class DataBarangController extends Controller
         ]);
     }
 
+    public function showByKode($kode)
+{
+    $barang = DataBarang::where('kode_barang', $kode)->with('kategoriBarang')->first();
+
+    if (!$barang) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Barang tidak ditemukan'
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data'    => $barang
+    ]);
+}
     private function generateQrPng($barang)
     {
         $dataQr = "Kode Barang: {$barang->kode_barang}\nNama: {$barang->nama_barang}\nJenis: {$barang->jenis_barang}";

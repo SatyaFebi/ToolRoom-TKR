@@ -58,6 +58,7 @@ Route::prefix('inventory')->middleware(['auth:api', 'throttle:60,1'])->group(fun
     Route::post('Peminjaman', [PeminjamanController::class, 'store']);
     Route::post('Pengembalian/{id}', [PeminjamanController::class, 'pengembalian']);
     Route::get('Pinjam', [PeminjamanController::class, 'index']);
+    Route::get('barang/{kode}', [DataBarangController::class, 'showByKode']);
 
 });
 

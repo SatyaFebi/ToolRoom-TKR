@@ -26,8 +26,7 @@ class DataBarang extends Model
         'dipinjam'
     ];
 
-
-    public function KategoriBarang()
+    public function kategoriBarang()
     {
         return $this->belongsTo(KategoriBarang::class, 'kategori_barang_id');
     }

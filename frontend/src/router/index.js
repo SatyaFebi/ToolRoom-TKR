@@ -77,6 +77,11 @@ const routes = [
             name: 'Formpeminjaman',
             component: Formpeminjaman
           },
+          {
+            path: 'form-data-peminjaman',
+            name: 'FormDataPeminjamanAlat',
+            component: () => import('@/pages/inventory/FormDataPeminjamanAlat.vue')
+          }
 
         ]
       },
