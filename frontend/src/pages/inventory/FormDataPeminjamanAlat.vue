@@ -69,11 +69,18 @@ export default {
   },
   methods: {
     async pinjamBarang() {
+      const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch("/api/Peminjaman", {
+        const res = await fetch("http://localhost:8000/api/inventory/Peminjaman", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ kode_barang: this.form.kode_barang })
+          headers:{
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            kode_barang: this.form.kode_barang,
+            tanggal_peminjaman: new Date().toISOString().slice(0, 10)
+          }) 
         });
 
         const data = await res.json();

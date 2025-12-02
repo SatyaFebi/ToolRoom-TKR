@@ -30,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    console.log("📸 Scanner dimulai");
+    console.log("Mulai Scanner");
     this.scanner = new Html5Qrcode("reader");
 
     this.scanner.start(
@@ -39,9 +39,9 @@ export default {
       (decodedText) => this.onScanSuccess(decodedText),
       (errorMessage) => this.onScanError(errorMessage)
     ).then(() => {
-      console.log("✅ Scanner berhasil start");
+      console.log("Scanner berhasil dimulai");
     }).catch((err) => {
-      console.error("❌ Gagal start scanner:", err);
+      console.error("Gagal start scanner:", err);
     });
   },
   beforeUnmount() {
@@ -51,17 +51,17 @@ export default {
   },
   methods: {
     async onScanSuccess(decodedText) {
-  console.log("✅ QR terbaca:", decodedText);
+  console.log("QR terbaca:", decodedText);
 
   // Ambil kode_barang dari string
   const match = decodedText.match(/Kode Barang:\s*(\S+)/);
   if (!match) {
-    console.error("❌ Format QR tidak valid");
+    console.error("Format QR tidak valid");
     return;
   }
 
   const kode_barang = match[1];
-  console.log("🔍 Kode Barang:", kode_barang);
+  console.log("Kode Barang:", kode_barang);
 
   const token = localStorage.getItem('authToken');
   try {
@@ -71,15 +71,16 @@ export default {
         }
     });
     
+    console.log("📥 Response mentah:", res);
     const result = await res.json();
-    console.log("📦 Hasil fetch:", result);
+    console.log("Hasil fetch:", result);
 
     if (!res.ok || !result.success) {
       throw new Error(result.message || "Barang tidak ditemukan");
     }
 
     const barang = result.data;
-    console.log("➡️ Redirect ke form dengan:", barang);
+    console.log("Redirect ke form ", barang);
 
     await this.scanner.stop();
 
@@ -94,7 +95,7 @@ export default {
 
     this.$emit("close");
   } catch (err) {
-    console.error("❌ Scan error:", err.message);
+    console.error("Scan error:", err.message);
   }
 }
   }
