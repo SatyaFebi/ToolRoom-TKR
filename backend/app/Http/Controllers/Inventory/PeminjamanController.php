@@ -78,4 +78,58 @@ class PeminjamanController extends Controller
             'data'    => $peminjaman->load('barang','user')
         ]);
     }
+
+   public function pengembalianByKode(Request $request)
+{
+    $request->validate([
+        'kode_barang' => 'required|string',
+        'keterangan'  => 'nullable|string'
+    ]);
+
+    // Normalisasi input
+    $kodeBarang = trim($request->kode_barang);
+
+    // 1. Cari barang berdasarkan kode
+    $barang = DataBarang::whereRaw('LOWER(kode_barang) = ?', [strtolower($kodeBarang)])->first();
+
+    if (!$barang) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Barang tidak ditemukan'
+        ], 404);
+    }
+
+    // 2. Cari peminjaman aktif untuk barang itu
+    $peminjaman = PeminjamanBarang::where('barang_id', $barang->id)
+        ->where('status', 'dipinjam')
+        ->orderByDesc('tanggal_peminjaman')
+        ->first();
+
+    if (!$peminjaman) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Tidak ada peminjaman yang aktif untuk barang ini'
+        ], 404);
+    }
+
+    // 3. Update peminjaman menjadi dikembalikan
+    $peminjaman->update([
+        'tanggal_pengembalian' => now(),
+        'status'               => 'dikembalikan',
+        'keterangan'           => $request->keterangan
+    ]);
+
+    // 4. Update barang menjadi tersedia
+    $barang->update(['status_barang' => 'tersedia']);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Pengembalian berhasil',
+        'peminjaman_id' => $peminjaman->id,     // << KUNCI UNTUKMU
+        'barang_id'     => $barang->id,
+        'kode_barang'   => $barang->kode_barang,
+        'data'          => $peminjaman->load('barang','user')
+    ]);
+}
+
 }

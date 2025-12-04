@@ -59,7 +59,6 @@
           class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
         >
           <option value="tersedia">tersedia</option>
-          <option value="dipinjam">dipinjam</option>
         </select>
       </div>
       
